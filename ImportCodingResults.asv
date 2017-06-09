@@ -64,8 +64,9 @@ else
     Asr = data.Afs;
 end
 data.Afs = Asr; data.Asr = Asr;%redundant for consistency
-audioM=mean(Audio); 
-audioS=std(Audio);
+starti = round(Events(1)*Asr); endi = round(Events(nTrials,4)*Asr);
+audioM=mean(Audio(starti:endi)); 
+audioS=std(Audio(starti:endi));
 
 trials.BaseRejectNoise=find(cell2mat(arrayfun(@(x,y) any(Audio(round(x*data.Asr):round(y*data.Asr))>(audioM+ 5*audioS)),trials.BaseFwd(1:nTrials),trials.BaseBack(1:nTrials),'UniformOutput',0)));
 trials.BaseRejectSpk=find( (trials.ITIStim-trials.SpOffset)<0 | isnan(trials.SpOffset) );
