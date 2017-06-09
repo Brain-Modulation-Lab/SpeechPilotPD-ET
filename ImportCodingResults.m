@@ -23,8 +23,10 @@ vowelOnset = cell2mat(codingM(:,9));
 vowelOffset = cell2mat(codingM(:,10));
 nTrials = find(~isnan(spOnset),1,'last');
 
-eventRange = c.SkipEvents + (1:(nTrials*4));
-Events = c.EventTimes(eventRange);
+Events = [c.EventTimes c.EventTimes(end)+3]; %add extra event at end 
+eventRange = c.SkipEvents + 1 + (1:(nTrials*4));
+Event0Time = c.EventTimes(c.SkipEvents + 1);
+Events = Events(eventRange);
 Events = Events(:)';
 Events = reshape(Events,4,nTrials)';
 if nTrials < 120 % need to fill in the events to 
@@ -42,7 +44,7 @@ trials.SpOffset = trials.CommandStim + spOffset;
 trials.VowelOnset = trials.CommandStim + vowelOnset;
 trials.VowelOffset = trials.CommandStim + vowelOffset;
 trials.BaseBack = trials.CommandStim;
-trials.BaseFwd = [c.EventTimes(c.SkipEvents); trials.ITIStim(1:119)]; 
+trials.BaseFwd = [Event0Time; trials.ITIStim(1:119)]; 
 trials.nTrials = nTrials;
 
 % The coding cell array gets put into a structure 
