@@ -59,7 +59,13 @@ cs.Notes = codingM(:,8);
 trials.coding = cs;
 
 % do some trial rejection based on background noise
-Audio=data.Audio(:,1);
+if isfield(data, 'Audio')
+    Audio=data.Audio(:,1);
+else 
+    Audio=c.Audio(:,1);
+    data.Audio = Audio;
+    data.Afs = c.Afs; data.Asr = c.Afs;
+end
 if isfield(data, 'Asr')
     Asr = data.Asr; %sampling rate
 else
