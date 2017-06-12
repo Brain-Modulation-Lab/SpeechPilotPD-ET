@@ -1,0 +1,32 @@
+function [artifact]=auto_reject(signal,events,fs)
+
+if size(signal,1)>size(signal,2)
+    signal=signal';
+end
+nch=size(signal,1);
+events=round(events*fs);
+nt=length(events);
+trials=cell(length(events)-1,1);
+
+for t=1:nt-1
+    trials{t}=signal(:,events(t):events(t+1));
+end
+try
+    trials{nt}=signal(:,events(nt):events(nt)+round(mean(diff(events))));
+catch
+        
+        trials{nt}=signal(:,events(nt):events(nt)+round(5*fs));
+        
+end
+dtrials=cellfun(@(x) max(diff(x,1,2),[],2),trials,'Uni',0);
+dtrials=cat(2,dtrials{:});
+
+maxVol=cellfun(@(x) max(abs(x),[],2),trials,'UniformOutput',false);
+maxVol=cat(2,maxVol{:});
+m=mean(maxVol,2);
+s=std(maxVol,0,2);
+for i=1:nch
+    artifact{i}=unique([find(maxVol(i,:)>m(i)+5*s(i)) find(dtrials(i,:)>25)  ]);    
+end
+
+end

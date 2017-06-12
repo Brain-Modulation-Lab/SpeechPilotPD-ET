@@ -3,23 +3,24 @@ subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047'};
 fq=[2:2:200]';
 stat.voxel_pval=0.05; stat.cluster_pval=0.05; stat.surrn=1;
 
-
-load('/home/richardsonlab/Dropbox (Brain Modulation Lab)/Functions/Ahmad/Filters/bandpassfilters.mat')
-load('/home/richardsonlab/Dropbox (Brain Modulation Lab)/Functions/Filters/highoass_2Hz_fs1200.mat')   
+codeDir = '~pwjones/Documents/RichardsonLab/matlab/SpeechPilotPD-ET';
+load([codeDir filesep 'Filters/bandpassfilters.mat']);
+load([codeDir filesep '/Filters/highoass_2Hz_fs1200.mat']);   
 pad=5*1200;
 Cond={'Cue','Onset'};
 freq={'delta','theta','alpha','beta1','beta2','Gamma','Hgamma'};
 %datadir='\\136.142.76.69\Nexus\Electrophysiology_Data\DBS_Intraop_Recordings';
-datadir = '/Volumes/ToughGuy/RichardsonLabData/ET'
-sl=filesep;
+datadir = '/Volumes/ToughGuy/RichardsonLabData/ET';
 ref=1; %1 is common reference avg, 0 is unreferenced
 h=1;
 Results=[];
 
 for s=1:length(subjects)
-    tmp=dir([datadir sl subjects{s} sl 'Preprocessed Data' sl 'DBS*.mat']);
+    %tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
+    tmp = dir([datadir filesep 'DBS*.mat']);
     for fi=1:length(tmp)
-        data=load([datadir sl subjects{s} sl 'Preprocessed Data' sl tmp(fi).name],'macro','trials','nfs');
+        %data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs');
+        data=load([datadir filesep tmp(fi).name],'Ecog','trials','nfs');
         input=filtfilt(hpFilt,data.macro);
         if ref
         input= bsxfun(@minus,input,mean(input,2));
