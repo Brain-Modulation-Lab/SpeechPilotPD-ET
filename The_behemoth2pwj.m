@@ -1,5 +1,5 @@
 %subjects=arrayfun(@(x) ['DBS' num2str(2000+x)],1:15,'Uni',0);
-subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047'};
+subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051'};
 fq=[2:2:200]';
 stat.voxel_pval=0.05; stat.cluster_pval=0.05; stat.surrn=1;
 

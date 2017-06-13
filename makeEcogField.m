@@ -1,4 +1,4 @@
-subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047'};
+subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051'};
 
 codeDir = '~pwjones/Documents/RichardsonLab/matlab/SpeechPilotPD-ET';
 
