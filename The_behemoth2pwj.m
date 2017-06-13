@@ -9,7 +9,7 @@ load([codeDir filesep '/Filters/highoass_2Hz_fs1200.mat']);
 pad=5*1200;
 Cond={'Cue','Onset'};
 freq={'delta','theta','alpha','beta1','beta2','Gamma','Hgamma'};
-%datadir='\\136.142.76.69\Nexus\Electrophysiology_Data\DBS_Intraop_Recordings';
+%datadir='\\136.142.76.9\Nexus\Electrophysiology_Data\DBS_Intraop_Recordings';
 datadir = '/Volumes/ToughGuy/RichardsonLabData/ET';
 ref=1; %1 is common reference avg, 0 is unreferenced
 h=1;
