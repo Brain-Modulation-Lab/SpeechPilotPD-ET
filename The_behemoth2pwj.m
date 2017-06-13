@@ -4,8 +4,10 @@ fq=[2:2:200]';
 stat.voxel_pval=0.05; stat.cluster_pval=0.05; stat.surrn=1;
 
 codeDir = '~pwjones/Documents/RichardsonLab/matlab/SpeechPilotPD-ET';
-load([codeDir filesep 'Filters/bandpassfilters.mat']);
-load([codeDir filesep '/Filters/highoass_2Hz_fs1200.mat']);   
+%codeDir = '\\136.142.16.9\Nexus\Users\pwjones\code\SpeechPilotPD-ET';
+load([codeDir filesep 'Filters' filesep 'bandpassfilters.mat']);
+load([codeDir filesep 'Filters' filesep 'highoass_2Hz_fs1200.mat']);   
+
 pad=5*1200;
 Cond={'Cue','Onset'};
 freq={'delta','theta','alpha','beta1','beta2','Gamma','Hgamma'};
@@ -17,14 +19,12 @@ Results=[];
 %%
 for s=1:length(subjects)
     %tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
-    tmp = dir([datadir filesep 'DBS*.mat']);
+    tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
         %data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs');
         data=load([datadir filesep tmp(fi).name],'Ecog','trials','nfs');
         input=filtfilt(hpFilt,data.Ecog);
-        if ref
-        input= bsxfun(@minus,input,mean(input,2));
-        end
+        if ref;  input= bsxfun(@minus,input,mean(input,2));  end
         ch=size(input,2);
         %reject=[find(isnan(data.trials.SpOnset))' find(isnan(data.trials.SpOffset))' data.trials.ResponseReject.all'];
         reject = [find(isnan(data.trials.SpOnset))' find(isnan(data.trials.SpOffset))'];
@@ -48,7 +48,7 @@ for s=1:length(subjects)
             switch Cond{c}
                 case 'Cue'
                     prestim=round(0.5*data.nfs);
-                    poststim=round(mean(E2-E1)*data.nfs);
+                    poststim=round(min(E2-E1)*data.nfs);
                     E2use=E1;
                 case 'Onset'
                     prestim=round(mean(E2-E1)*data.nfs);
