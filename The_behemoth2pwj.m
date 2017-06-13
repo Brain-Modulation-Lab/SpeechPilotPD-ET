@@ -1,28 +1,28 @@
 %subjects=arrayfun(@(x) ['DBS' num2str(2000+x)],1:15,'Uni',0);
-subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051'};
+subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
 fq=[2:2:200]';
 stat.voxel_pval=0.05; stat.cluster_pval=0.05; stat.surrn=1;
 
-codeDir = '~pwjones/Documents/RichardsonLab/matlab/SpeechPilotPD-ET';
-%codeDir = '\\136.142.16.9\Nexus\Users\pwjones\code\SpeechPilotPD-ET';
+%codeDir = '~pwjones/Documents/RichardsonLab/matlab/SpeechPilotPD-ET';
+codeDir = '\\136.142.16.9\Nexus\Users\pwjones\code\SpeechPilotPD-ET';
 load([codeDir filesep 'Filters' filesep 'bandpassfilters.mat']);
 load([codeDir filesep 'Filters' filesep 'highoass_2Hz_fs1200.mat']);   
 
 pad=5*1200;
 Cond={'Cue','Onset'};
 freq={'delta','theta','alpha','beta1','beta2','Gamma','Hgamma'};
-%datadir='\\136.142.76.9\Nexus\Electrophysiology_Data\DBS_Intraop_Recordings';
-datadir = '/Volumes/ToughGuy/RichardsonLabData/ET';
+datadir='\\136.142.16.9\Nexus\Electrophysiology_Data\DBS_Intraop_Recordings';
+%datadir = '/Volumes/ToughGuy/RichardsonLabData/ET';
 ref=1; %1 is common reference avg, 0 is unreferenced
 h=1;
 Results=[];
 %%
 for s=1:length(subjects)
-    %tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
-    tmp = dir([datadir filesep subjects{s} '*.mat']);
+    tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
+    %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
-        %data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs');
-        data=load([datadir filesep tmp(fi).name],'Ecog','trials','nfs');
+        data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs');
+        %data=load([datadir filesep tmp(fi).name],'Ecog','trials','nfs');
         input=filtfilt(hpFilt,data.Ecog);
         if ref;  input= bsxfun(@minus,input,mean(input,2));  end
         ch=size(input,2);
@@ -57,7 +57,7 @@ for s=1:length(subjects)
             end
         
         
-            %         bdur=round(min(E1-E0)*data.nfs);
+            %bdur=round(min(E1-E0)*data.nfs);
             bdur=round(1*data.nfs);
             
             [~,Results(h).(Cond{c}).tr,Results(h).(Cond{c}).base]=calc_ERSP(input, data.nfs, fq, E2use, prestim/data.nfs, poststim/data.nfs, E1, 1,stat);
