@@ -1,9 +1,9 @@
-subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047'};
+subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
 
 codeDir = '~pwjones/Documents/RichardsonLab/matlab/SpeechPilotPD-ET';
 
-basedir = '/Volumes/ToughGuy/RichardsonLabData/ET';
-%datadir='\\136.142.76.9\Nexus\Electrophysiology_Data\DBS_Intraop_Recordings';
+%basedir = '/Volumes/ToughGuy/RichardsonLabData/ET';
+basedir='\\136.142.16.9\Nexus\Electrophysiology_Data\DBS_Intraop_Recordings';
 %%
 for s=1:length(subjects)
     subjDir = [basedir filesep subjects{s} filesep 'Preprocessed Data'];
@@ -11,7 +11,7 @@ for s=1:length(subjects)
     %tmp = dir([datadir filesep 'DBS*.mat']);
     
     for ii=1:length(tmp)
-        data=load([datadir filesep tmp(ii).name]);
+        data=load([subjDir filesep tmp(ii).name]);
         if ~isfield(data, 'Ecog')
             ecogi = strncmp('Strip', data.labels, 5);
             data.Ecog = data.filt(:,ecogi);
@@ -19,7 +19,7 @@ for s=1:length(subjects)
             data.labels = data.labels(~ecogi);
             data.filt = data.filt(:,~ecogi);
             
-            save([datadir filesep tmp(ii).name], '-struct', 'data');
+            save([subjDir filesep tmp(ii).name], '-struct', 'data');
         end
     end
 end
