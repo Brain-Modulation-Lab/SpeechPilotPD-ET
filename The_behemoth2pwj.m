@@ -8,7 +8,7 @@ codeDir = '\\136.142.16.9\Nexus\Users\pwjones\code\SpeechPilotPD-ET';
 load([codeDir filesep 'Filters' filesep 'bandpassfilters.mat']);
 load([codeDir filesep 'Filters' filesep 'highoass_2Hz_fs1200.mat']);   
 
-pad=5*1200;
+pad=4*1200; % Needs to be > longest filter length, 2713 samples
 Cond={'Cue','Onset'};
 freq={'delta','theta','alpha','beta1','beta2','Gamma','Hgamma'};
 datadir='\\136.142.16.9\Nexus\Electrophysiology_Data\DBS_Intraop_Recordings';

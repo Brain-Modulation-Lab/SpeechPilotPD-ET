@@ -71,7 +71,7 @@ for i=1:length(Results)
                 pcor=fdr(downsample(p,6),0.05);
                 %                                 pcor=0.05;
                 if strcmp(Cond{c},'Cue') && strcmp(freq{f},'Gamma')
-                    subplot(2,3,c2)
+                    subplot(1,3,c2)
                     plot(time,IPC)
                     hold on
                     %                 line([min(time) max(time)],repmat(R(i).(Cond{c}).(freq{f}).pcrit(c2),2,1),'Color','r')
