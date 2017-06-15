@@ -10,7 +10,11 @@ for ii = 1:ns
     nch = size(meanPSD,3);
     figure;
     for jj=1:nch %number of electrodes
-        ah = subplot(nch, 1, nch-(jj-1));
+        if nch == 6
+            ah = subplot(nch, 1, nch-(jj-1));
+        else
+            ah = subplot(nch/2, 2, nch-(jj-1));
+        end
         plotSpect(trTime, fq, meanPSD(:,:,jj), ah);
         set(ah, 'YScale', 'log');
         xlabel(ah, 'Time relative to Speech Onset (sec)');

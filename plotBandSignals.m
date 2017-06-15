@@ -20,7 +20,11 @@ for ii = 1:ns
         end
         
         for jj=1:nch %number of electrodes
-            ah = subplot(nch, 1, nch-(jj-1));
+            if nch == 6
+                ah = subplot(nch, 1, nch-(jj-1));
+            else
+                ah = subplot(nch/2, 2, nch-(jj-1));
+            end
             signal_ch = signal(:, jj:nch:s2);
             hold on;
             plot(trTime, mean(signal_ch,2),'Color', colors{ff}, 'LineWidth', 2);
