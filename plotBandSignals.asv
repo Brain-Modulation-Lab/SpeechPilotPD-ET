@@ -22,26 +22,24 @@ for ii = 14:ns
         
         for jj=1:nch %number of electrodes
             if nch == 6
-                ah(jj) = subplot(nch, 1, nch-(jj-1));
+                ah = subplot(nch, 1, nch-(jj-1));
             elseif nch > 12
                 ncol = 2;
                 nrow = nch/ncol;
                 c = floor(jj/(nch/ncol))+1;
-                r = mod(jj-1,nrow)+1;
-                if ff==1
-                    ah(jj) = axes('Position', [.05*c+(.8/ncol*(c-1)) .02*r+((r-1)*.8/nrow) .9/ncol .9/nrow]);
-                end
+                r = floor(jj/ncol)+1;
+                ah = axes('Position', [.05*c+(.8/ncol*(c-1)) .02*r+((r-1)*
             else
-                ah(jj) = subplot(nch/2, 2, nch-(jj-1));
+                ah = subplot(nch/2, 2, nch-(jj-1));
             end
             signal_ch = signal(:, jj:nch:s2);
             hold on;
-            plot(ah(jj), trTime, mean(signal_ch,2),'Color', colors{ff}, 'LineWidth', 2);
+            plot(trTime, mean(signal_ch,2),'Color', colors{ff}, 'LineWidth', 2);
             ylim([-2 5]);
             if ff==length(ff)
                 if jj==1
-                    xlabel(ah(jj), 'Time relative to Speech Onset (sec)');
-                    ylabel(ah(jj), 'Z Score');
+                    xlabel(ah, 'Time relative to Speech Onset (sec)');
+                    ylabel(ah, 'Z Score');
                 end
                 plot(trTime, -2*ones(length(trTime),1)','k--');
                 plot(trTime, 2*ones(length(trTime),1)','k--');

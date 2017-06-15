@@ -1,6 +1,7 @@
 % Plot the spectrograms for a session
 
 ns = length(Results);
+ns = 10;
 for ii = 1:ns
     trTime = linspace(-Results(ii).Onset.parameters{2}, Results(ii).Onset.parameters{4}, size(Results(ii).Onset.tr,2));
     fq=[2:2:200]';

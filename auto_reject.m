@@ -13,10 +13,8 @@ for t=1:nt-1
 end
 try
     trials{nt}=signal(:,events(nt):events(nt)+round(mean(diff(events))));
-catch
-        
-        trials{nt}=signal(:,events(nt):events(nt)+round(5*fs));
-        
+catch    
+    trials{nt}=signal(:,events(nt):events(nt)+round(5*fs));       
 end
 dtrials=cellfun(@(x) max(diff(x,1,2),[],2),trials,'Uni',0);
 dtrials=cat(2,dtrials{:});
