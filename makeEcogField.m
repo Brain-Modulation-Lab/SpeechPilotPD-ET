@@ -1,3 +1,7 @@
+% This is to make an field named 'Ecog' in the preprocessed data folder for
+% those subjects who don't currently have them.
+% PWJ 06/12/2017
+
 subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
 
 codeDir = '~pwjones/Documents/RichardsonLab/matlab/SpeechPilotPD-ET';

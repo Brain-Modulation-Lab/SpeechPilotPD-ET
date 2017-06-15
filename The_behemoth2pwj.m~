@@ -1,20 +1,15 @@
-% Main processing script for LFP data 
-% Adapted from Ahmad's version starting 6/2017
-
-
+%subjects=arrayfun(@(x) ['DBS' num2str(2000+x)],1:15,'Uni',0);
 subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
-fq=[2:2:200]'; %freqencies
+fq=[2:2:200]';
 stat.voxel_pval=0.05; stat.cluster_pval=0.05; stat.surrn=1;
 
 if ispc
     codeDir = '\\136.142.16.9\Nexus\Users\pwjones\code\SpeechPilotPD-ET';
 else
-    codeDir = '~pwjones/Documents/RichardsonLab/matlab/SpeechPilotPD-ET';
-end
+codeDir = '~pwjones/Documents/RichardsonLab/matlab/SpeechPilotPD-ET';
 
 load([codeDir filesep 'Filters' filesep 'bandpassfilters.mat']);
-load([codeDir filesep 'Filters' filesep 'highoass_2Hz_fs1200.mat']);
-load([codeDir filesep 'Filters' filesep 'BroadbandGammaFilt.mat']);
+load([codeDir filesep 'Filters' filesep 'highoass_2Hz_fs1200.mat']);   
 % Broadband Gamma Generation Code
 % BroadbandGammaFilt = designfilt('bandpassfir', 'StopbandFrequency1', 45, 'PassbandFrequency1', 50, 'PassbandFrequency2', 200, 'StopbandFrequency2', 205, 'StopbandAttenuation1', 45, 'PassbandRipple', .1, 'StopbandAttenuation2', 45, 'SampleRate', 1200);
 
@@ -22,12 +17,8 @@ pad=4*1200; % Needs to be > longest filter length, 2713 samples
 Cond={'Cue','Onset'};
 freq={'delta','theta','alpha','beta1','beta2','BroadbandGamma'};
 
-if ispc
-    datadir='\\136.142.16.9\Nexus\Electrophysiology_Data\DBS_Intraop_Recordings';
-else
-    datadir = '/Volumes/ToughGuy/RichardsonLabData/ET'; %sample data
-end
-
+datadir='\\136.142.16.9\Nexus\Electrophysiology_Data\DBS_Intraop_Recordings';
+%datadir = '/Volumes/ToughGuy/RichardsonLabData/ET';
 ref=1; %1 is common reference avg, 0 is unreferenced
 h=1;
 Results=[];
