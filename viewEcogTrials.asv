@@ -14,7 +14,7 @@ for ii=1:nch
     chan = chan-mean(chan);
     amp = 3*nanstd(chan);
     
-    trialEnd = round((nanmean(trials.SpOffset - trials.CommandStim) + .5)*nfs);
+    trialEnd = round((mean(trials.SpOffset - trials.CommandStim) + .5)*nfs);
     trialBegin = nfs*-1;
     trialTime = (trialBegin:trialEnd)/nfs;
     commands = round(nfs*trials.CommandStim);
@@ -29,7 +29,7 @@ for ii=1:nch
     xlabel('Time from Word Presentation (s)');
     ylabel('2Hz HP Filtered EEG');
     title(sprintf('LFP in trials %s - %s', subjects{s}, labels{ii}));
-    saveas(gcf, sprintf('%s%sEEGtrials%s%s-Session%d-%s',figDir,filesep,filesep,subjects{s},Session,labels{ii}),'bmp');
+    saveas(gcf, figDir filesep 'EEGtrials' filesep subjects{s} '-' labels{ii}], 'bmp');
 end
     
     

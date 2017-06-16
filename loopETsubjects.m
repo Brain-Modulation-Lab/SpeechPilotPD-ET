@@ -9,21 +9,13 @@ else
     datadir = '/Volumes/ToughGuy/RichardsonLabData/ET'; %sample data
     figDir = '~pwjones/Documents/RichardsonLab/SRP/figureDump';
 end
-if ispc
-    
-else
-    
-end
 
-ref=1; %1 is common reference avg, 0 is unreferenced
-h=1;
-Results=[];
 %%
 for s=1:length(subjects)
     tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
-        load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs','labels');
+        load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs','labels', 'Session');
     
         viewEcogTrials;
     end
