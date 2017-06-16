@@ -11,15 +11,12 @@ else
 end
 
 %%
-for s=5:length(subjects)
+for s=12:length(subjects)
     tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
-        EcogLabels = [];
-        load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs','labels', 'EcogLabels', 'Session');
-        if ~isempty(EcogLabels)
-            labels = EcogLabels;
-        end
+        load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs','labels', 'Session');
+    
         viewEcogTrials;
     end
 end

@@ -1,9 +1,12 @@
 % Main processing script for LFP data 
 % Adapted from Ahmad's version starting 6/2017
+% Output: Results structure with the following fields
+% A field for each condition (currently 'Cue and 'Onset')
+% A subfield for 
 
 
 subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
-fq=[2:2:200]'; %freqencies
+fq=[2:2:200]'; %frequencies
 stat.voxel_pval=0.05; stat.cluster_pval=0.05; stat.surrn=1;
 
 if ispc
@@ -66,7 +69,7 @@ for s=1:length(subjects)
                     poststim=round(min(E2-E1)*data.nfs);
                     E2use=E1;
                 case 'Onset'
-                    prestim=round(mean(E2-E1)*data.nfs);
+                    prestim=round(0.5+mean(E2-E1)*data.nfs);
                     poststim=round(0.5+mean(E3-E2)*data.nfs);
                     E2use=E2;
             end
@@ -89,9 +92,9 @@ for s=1:length(subjects)
                 eval(['theseeve=' freq{f} 'Filt;']);
                 % bandpass filter into appropriate band and remove the padding
                 cmp_tr=hilbert(filtfilt(theseeve,trial));
-                cmp_tr=cmp_tr(pad+1:end-pad,:);
+                cmp_tr=cmp_tr(pad+1:end-pad,:); % The trial portion to analyze
                 cmp_bs=hilbert(filtfilt(theseeve,base));
-                cmp_bs=cmp_bs(pad+1:end-pad,:);
+                cmp_bs=cmp_bs(pad+1:end-pad,:); % The trial baseline 
                 % z-score power to baseline
                 z_amp=bsxfun(@rdivide, bsxfun(@minus, abs(cmp_tr).^2,mean(abs(cmp_bs).^2)),std(abs(cmp_bs).^2));
                 Results(h).(Cond{c}).(freq{f}).z_Amp=z_amp;

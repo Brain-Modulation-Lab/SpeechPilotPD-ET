@@ -30,7 +30,7 @@ for ii=1:nch
     end
     xlabel('Time from Word Presentation (s)');
     ylabel('2Hz HP Filtered EEG');
-    set(gca, 'ydir', 'reverse');
+    set(gca, 'ydir', 'reverse', 'TickDir','out');
     title(sprintf('LFP in trials %s - %s', subjects{s}, labels{ii}));
     saveas(gcf, sprintf('%s%sEEGtrials%s%s-Session%d-%s',figDir,filesep,filesep,subjects{s},Session,labels{ii}),'bmp');
 end
