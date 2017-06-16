@@ -12,22 +12,25 @@ for ii=1:nch
     figure;
     chan = signal(:,ii);
     chan = chan-mean(chan);
-    amp = 3*nanstd(chan);
+    stdChan = nanstd(chan);
+    normVal = 3 * stdChan;
     
     trialEnd = round((nanmean(trials.SpOffset - trials.CommandStim) + .5)*nfs);
     trialBegin = nfs*-1;
     trialTime = (trialBegin:trialEnd)/nfs;
     commands = round(nfs*trials.CommandStim);
+    text(-.5, -5, sprintf('Std: %f', stdChan), 'FontSize', 16); 
     for jj=1:60
         trialInds = commands(jj)+(trialBegin:trialEnd);
         if any(trialInds<1)
             fprintf('trialInds is neg on trial %d\n', jj);
         end
         hold on;
-        plot(trialTime, chan(trialInds)-amp*(jj-1),'k');
+        plot(trialTime, chan(trialInds)./normVal+(jj-1),'k');
     end
     xlabel('Time from Word Presentation (s)');
     ylabel('2Hz HP Filtered EEG');
+    set(gca, 'ydir', 'reverse');
     title(sprintf('LFP in trials %s - %s', subjects{s}, labels{ii}));
     saveas(gcf, sprintf('%s%sEEGtrials%s%s-Session%d-%s',figDir,filesep,filesep,subjects{s},Session,labels{ii}),'bmp');
 end
