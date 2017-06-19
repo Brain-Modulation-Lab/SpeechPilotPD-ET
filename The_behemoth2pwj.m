@@ -4,8 +4,9 @@
 % A field for each condition (currently 'Cue and 'Onset')
 % A subfield for 
 
-
+% ET subjects
 subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
+
 fq=[2:2:200]'; %frequencies
 stat.voxel_pval=0.05; stat.cluster_pval=0.05; stat.surrn=1;
 
@@ -18,7 +19,8 @@ end
 load([codeDir filesep 'Filters' filesep 'bandpassfilters.mat']);
 load([codeDir filesep 'Filters' filesep 'highoass_2Hz_fs1200.mat']);
 load([codeDir filesep 'Filters' filesep 'BroadbandGammaFilt.mat']);
-% Broadband Gamma Generation Code
+
+% Broadband Gamma Filter Generation Code - saved but this is the function call
 % BroadbandGammaFilt = designfilt('bandpassfir', 'StopbandFrequency1', 45, 'PassbandFrequency1', 50, 'PassbandFrequency2', 200, 'StopbandFrequency2', 205, 'StopbandAttenuation1', 45, 'PassbandRipple', .1, 'StopbandAttenuation2', 45, 'SampleRate', 1200);
 
 pad=4*1200; % Needs to be > longest filter length, 2713 samples
@@ -33,9 +35,9 @@ end
 
 ref=1; %1 is common reference avg, 0 is unreferenced
 h=1;
-Results=[];
+%Results=[];
 %%
-for s=1:length(subjects)
+for s=4:length(subjects)
     tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
