@@ -1,12 +1,13 @@
+setDirectories;
 
 freq={'delta','theta','alpha','beta1','beta2','Gamma','Hgamma'};
-freq={'Hgamma', 'Gamma', 'beta1', 'beta2'};
+freq={'BroadbandGamma', 'beta1', 'beta2'};
 colors = {'k', 'b', 'r', [1 .2 .2]}
 ns = length(Results); 
-ns=14;
 cond = 'Onset';
 
-for ii = 14:ns
+for ii = 1:ns
+    ph = []; h=1;
     for ff = 1:length(freq)
         trTime = linspace(-Results(ii).Onset.parameters{2}, Results(ii).Onset.parameters{4}, size(Results(ii).Onset.tr,2));
         signal = Results(ii).(cond).(freq{ff}).z_Amp;
@@ -36,8 +37,9 @@ for ii = 14:ns
             end
             signal_ch = signal(:, jj:nch:s2);
             hold on;
-            plot(ah(jj), trTime, mean(signal_ch,2),'Color', colors{ff}, 'LineWidth', 2);
+            ph(h) = plot(ah(jj), trTime, mean(signal_ch,2),'Color', colors{ff}, 'LineWidth', 2);
             ylim([-2 5]);
+            
             if ff==length(ff)
                 if jj==1
                     xlabel(ah(jj), 'Time relative to Speech Onset (sec)');
@@ -45,12 +47,16 @@ for ii = 14:ns
                 end
                 plot(trTime, -2*ones(length(trTime),1)','k--');
                 plot(trTime, 2*ones(length(trTime),1)','k--');
+                    
             end
             %title([freq '-' cond ' aligned']);
-            if jj==nch
-                legend(freq);
+            if jj==nch && ff == length(freq)
+                legend(ph(1:nch:end), freq);
             end
+            h = h+1;
         end
     end
     title([Results(ii).Session ', ' cond ' aligned']);
+    session = strtok(Results(ii).Session,'.');
+    saveas(gcf, sprintf('%s%sBandpassSignals-%s',figDir,filesep,session),'bmp');
 end

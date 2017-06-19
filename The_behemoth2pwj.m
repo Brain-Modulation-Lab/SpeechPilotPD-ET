@@ -23,9 +23,10 @@ load([codeDir filesep 'Filters' filesep 'BroadbandGammaFilt.mat']);
 % Broadband Gamma Filter Generation Code - saved but this is the function call
 % BroadbandGammaFilt = designfilt('bandpassfir', 'StopbandFrequency1', 45, 'PassbandFrequency1', 50, 'PassbandFrequency2', 200, 'StopbandFrequency2', 205, 'StopbandAttenuation1', 45, 'PassbandRipple', .1, 'StopbandAttenuation2', 45, 'SampleRate', 1200);
 
-pad=4*1200; % Needs to be > longest filter length, 2713 samples
+pad=4000; % Needs to be > longest filter length, 2713 samples
 Cond={'Cue','Onset'};
-freq={'delta','theta','alpha','beta1','beta2','BroadbandGamma'};
+%freq={'delta','theta','alpha','beta1','beta2','BroadbandGamma'};
+freq={'beta1','beta2','BroadbandGamma'};
 
 if ispc
     datadir='\\136.142.16.9\Nexus\Electrophysiology_Data\DBS_Intraop_Recordings';
@@ -37,11 +38,16 @@ ref=1; %1 is common reference avg, 0 is unreferenced
 h=1;
 %Results=[];
 %%
+<<<<<<< .merge_file_S9MMd3
 for s=4:length(subjects)
+=======
+for s=8:length(subjects)
+>>>>>>> .merge_file_RHJhEp
     tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
         data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs');
+        disp(['Loaded data from' tmp(fi).name]);
         %data=load([datadir filesep tmp(fi).name],'Ecog','trials','nfs');
         input=filtfilt(hpFilt,data.Ecog);
         if ref;  input= bsxfun(@minus,input,mean(input,2));  end
@@ -72,7 +78,7 @@ for s=4:length(subjects)
                     E2use=E1;
                 case 'Onset'
                     prestim=round(0.5+mean(E2-E1)*data.nfs);
-                    poststim=round(0.5+mean(E3-E2)*data.nfs);
+                    poststim=round(1+mean(E3-E2)*data.nfs);
                     E2use=E2;
             end
         
@@ -80,6 +86,7 @@ for s=4:length(subjects)
             %bdur=round(min(E1-E0)*data.nfs);
             bdur=round(1*data.nfs);
             
+            disp('Calculating wavelet spectra');
             [~,Results(h).(Cond{c}).tr,Results(h).(Cond{c}).base]=calc_ERSP(input, data.nfs, fq, E2use, prestim/data.nfs, poststim/data.nfs, E1, 1,stat);
             
             Results(h).(Cond{c}).parameters={'prestim',prestim/data.nfs,'poststim',...
@@ -91,6 +98,7 @@ for s=4:length(subjects)
             base=cat(2,base{:});
             
             for f=1:length(freq)
+                disp(['Filtering at ' freq{f}]);
                 eval(['theseeve=' freq{f} 'Filt;']);
                 % bandpass filter into appropriate band and remove the padding
                 cmp_tr=hilbert(filtfilt(theseeve,trial));
@@ -125,7 +133,14 @@ for s=4:length(subjects)
         clearvars R cmp_tr cmp_bs input data reject E0 E1
         h=h+1;
         
-        
+        mem = memory;
+        if mem.MemUsedMATLAB > .75e11
+            break;
+        end
+    end
+    
+    if mem.MemUsedMATLAB > .75e11
+        break;
     end
 end
-save('Band_modulation_referenced_part2.mat','Results','-v7.3')
+save('HighBand_modulation_referenced_ET2','Results','-v7.3');
