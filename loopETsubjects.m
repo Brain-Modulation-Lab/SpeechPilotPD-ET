@@ -11,7 +11,7 @@ else
 end
 
 %%
-for s=5:length(subjects)
+for s=1:length(subjects)
     tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)

@@ -39,7 +39,7 @@ h=1;
 %Results=[];
 %%
 
-for s=1:length(subjects)
+for s=9:length(subjects)
     tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
@@ -131,13 +131,13 @@ for s=1:length(subjects)
         h=h+1;
         
         mem = memory;
-        if mem.MemUsedMATLAB > .75e11
+        if mem.MemUsedMATLAB > .5e11
             break;
         end
     end
     
-    if mem.MemUsedMATLAB > .75e11
+    if mem.MemUsedMATLAB > .5e11
         break;
     end
 end
-save('HighBand_modulation_referenced_ET2','Results','-v7.3');
+save('HighBand_modulation_referenced_ET3','Results','-v7.3');
