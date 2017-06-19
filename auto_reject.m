@@ -16,14 +16,15 @@ try
 catch    
     trials{nt}=signal(:,events(nt):events(nt)+round(5*fs));       
 end
-dtrials=cellfun(@(x) max(diff(x,1,2),[],2),trials,'Uni',0);
-dtrials=cat(2,dtrials{:});
+dtrials=cellfun(@(x) max(diff(x,1,2),[],2),trials,'Uni',0); %maximum single sample difference in each trial
+dtrials=cat(2,dtrials{:}); %ch x trials, max single sample difference
 
-maxVol=cellfun(@(x) max(abs(x),[],2),trials,'UniformOutput',false);
-maxVol=cat(2,maxVol{:});
-m=mean(maxVol,2);
-s=std(maxVol,0,2);
+maxVol=cellfun(@(x) max(abs(x),[],2),trials,'UniformOutput',false); 
+maxVol=cat(2,maxVol{:}); % maximum amp sample, ch x trial
+m=mean(maxVol,2); % mean max
+s=std(maxVol,0,2); % std max
 for i=1:nch
+    % finding the 
     artifact{i}=unique([find(maxVol(i,:)>m(i)+5*s(i)) find(dtrials(i,:)>25)  ]);    
 end
 
