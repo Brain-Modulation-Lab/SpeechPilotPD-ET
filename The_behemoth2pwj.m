@@ -38,11 +38,8 @@ ref=1; %1 is common reference avg, 0 is unreferenced
 h=1;
 %Results=[];
 %%
-<<<<<<< .merge_file_S9MMd3
-for s=4:length(subjects)
-=======
-for s=8:length(subjects)
->>>>>>> .merge_file_RHJhEp
+
+for s=1:length(subjects)
     tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
