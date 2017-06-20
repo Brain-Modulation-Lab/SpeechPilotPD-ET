@@ -16,7 +16,7 @@ for ii = 1:ns
         nch = size(signal,2)/nTrials;
         s2 = size(signal,2);
         if ff==1
-            fh(ii) = figure;
+            fh(ii) = figure('Units', 'pixels', 'Position', [100 25 600 850]);
         else
             figure(fh(ii));
         end
@@ -51,12 +51,12 @@ for ii = 1:ns
             end
             %title([freq '-' cond ' aligned']);
             if jj==nch && ff == length(freq)
-                legend(ph(1:nch:end), freq);
+                legend(ph(1:nch:end), freq,'Location','northwest','Orientation','horizontal');
             end
             h = h+1;
         end
     end
     title([Results(ii).Session ', ' cond ' aligned']);
     session = strtok(Results(ii).Session,'.');
-    saveas(gcf, sprintf('%s%sBandpassSignals-%s',figDir,filesep,session),'bmp');
+    saveas(gcf, sprintf('%s%sBandpassSignals%s%s',figDir,filesep,filesep,session),'bmp');
 end

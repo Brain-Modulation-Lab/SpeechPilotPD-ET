@@ -1,9 +1,9 @@
+setDirectories;
 
 freq={'delta','theta','alpha','beta1','beta2','Gamma','Hgamma'};
 freq={'BroadbandGamma', 'beta1', 'beta2'};
 colors = {'k', 'b', 'r', [1 .2 .2]}
 ns = length(Results); 
-ns=14;
 cond = 'Onset';
 
 for ii = 1:ns
@@ -16,7 +16,7 @@ for ii = 1:ns
         nch = size(signal,2)/nTrials;
         s2 = size(signal,2);
         if ff==1
-            fh(ii) = figure;
+            fh(ii) = figure('Units', 'normalized', 'Position', [.1 .2 .4 .8]);
         else
             figure(fh(ii));
         end
@@ -37,7 +37,7 @@ for ii = 1:ns
             end
             signal_ch = signal(:, jj:nch:s2);
             hold on;
-            ph(h) = (plot(ah(jj), trTime, mean(signal_ch,2),'Color', colors{ff}, 'LineWidth', 2);
+            ph(h) = plot(ah(jj), trTime, mean(signal_ch,2),'Color', colors{ff}, 'LineWidth', 2);
             ylim([-2 5]);
             
             if ff==length(ff)
@@ -47,15 +47,16 @@ for ii = 1:ns
                 end
                 plot(trTime, -2*ones(length(trTime),1)','k--');
                 plot(trTime, 2*ones(length(trTime),1)','k--');
-                if jj==1
                     
             end
             %title([freq '-' cond ' aligned']);
-            if jj==nch && ff = length(freq)
-                legend(ph(1:nch:end), freq);
+            if jj==nch && ff == length(freq)
+                legend(ph(1:nch:end), freq,'Location','northwest','Orientation','horizontal');
             end
             h = h+1;
         end
     end
     title([Results(ii).Session ', ' cond ' aligned']);
+    session = strtok(Results(ii).Session,'.');
+    %saveas(gcf, sprintf('%s%sBandpassSignals%s%s',figDir,filesep,filesep,session),'bmp');
 end
