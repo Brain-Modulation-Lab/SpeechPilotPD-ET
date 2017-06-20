@@ -36,7 +36,7 @@ end
 
 ref=1; %1 is common reference avg, 0 is unreferenced
 h=1;
-%Results=[];
+Results=[];
 %%
 
 for s=9:length(subjects)
@@ -131,12 +131,12 @@ for s=9:length(subjects)
         h=h+1;
         
         mem = memory;
-        if mem.MemUsedMATLAB > .5e11
+        if mem.MemUsedMATLAB > .8e11
             break;
         end
     end
     
-    if mem.MemUsedMATLAB > .5e11
+    if mem.MemUsedMATLAB > .8e11
         break;
     end
 end

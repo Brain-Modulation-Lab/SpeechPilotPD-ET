@@ -20,22 +20,22 @@ for ii = 1:ns
     figure('Units', 'pixels', 'Position', [100 25 600 850]);
     for jj=1:nch %number of electrodes
         if nch == 6
-            ah(jj) = subplot(nch, 1, nch-(jj-1));
+            ah = subplot(nch, 1, nch-(jj-1));
         elseif nch > 12
             ncol = 2;
             nrow = nch/ncol;
             c = floor(jj/(nch/ncol))+1;
             r = mod(jj-1,nrow)+1;
-            ah(jj) = axes('Position', [.05*c+(.8/ncol*(c-1)) .02*r+((r-1)*.8/nrow) .9/ncol .9/nrow]);
+            if ff==1
+                ah(jj) = axes('Position', [.05*c+(.8/ncol*(c-1)) .02*r+((r-1)*.8/nrow) .9/ncol .9/nrow]);
+            end
         else
             ah(jj) = subplot(nch/2, 2, nch-(jj-1));
         end
-        plotSpect(trTime, fq, zsc(:,:,jj), ah(jj));
+        plotSpect(trTime, fq, zsc(:,:,jj), ah);
         %set(ah, 'YScale', 'log');
-        if jj==1
-            xlabel(ah(jj), 'Time relative to Speech Onset (sec)');
-            ylabel(ah(jj), 'Frequency (Hz)');
-        end
+        xlabel(ah(jj), 'Time relative to Speech Onset (sec)');
+        ylabel(ah(jj), 'Frequency (Hz)');
         caxis([-7 7]); colorbar;
     end
     title(Results(ii).Session);
