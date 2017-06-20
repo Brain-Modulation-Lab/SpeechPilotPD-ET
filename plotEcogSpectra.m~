@@ -10,7 +10,7 @@ for ii = 1:ns
     meanPSD = squeeze(nanmean(psd,3));
     nch = size(meanPSD,3);
     zsc = zeros(size(tr,1), size(tr,2), ch);
-    for i=1:nch
+    for i=1:ch
         x=mean(tr(:,:,:,i),3); %trial avgs
         y=mean(base(:,:,:,i),3);
         zsc(:,:,i)=bsxfun(@rdivide,bsxfun(@minus,x,mean(y,2)),std(y,0,2));
@@ -27,7 +27,6 @@ for ii = 1:ns
         %set(ah, 'YScale', 'log');
         xlabel(ah, 'Time relative to Speech Onset (sec)');
         ylabel(ah, 'Frequency (Hz)');
-        caxis([-7 7]); colorbar;
     end
     title(Results(ii).Session);
 end

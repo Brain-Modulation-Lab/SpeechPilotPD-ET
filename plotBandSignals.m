@@ -1,8 +1,8 @@
 setDirectories;
 
-freq={'delta','theta','alpha','beta1','beta2','Gamma','Hgamma'};
-freq={'BroadbandGamma', 'beta1', 'beta2'};
-colors = {'k', 'b', 'r', [1 .2 .2]}
+freq={'Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
+%freq={'BroadbandGamma', 'beta1', 'beta2'};
+colors = {'k', 'b', 'r', [1 .2 .2], 'y','g','c'}
 ns = length(Results); 
 cond = 'Onset';
 
@@ -58,5 +58,5 @@ for ii = 1:ns
     end
     title([Results(ii).Session ', ' cond ' aligned']);
     session = strtok(Results(ii).Session,'.');
-    saveas(gcf, sprintf('%s%sBandpassSignals%s%s',figDir,filesep,filesep,session),'bmp');
+    %saveas(gcf, sprintf('%s%sBandpassSignals%s%s',figDir,filesep,filesep,session),'bmp');
 end
