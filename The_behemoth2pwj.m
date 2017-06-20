@@ -36,16 +36,16 @@ end
 
 ref=1; %1 is common reference avg, 0 is unreferenced
 h=1;
-%Results=[];
+Results=[];
 %%
 
 for s=1:length(subjects)
-    tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
-    %tmp = dir([datadir filesep subjects{s} '*.mat']);
+    %tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
+    tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
-        data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs');
+        %data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs');
         disp(['Loaded data from' tmp(fi).name]);
-        %data=load([datadir filesep tmp(fi).name],'Ecog','trials','nfs');
+        data=load([datadir filesep tmp(fi).name],'Ecog','trials','nfs');
         input=filtfilt(hpFilt,data.Ecog);
         if ref;  input= bsxfun(@minus,input,mean(input,2));  end
         ch=size(input,2);
@@ -130,14 +130,19 @@ for s=1:length(subjects)
         clearvars R cmp_tr cmp_bs input data reject E0 E1
         h=h+1;
         
-        mem = memory;
-        if mem.MemUsedMATLAB > .75e11
-            break;
+        % Checking to exit gracefully if overrun memory availability
+        if ispc
+            mem = memory;
+            if mem.MemUsedMATLAB > .75e11
+                break;
+            end
         end
     end
     
-    if mem.MemUsedMATLAB > .75e11
-        break;
+    if ispc
+        if mem.MemUsedMATLAB > .75e11
+            break;
+        end
     end
 end
 save('HighBand_modulation_referenced_ET2','Results','-v7.3');

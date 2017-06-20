@@ -39,22 +39,23 @@ clearvars signal
 zsc=zeros(dx,dy,ch);
 
 for i=1:ch
-    x=mean(tr(:,:,:,i),3);
+    x=mean(tr(:,:,:,i),3); %trial avgs
     y=mean(base(:,:,:,i),3);
     zsc(:,:,i)=bsxfun(@rdivide,bsxfun(@minus,x,mean(y,2)),std(y,0,2));
 end
 end
+
 function [sr]=whysorandom(complex,dx,dy,dz,n,stat)
-sr=zeros(dx,dy,stat.surrn);
-for s=1:stat.surrn
-    sind=[];
-    sevents=randperm(n-1-dy,dz);
-    sevents(sevents<=dy)=sevents(sevents<=dy)+dy;
-    for t=1:length(sevents)
-        sind=cat(2,sind,round(sevents(t)-((dy-1)/2)):round(sevents(t)+((dy-1)/2)));
+    sr=zeros(dx,dy,stat.surrn);
+    for s=1:stat.surrn
+        sind=[];
+        sevents=randperm(n-1-dy,dz);
+        sevents(sevents<=dy)=sevents(sevents<=dy)+dy;
+        for t=1:length(sevents)
+            sind=cat(2,sind,round(sevents(t)-((dy-1)/2)):round(sevents(t)+((dy-1)/2)));
+        end
+
+        sr(:,:,s)=single(mean(reshape(complex(sind,:)',dx,dy,dz),3));
+
     end
-    
-    sr(:,:,s)=single(mean(reshape(complex(sind,:)',dx,dy,dz),3));
-    
-end
 end
