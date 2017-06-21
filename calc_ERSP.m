@@ -39,8 +39,8 @@ clearvars signal
 zsc=zeros(dx,dy,ch);
 
 for i=1:ch
-    x=mean(tr(:,:,:,i),3); %trial avgs
-    y=mean(base(:,:,:,i),3);
+    x=mean(abs(tr(:,:,:,i)),3); %trial avgs
+    y=mean(abs(base(:,:,:,i)),3);
     zsc(:,:,i)=bsxfun(@rdivide,bsxfun(@minus,x,mean(y,2)),std(y,0,2));
 end
 end
