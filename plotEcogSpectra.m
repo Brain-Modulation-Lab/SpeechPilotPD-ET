@@ -7,16 +7,16 @@ for ii = 1:ns
     fq=[2:2:200]';
     tr = abs(Results(ii).Onset.tr);
     base = abs(Results(ii).Onset.base);
-    psd = abs(Results(ii).Onset.tr).^2;
+    psd = abs(Results(ii).Onset.tr);
     meanPSD = squeeze(nanmean(psd,3));
     nch = size(meanPSD,3);
-    zsc = zeros(size(tr,1), size(tr,2), ch);
+    zsc = zeros(size(tr,1), size(tr,2), nch);
     for i=1:nch
         x=mean(tr(:,:,:,i),3); %trial avgs
         y=mean(base(:,:,:,i),3);
         zsc(:,:,i)=bsxfun(@rdivide,bsxfun(@minus,x,mean(y,2)),std(y,0,2));
     end
-    
+    %zsc = abs(zsc);
     figure('Units', 'pixels', 'Position', [100 25 600 850]);
     for jj=1:nch %number of electrodes
         if nch == 6
@@ -36,9 +36,9 @@ for ii = 1:ns
             xlabel(ah(jj), 'Time relative to Speech Onset (sec)');
             ylabel(ah(jj), 'Frequency (Hz)');
         end
-        caxis([-7 7]); colorbar;
+        caxis([-2 3]); colorbar;
     end
     title(Results(ii).Session);
     session = strtok(Results(ii).Session,'.');
-    saveas(gcf, sprintf('%s%sSpectrograms%s%s',figDir,filesep,filesep,session),'bmp');
+    %saveas(gcf, sprintf('%s%sSpectrograms2%s%s',figDir,filesep,filesep,session),'bmp');
 end

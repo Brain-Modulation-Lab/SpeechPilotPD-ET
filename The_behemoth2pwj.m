@@ -6,7 +6,7 @@
 
 % ET subjects
 subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
-
+pbSpect = 1;
 fq=[2:2:200]'; %frequencies
 stat.voxel_pval=0.05; stat.cluster_pval=0.05; stat.surrn=1;
 
@@ -39,7 +39,7 @@ h=1;
 Results=[];
 %%
 
-for s=9:length(subjects)
+for s=1:length(subjects)
     tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
@@ -84,8 +84,11 @@ for s=9:length(subjects)
             bdur=round(1*data.nfs);
             
             disp('Calculating wavelet spectra');
-            [~,Results(h).(Cond{c}).tr,Results(h).(Cond{c}).base]=calc_ERSP(input, data.nfs, fq, E2use, prestim/data.nfs, poststim/data.nfs, E1, 1,stat);
-            
+            [Results(h).(Cond{c}).zsc, tr,Results(h).(Cond{c}).base]=calc_ERSP(input, data.nfs, fq, E2use, prestim/data.nfs, poststim/data.nfs, E1, 1,stat);
+            if pbSpect
+                trTime = -prestim:poststim;
+                plotSpect(trTime(:), fq, Results(h).(Cond{c}).zsc(:,:,1));
+            end
             Results(h).(Cond{c}).parameters={'prestim',prestim/data.nfs,'poststim',...
                 poststim/data.nfs,'baselinedur',bdur/data.nfs,'TrialN',nt,...
                 'trialsUsed',trIndx,'ChannelN',ch,'ComRef',ref};

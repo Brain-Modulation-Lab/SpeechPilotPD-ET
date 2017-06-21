@@ -11,5 +11,6 @@ if nargin < 4
 end
 
 surfh = pcolor(ah, x, f, Z);
-shading interp; colormap jet;
+shading interp; 
+colormap jet;
 
