@@ -43,9 +43,9 @@ for ii = 1:ns
                 else
                     ah(jj) = subplot(nch/2, 2, nch-(jj-1));
                 end
-                signal_ch = signal(:,jj:nch:end);
-                base_ch = base(:,jj:nch:end);
-                z_amp = (signal_ch - mean(base_ch(:))) / std(base_ch(:));
+                signal_ch = signal(:,jj:nch:s2);
+                base_ch = base(:,jj:nch:s2);
+                z_amp = bsxfun(@rdivide, bsxfun(@minus, signal_ch ,mean(base_ch(:))),std(base_ch(:)));
                 hold on;
                 ph(h) = plot(ah(jj), trTime, mean(z_amp,2),'Color', colors{ff}, 'LineWidth', 2);
                 ylim([-2 3]);
