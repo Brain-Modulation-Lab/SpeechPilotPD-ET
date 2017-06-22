@@ -6,7 +6,7 @@
 
 % ET subjects
 subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
-pbSpect = 1;
+pbSpect = 0;
 fq=[2:2:200]'; %frequencies
 stat.voxel_pval=0.05; stat.cluster_pval=0.05; stat.surrn=1;
 
@@ -25,8 +25,8 @@ load([codeDir filesep 'Filters' filesep 'BroadbandGammaFilt.mat']);
 
 pad=4000; % Needs to be > longest filter length, 2713 samples
 Cond={'Cue','Onset'};
-%freq={'delta','theta','alpha','beta1','beta2','BroadbandGamma'};
-freq={'beta1','beta2','BroadbandGamma'};
+freq={'delta','theta','alpha','beta1','beta2','BroadbandGamma'};
+%freq={'beta1','beta2','BroadbandGamma'};
 
 if ispc
     datadir='\\136.142.16.9\Nexus\Electrophysiology_Data\DBS_Intraop_Recordings';
@@ -44,7 +44,7 @@ for s=1:length(subjects)
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
         data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs');
-        disp(['Loaded data from' tmp(fi).name]);
+        disp(['Loaded data from ' tmp(fi).name]);
         %data=load([datadir filesep tmp(fi).name],'Ecog','trials','nfs');
         input=filtfilt(hpFilt,data.Ecog);
         if ref;  input= bsxfun(@minus,input,mean(input,2));  end
@@ -71,7 +71,7 @@ for s=1:length(subjects)
             switch Cond{c}
                 case 'Cue'
                     prestim=round(0.5*data.nfs);
-                    poststim=round(min(E2-E1)*data.nfs);
+                    poststim=round(mean(E2-E1)*data.nfs);
                     E2use=E1;
                 case 'Onset'
                     prestim=round(0.5+mean(E2-E1)*data.nfs);
@@ -84,11 +84,12 @@ for s=1:length(subjects)
             bdur=round(1*data.nfs);
             
             disp('Calculating wavelet spectra');
-            [Results(h).(Cond{c}).zsc, tr,Results(h).(Cond{c}).base]=calc_ERSP(input, data.nfs, fq, E2use, prestim/data.nfs, poststim/data.nfs, E1, 1,stat);
+            [Results(h).(Cond{c}).zsc, tr, Results(h).Base.spect]=calc_ERSP(input, data.nfs, fq, E2use, prestim/data.nfs, poststim/data.nfs, E1, 1,stat);
             if pbSpect
                 trTime = -prestim:poststim;
                 plotSpect(trTime(:), fq, Results(h).(Cond{c}).zsc(:,:,1));
             end
+            Results(h).(Cond{c}).meanPSD = squeeze(mean(abs(tr),3));
             Results(h).(Cond{c}).parameters={'prestim',prestim/data.nfs,'poststim',...
                 poststim/data.nfs,'baselinedur',bdur/data.nfs,'TrialN',nt,...
                 'trialsUsed',trIndx,'ChannelN',ch,'ComRef',ref};
@@ -130,11 +131,12 @@ for s=1:length(subjects)
         end
         Results(h).Session=tmp(fi).name;
         
-        clearvars R cmp_tr cmp_bs input data reject E0 E1
+        clearvars R cmp_tr cmp_bs input data reject E0 E1 tr
         h=h+1;
         
         mem = memory;
         if mem.MemUsedMATLAB > .8e11
+            disp('Exiting bc of memory error');
             break;
         end
     end
@@ -143,4 +145,5 @@ for s=1:length(subjects)
         break;
     end
 end
-save('HighBand_modulation_referenced_ET3','Results','-v7.3');
+disp('Saving population data file');
+save('Band_modulation_referenced_ET_v2','Results','-v7.3');
