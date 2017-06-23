@@ -38,11 +38,11 @@ else
 end
 
 ref=1; %1 is common reference avg, 0 is unreferenced
-h=1;
-Results=[];
+%h=1;
+%Results=[];
 %%
 
-for s=1:length(subjects)
+for s=8:length(subjects)
     tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)

@@ -3,10 +3,10 @@ align = {'Cue', 'Onset'};
 align_labels = {'Cue Presentation', 'Speech Onset'};
 ns = length(Results);
 
-%freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
-%colors = {'k', 'b', [.5 .5 .5], 'r', [1 .3 .3], 'y','g','c','m'};
-freq={'BroadbandGamma','beta1','beta2','delta','theta','alpha'};
-colors = {'k', 'r', [1 .3 .3], 'y','g','c','m'};
+freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
+colors = {'k', 'b', [.5 .5 .5], 'r', [1 .3 .3], 'y','g','c','m'};
+%freq={'BroadbandGamma','beta1','beta2','delta','theta','alpha'};
+%colors = {'k', 'r', [1 .3 .3], 'y','g','c','m'};
 %freq={'BroadbandGamma', 'beta1', 'beta2'};
 
 ns = length(Results); 
@@ -43,8 +43,8 @@ for ii = 1:ns
                 else
                     ah(jj) = subplot(nch/2, 2, nch-(jj-1));
                 end
-                signal_ch = signal(:,jj:nch:end);
-                base_ch = base(:,jj:nch:end);
+                signal_ch = signal(:,jj:nch:end).^2;
+                base_ch = base(:,jj:nch:end).^2;
                 z_amp = (signal_ch - mean(base_ch(:))) / std(base_ch(:));
                 hold on;
                 ph(h) = plot(ah(jj), trTime, mean(z_amp,2),'Color', colors{ff}, 'LineWidth', 2);
@@ -69,6 +69,6 @@ for ii = 1:ns
         
         title([Results(ii).Session ', ' align{aa} ' aligned']);
         session = strtok(Results(ii).Session,'.');
-        %saveas(gcf, sprintf('%s%sBandpassSignals%s%s-%s',figDir,filesep,filesep,session,align{aa}),'bmp');
+        saveas(gcf, sprintf('%s%sBandpassSignals%s%s-%s',figDir,filesep,filesep,session,align{aa}),'bmp');
     end
 end
