@@ -45,7 +45,7 @@ for ii = 1:ns
                 end
                 signal_ch = signal(:,jj:nch:end);
                 base_ch = base(:,jj:nch:end);
-                z_amp = (signal_ch - mean(mean(base_ch,2))) / std(mean(base_ch,2));
+                z_amp = (signal_ch - mean(mean(base_ch,2)) / std(base_ch(:));
                 hold on;
                 ph(h) = plot(ah(jj), trTime, mean(z_amp,2),'Color', colors{ff}, 'LineWidth', 2);
                 ylim([-2 3]);
