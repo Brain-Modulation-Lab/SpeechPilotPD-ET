@@ -6,7 +6,7 @@
 
 % ET subjects
 subjectLists;
-subjects = ET_subjects;
+subjects = PD_subjects;
 %subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
 
 pbSpect = 0;
@@ -38,11 +38,11 @@ else
 end
 
 ref=1; %1 is common reference avg, 0 is unreferenced
-%h=1;
-%Results=[];
+h=1;
+Results=[];
 %%
 
-for s=8:length(subjects)
+for s=1:length(subjects)
     tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
@@ -135,7 +135,7 @@ for s=8:length(subjects)
                 end
             end
             Results(h).Session=tmp(fi).name;
-            
+            Results(h).trials = data.trials;
             clearvars R cmp_tr cmp_bs input data reject E0 E1 tr
             h=h+1;
         end
@@ -151,4 +151,4 @@ for s=8:length(subjects)
     end
 end
 disp('Saving population data file');
-save('Band_modulation_referenced_ET_v2','Results','-v7.3');
+save('Band_modulation_referenced_PD_v2','Results','-v7.3');

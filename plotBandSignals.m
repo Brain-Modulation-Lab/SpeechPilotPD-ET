@@ -3,10 +3,10 @@ align = {'Cue', 'Onset'};
 align_labels = {'Cue Presentation', 'Speech Onset'};
 ns = length(Results);
 
-%freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
-%colors = {'k', 'b', [.5 .5 .5], 'r', [1 .3 .3], 'y','g','c','m'};
-freq={'BroadbandGamma','beta1','beta2','delta','theta','alpha'};
-colors = {'k', 'r', [1 .3 .3], 'y','g','c','m'};
+freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
+colors = {'k', 'b', [.5 .5 .5], 'r', [1 .3 .3], 'y','g','c','m'};
+%freq={'BroadbandGamma','beta1','beta2','delta','theta','alpha'};
+%colors = {'k', 'r', [1 .3 .3], 'y','g','c','m'};
 %freq={'BroadbandGamma', 'beta1', 'beta2'};
 
 ns = length(Results); 
@@ -48,15 +48,15 @@ for ii = 1:ns
                 z_amp = (signal_ch - mean(mean(base_ch,2))) / std(mean(base_ch,2));
                 hold on;
                 ph(h) = plot(ah(jj), trTime, mean(z_amp,2),'Color', colors{ff}, 'LineWidth', 2);
-                ylim([-2 3]);
+                ylim([-7 10]);
                 
                 if ff==length(ff)
                     if jj==1
-                        xlabel(ah(jj), 'Time relative to Speech Onset (sec)');
+                        xlabel(ah(jj), ['Time relative to ' align_labels{aa} ' (sec)']);
                         ylabel(ah(jj), 'Z Score');
                     end
-                    plot(trTime, -2*ones(length(trTime),1)','k--');
-                    plot(trTime, 2*ones(length(trTime),1)','k--');
+                    plot(trTime, -3*ones(length(trTime),1)','k--');
+                    plot(trTime, 3*ones(length(trTime),1)','k--');
                     
                 end
                 %title([freq '-' cond ' aligned']);
@@ -69,6 +69,6 @@ for ii = 1:ns
         
         title([Results(ii).Session ', ' align{aa} ' aligned']);
         session = strtok(Results(ii).Session,'.');
-        %saveas(gcf, sprintf('%s%sBandpassSignals%s%s-%s',figDir,filesep,filesep,session,align{aa}),'bmp');
+        saveas(gcf, sprintf('%s%sBandpassSignals%s%s-%s',figDir,filesep,filesep,session,align{aa}),'bmp');
     end
 end
