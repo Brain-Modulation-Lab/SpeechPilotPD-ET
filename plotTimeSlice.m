@@ -24,7 +24,10 @@ for ii = 1:ns
             else
                 ah(jj) = subplot(nch/2, 2, nch-(jj-1));
             end
-            plot( ah(jj), fq, zsc(tind,:,jj),'k', 'LineWidth', 2);
+            hold on;
+            plot( ah(jj), fq, zsc(:,tind,jj),'k', 'LineWidth', 2);
+            plot(ah(jj), fq, ones(length(fq),1)*-2, '--k'); 
+            plot(ah(jj), fq, ones(length(fq),1)*2, '--k');
             %set(ah, 'YScale', 'log');
             if jj==1
                 ylabel(ah(jj), 'Z scored signal amplitude');

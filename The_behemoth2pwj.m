@@ -6,7 +6,7 @@
 
 % ET subjects
 subjectLists;
-subjects = PD_subjects;
+subjects = ET_subjects;
 %subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
 
 pbSpect = 0;
@@ -30,7 +30,7 @@ pad=4000; % Needs to be > longest filter length, 2713 samples
 Cond={'Cue','Onset'};
 freq={'delta','theta','alpha','beta1','beta2', 'Gamma', 'Hgamma', 'BroadbandGamma'};
 %freq={'beta1','beta2','BroadbandGamma'};
-freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
+%freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
 if ispc
     datadir='\\136.142.16.9\Nexus\Electrophysiology_Data\DBS_Intraop_Recordings';
 else
@@ -151,4 +151,4 @@ for s=1:length(subjects)
     end
 end
 disp('Saving population data file');
-save('Band_modulation_referenced_PD_v2','Results','-v7.3');
+save('Band_modulation_referenced_ET_v2','Results','-v7.3');
