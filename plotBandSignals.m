@@ -32,6 +32,14 @@ for ii = 1:ns
             for jj=1:nch %number of electrodes
                 if nch == 6
                     ah(jj) = subplot(nch, 1, nch-(jj-1));
+                elseif nch > 33
+                    ncol = 3;
+                    nrow = nch/ncol;
+                    c = floor(jj/(nch/ncol))+1;
+                    r = mod(jj-1,nrow)+1;
+                    if ff==1
+                        ah(jj) = axes('Position', [.05*c+(.8/ncol*(c-1)) .02*r+((r-1)*.8/nrow) .9/ncol .9/nrow]);
+                    end
                 elseif nch > 12
                     ncol = 2;
                     nrow = nch/ncol;

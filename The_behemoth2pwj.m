@@ -42,7 +42,7 @@ h=1;
 Results=[];
 %%
 
-for s=1:length(subjects)
+for s=7:length(subjects)
     tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
@@ -151,4 +151,4 @@ for s=1:length(subjects)
     end
 end
 disp('Saving population data file');
-save('Band_modulation_referenced_PD_v2','Results','-v7.3');
+save('Band_modulation_referenced_PD2_v2','Results','-v7.3');
