@@ -6,7 +6,7 @@
 
 % ET subjects
 subjectLists;
-subjects = PD_subjects;
+subjects = ET_subjects;
 %subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
 
 pbSpect = 0;
@@ -24,7 +24,7 @@ load([codeDir filesep 'Filters' filesep 'highoass_2Hz_fs1200.mat']);
 load([codeDir filesep 'Filters' filesep 'BroadbandGammaFilt.mat']);
 
 % Broadband Gamma Filter Generation Code - saved but this is the function call
-% BroadbandGammaFilt = designfilt('bandpassfir', 'StopbandFrequency1', 45, 'PassbandFrequency1', 50, 'PassbandFrequency2', 200, 'StopbandFrequency2', 205, 'StopbandAttenuation1', 45, 'PassbandRipple', .1, 'StopbandAttenuation2', 45, 'SampleRate', 1200);
+% BroadbandGammaFilt = designfilt('bandpassfir', 'StopbandFrequency1', 65, 'PassbandFrequency1', 70, 'PassbandFrequency2', 150, 'StopbandFrequency2', 155, 'StopbandAttenuation1', 45, 'PassbandRipple', .1, 'StopbandAttenuation2', 45, 'SampleRate', 1200);
 
 pad=4000; % Needs to be > longest filter length, 2713 samples
 Cond={'Cue','Onset'};
@@ -42,16 +42,17 @@ h=1;
 Results=[];
 %%
 
-for s=7:length(subjects)
+for s=2:length(subjects)
     tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
-        data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs');
+        data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs', 'badch');
         disp(['Loaded data from ' tmp(fi).name]);
         %data=load([datadir filesep tmp(fi).name],'Ecog','trials','nfs');
-        input=filtfilt(hpFilt,data.Ecog);
+        chUsed = setdiff(1:size(data.Ecog,2), badch); %select the good channels
+        input=filtfilt(hpFilt,data.Ecog(:,chUsed));
         if ref;  input= bsxfun(@minus,input,mean(input,2));  end
-        ch=size(input,2);
+        nch=size(input,2);
         %reject=[find(isnan(data.trials.SpOnset))' find(isnan(data.trials.SpOffset))' data.trials.ResponseReject.all'];
         if (isfield(data.trials, 'SpEnd')); data.trials.SpOffset = data.trials.SpEnd; end
         reject = [find(isnan(data.trials.SpOnset))' find(isnan(data.trials.SpOffset))'];
@@ -61,12 +62,14 @@ for s=7:length(subjects)
             reject=unique(reject);
         end
         trIndx=setdiff(1:60,reject);
-        E0=data.trials.BaseFwd(setdiff(1:60,reject));
-        E1=data.trials.BaseBack(setdiff(1:60,reject));
-        E2=data.trials.SpOnset(setdiff(1:60,reject));
-        E3=data.trials.SpOffset(setdiff(1:60,reject));
+        E0=data.trials.BaseFwd(trIndx);
+        E1=data.trials.BaseBack(trIndx);
+        E2=data.trials.SpOnset(trIndx);
+        E3=data.trials.SpOffset(trIndx);
+        E4=data.trials.BaseBack(trIndx)-1; 
+        E5=data.trials.ITIStim(trIndx);
         
-        [artifact]=auto_reject(input,E1,1200);
+        [artifact]=auto_reject2(input,[E4(:),E5(:)],1200);
         artifact=unique(horzcat(artifact{:}));
         E0(artifact)=[];    E1(artifact)=[];   E2(artifact)=[];     E3(artifact)=[];
         trIndx(artifact)=[];
@@ -97,7 +100,7 @@ for s=7:length(subjects)
                 Results(h).(Cond{c}).meanPSD = squeeze(mean(abs(tr),3));
                 Results(h).(Cond{c}).parameters={'prestim',prestim/data.nfs,'poststim',...
                     poststim/data.nfs,'baselinedur',bdur/data.nfs,'TrialN',nt,...
-                    'trialsUsed',trIndx,'ChannelN',ch,'ComRef',ref};
+                    'trialsUsed',trIndx,'ChannelN',nch,'ComRef',ref, 'ChannelsUsed', chUsed};
                 trial=arrayfun(@(x) input(x-prestim-pad:x+poststim+pad,:),round(E2use*data.nfs),'Uni',0);
                 trial=cat(2,trial{:});
                 base=arrayfun(@(x) input(x-bdur-pad:x+pad,:),round(E1*data.nfs),'Uni',0);
@@ -122,7 +125,7 @@ for s=7:length(subjects)
                     cmp_bs=cmp_bs./abs(cmp_bs);
                     
                     % intertrial phase consistency
-                    Results(h).(Cond{c}).(freq{f}).IPC_tr=cell2mat(arrayfun(@(x) abs(mean(cmp_tr(:,x:ch:end),2)),1:ch,'Uni',0));
+                    Results(h).(Cond{c}).(freq{f}).IPC_tr=cell2mat(arrayfun(@(x) abs(mean(cmp_tr(:,x:nch:end),2)),1:nch,'Uni',0));
                     
                     % Rayleigh test
                     R = nt*Results(h).(Cond{c}).(freq{f}).IPC_tr;
@@ -131,7 +134,7 @@ for s=7:length(subjects)
                     Results(h).(Cond{c}).(freq{f}).p_IPC = exp(sqrt(1+4*nt+4*(nt^2-R.^2))-(1+2*nt));
                     
                     % baseline IPC
-                    Results(h).(Cond{c}).(freq{f}).IPC_bs=cell2mat(arrayfun(@(x) abs(mean(cmp_bs(:,x:3:end),2)),1:ch,'Uni',0));
+                    Results(h).(Cond{c}).(freq{f}).IPC_bs=cell2mat(arrayfun(@(x) abs(mean(cmp_bs(:,x:3:end),2)),1:nch,'Uni',0));
                 end
             end
             Results(h).Session=tmp(fi).name;

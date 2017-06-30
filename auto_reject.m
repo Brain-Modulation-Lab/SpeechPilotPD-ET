@@ -16,7 +16,7 @@ try
 catch    
     trials{nt}=signal(:,events(nt):events(nt)+round(5*fs));       
 end
-dtrials=cellfun(@(x) max(diff(x,1,2),[],2),trials,'Uni',0); %maximum single sample difference in each trial
+dtrials=cellfun(@(x) max(abs(diff(x,1,2)),[],2),trials,'Uni',0); %maximum single sample difference in each trial
 dtrials=cat(2,dtrials{:}); %ch x trials, max single sample difference
 
 maxVol=cellfun(@(x) max(abs(x),[],2),trials,'UniformOutput',false); 

@@ -1,7 +1,7 @@
 % Analyze the reaction times of each session and the overall RTs
 setDirectories;
 load([savedDataDir filesep 'PD_sessionInfo.mat']);
-nSessions = length(sessionInfo);
+nSessions = 1:length(sessionInfo);
 
 for ii=1:nSessions
     subj = strtok(sessionInfo(ii).name, '_. ');
@@ -11,6 +11,5 @@ for ii=1:nSessions
     SpOnset = trials.SpOnset(used);
     Command = trials.CommandStim(used);
     rts = SpOnset(:) - Command(:);
-    rtCell{ii} = rts;
-    mean_rt(ii) = mean(rts);
+    mean_rt(ii) = 
 end
