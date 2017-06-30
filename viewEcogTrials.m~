@@ -1,10 +1,14 @@
 % View Ecog trials
-
+% if ispc
+%     codeDir = '\\136.142.16.9\Nexus\Users\pwjones\code\SpeechPilotPD-ET';
+% else
+%     codeDir = '~pwjones/Documents/RichardsonLab/matlab/SpeechPilotPD-ET';
+% end
 load([codeDir filesep 'Filters' filesep 'highoass_2Hz_fs1200.mat']);
 disp('HP filtering signal');
 nch = size(Ecog,2);
-signal = filtfilt(hpFilt,Ecog); %2 Hz low pass filtering
-signal= bsxfun(@minus,signal,mean(signal,2));  %common reference averaging
+signal = filtfilt(hpFilt,Ecog);
+signal= bsxfun(@minus,signal,mean(input,2));  end
 trRange = 1:60;
 for ii=1:nch
     fh = figure;
@@ -37,7 +41,7 @@ for ii=1:nch
     ylabel('2Hz HP Filtered EEG');
     set(gca, 'ydir', 'reverse', 'TickDir','out');
     title(sprintf('LFP in trials %s - %s', subjects{s}, labels{ii}));
-    saveas(gcf, sprintf('%s%sCRA_EEGtrials%s%s-Session%d-%s',figDir,filesep,filesep,subjects{s},strtok(tmp(fi).name,'.'),labels{ii}),'bmp');
+    saveas(gcf, sprintf('%s%sEEGtrials%s%s-Session%d-%s',figDir,filesep,filesep,subjects{s},strtok(tmp(fi).name,'.'),labels{ii}),'bmp');
     close(fh);
 end
     
