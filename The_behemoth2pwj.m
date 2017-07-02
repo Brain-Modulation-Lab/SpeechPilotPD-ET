@@ -4,20 +4,15 @@
 % A field for each condition (currently 'Cue and 'Onset')
 % A subfield for 
 
-% ET subjects
-subjectLists;
-subjects = ET_subjects;
+setDirectories; %platform specific locations 
+subjectLists; %load lists of subjects
+subjects = PD_subjects;
 %subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
 
 pbSpect = 0;
 fq=[2:2:200]'; %frequencies
 stat.voxel_pval=0.05; stat.cluster_pval=0.05; stat.surrn=1;
 
-if ispc
-    codeDir = '\\136.142.16.9\Nexus\Users\pwjones\code\SpeechPilotPD-ET';
-else
-    codeDir = '~pwjones/Documents/RichardsonLab/matlab/SpeechPilotPD-ET';
-end
 
 load([codeDir filesep 'Filters' filesep 'bandpassfilters.mat']);
 load([codeDir filesep 'Filters' filesep 'highoass_2Hz_fs1200.mat']);
@@ -42,14 +37,15 @@ h=1;
 Results=[];
 %%
 
-for s=2:length(subjects)
+for s=12:length(subjects)
     tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
-        data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs', 'badch');
+        data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs', 'badch','labels', 'EcogLabels');
+        if isfield(data, 'EcogLabels') data.labels = data.EcogLabels; end
         disp(['Loaded data from ' tmp(fi).name]);
         %data=load([datadir filesep tmp(fi).name],'Ecog','trials','nfs');
-        chUsed = setdiff(1:size(data.Ecog,2), badch); %select the good channels
+        chUsed = setdiff(1:size(data.Ecog,2), data.badch); %select the good channels
         input=filtfilt(hpFilt,data.Ecog(:,chUsed));
         if ref;  input= bsxfun(@minus,input,mean(input,2));  end
         nch=size(input,2);
@@ -63,16 +59,19 @@ for s=2:length(subjects)
         end
         trIndx=setdiff(1:60,reject);
         E0=data.trials.BaseFwd(trIndx);
-        E1=data.trials.BaseBack(trIndx);
+        E1=data.trials.BaseBack(trIndx); 
         E2=data.trials.SpOnset(trIndx);
         E3=data.trials.SpOffset(trIndx);
         E4=data.trials.BaseBack(trIndx)-1; 
         E5=data.trials.ITIStim(trIndx);
         
+        
         [artifact]=auto_reject2(input,[E4(:),E5(:)],1200);
         artifact=unique(horzcat(artifact{:}));
         E0(artifact)=[];    E1(artifact)=[];   E2(artifact)=[];     E3(artifact)=[];
         trIndx(artifact)=[];
+        makeLFPplots; % broken out script that saves plots of all of the trials by channel and trial
+        
         nt=length(E1);
         if nt>5
             for c=1:length(Cond)
@@ -154,4 +153,4 @@ for s=2:length(subjects)
     end
 end
 disp('Saving population data file');
-save('Band_modulation_referenced_PD2_v2','Results','-v7.3');
+save('Band_modulation_referenced_PD2_v3','Results','-v7.3');

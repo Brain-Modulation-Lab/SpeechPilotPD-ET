@@ -36,6 +36,11 @@ dtrials=cat(2,dtrials{:}); %ch x trials, max single sample difference
 dm = mean(dtrials,2); % mean max diff over trials
 ds = std(dtrials,0,2); % std max diff over trials
 
+gain = cellfun(@(x) nanmean(abs(diff(x,1,2)), 2),trials,'Uni',0);
+gain = cat(2,gain{:});
+gm = mean(gain,2);
+gs = std(gain, 0,2);
+
 maxVol=cellfun(@(x) max(abs(x),[],2),trials,'UniformOutput',false); 
 maxVol=cat(2,maxVol{:}); % maximum amp sample, ch x trial
 m=mean(maxVol,2); % mean max

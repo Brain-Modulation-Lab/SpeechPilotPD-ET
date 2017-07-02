@@ -1,0 +1,21 @@
+function ah = plotEcogChannelTrials(time, signal, rejectedTrials, channelUsed)
+%function plotEcogChannel(ah, signal, rejected)
+%
+% ah - axes handle
+% signal - time x trial x channel matrix
+% fs - sampling rate (Hz)
+% rejected - rejected trials, to be plotted in red
+
+nt = size(signal,2);
+nch = size(signal,3);
+%time = ((1:size(signal,1))-1) / fs; 
+
+for ii=1:nch
+    fh(ii) = figure; hold on;
+    stdChan = nanstd(signal(:,:,,0,1);
+    for jj=1:nt
+        ph = plot(time, signal(:,jj,ii)-(jj-1)*offset, 'k','LineWidth',1);
+        if any(jj==rejectedTrials) set(ph, 'Color', 'r'); end
+    end
+    ah(ii) = get(ph, 'Parent');
+end
