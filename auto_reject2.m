@@ -47,7 +47,7 @@ m=mean(maxVol,2); % mean max
 s=std(maxVol,0,2); % std max
 for i=1:nch
     % finding the 
-    artifact{i}=unique([find(maxVol(i,:)>m(i)+5*s(i)) find(dtrials(i,:) > dm(i)+4*ds(i)) find(dtrials(i,:) > 35)]);    
+    artifact{i}=unique([find(maxVol(i,:)>m(i)+5*s(i)) find(dtrials(i,:) > dm(i)+5*ds(i)) find(dtrials(i,:)./gain(i,:) > 30)]);    
 end
 
 end
