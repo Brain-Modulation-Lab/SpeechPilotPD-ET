@@ -14,11 +14,12 @@ ns = length(Results);
 for ii = 1:ns
     ph = []; h=1;
     for aa=1:length(align)
+        
+        
         for ff = 1:length(freq)
             nTrials = Results(ii).(align{aa}).parameters{8};
             nch = Results(ii).(align{aa}).parameters{12};
-            trTime = linspace(-Results(ii).(align{aa}).parameters{2}, Results(ii).(align{aa}).parameters{4}, size(Results(ii).(align{aa}).zsc,2));
-            
+            trTime = linspace(-Results(ii).(align{aa}).parameters{2}, Results(ii).(align{aa}).parameters{4}, size(Results(ii).(align{aa}).zsc,2)); 
             %signal = Results(ii).((align{aa})).(freq{ff}).z_Amp;
             base = abs(Results(ii).((align{aa})).(freq{ff}).bs);
             signal = abs(Results(ii).((align{aa})).(freq{ff}).tr);

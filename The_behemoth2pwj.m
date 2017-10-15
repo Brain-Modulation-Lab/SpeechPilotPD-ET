@@ -8,8 +8,8 @@ setDirectories; %platform specific locations
 subjectLists; %load lists of subjects
 subjects = PD_subjects;
 %subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
-
-pbSpect = 0;
+subjects = {'DBS4038'};
+pbSpect = 1;
 fq=[2:2:200]'; %frequencies
 stat.voxel_pval=0.05; stat.cluster_pval=0.05; stat.surrn=1;
 
@@ -153,4 +153,4 @@ for s=1:length(subjects)
     end
 end
 disp('Saving population data file');
-save('Band_modulation_referenced_DBS2003_v3','Results','-v7.3');
+%save('Band_modulation_referenced_DBS2003_v3','Results','-v7.3');
