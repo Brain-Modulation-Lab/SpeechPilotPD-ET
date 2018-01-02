@@ -89,7 +89,7 @@ for aa = 1:length(align)
     eval(['PopResults(1).' align{aa} '=' align{aa}]);
 end
 PopResults.bands = freq;
-save('ET_populationAvgs.mat', 'PopResults', '-v7.3'); 
+%save('ET_populationAvgs.mat', 'PopResults', '-v7.3'); 
 %% 
 % Assemble averages that are aligned on the proper timing
 % dt = mean(diff(trTime));

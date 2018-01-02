@@ -8,7 +8,7 @@ setDirectories; %platform specific locations
 subjectLists; %load lists of subjects
 subjects = PD_subjects;
 %subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
-subjects = {'DBS4038'};
+subjects = {'DBS2009'};
 pbSpect = 1;
 fq=[2:2:200]'; %frequencies
 stat.voxel_pval=0.05; stat.cluster_pval=0.05; stat.surrn=1;
@@ -141,16 +141,16 @@ for s=1:length(subjects)
             clearvars R cmp_tr cmp_bs input data reject E0 E1 tr
             h=h+1;
         end
-        mem = memory;
-        if mem.MemUsedMATLAB > .8e11
-            disp('Exiting bc of memory error');
-            break;
-        end
+%         mem = memory;
+%         if mem.MemUsedMATLAB > .8e11
+%             disp('Exiting bc of memory error');
+%             break;
+%         end
     end
     
-    if mem.MemUsedMATLAB > .8e11
-        break;
-    end
+%     if mem.MemUsedMATLAB > .8e11
+%         break;
+%     end
 end
 disp('Saving population data file');
 %save('Band_modulation_referenced_DBS2003_v3','Results','-v7.3');

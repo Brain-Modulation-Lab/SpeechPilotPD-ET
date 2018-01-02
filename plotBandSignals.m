@@ -4,17 +4,26 @@ align_labels = {'Cue Presentation', 'Speech Onset'};
 ns = length(Results);
 
 freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
-colors = {'k', 'b', [.5 .5 .5], 'r', [1 .3 .3], 'y','g','c','m'};
+freq={'BroadbandGamma','beta1','beta2','alpha','theta','delta'};
+colors = {'k','r', [1 .3 .3], 'b',[.5 .5 .5], 'y','g', 'c','m'};
 %freq={'BroadbandGamma','beta1','beta2','delta','theta','alpha'};
 %colors = {'k', 'r', [1 .3 .3], 'y','g','c','m'};
 %freq={'BroadbandGamma', 'beta1', 'beta2'};
 
 ns = length(Results); 
-
+meanEventTimes = [];
 for ii = 1:ns
     ph = []; h=1;
     for aa=1:length(align)
-        
+        % Note the mean timings of events - need to mark them on plots
+        trialsUsed = Results(ii).Cue.parameters{10}; trialsUsed = trialsUsed(:);
+        respTime = reshape(Results(ii).trials.SpOnset(trialsUsed),[],1) - reshape(Results(ii).trials.CommandStim(trialsUsed), [],1);
+        respOffset = reshape(Results(ii).trials.SpOffset(trialsUsed),[],1) - reshape(Results(ii).trials.CommandStim(trialsUsed),[],1);
+        if strcmp(align{aa}, 'Cue') %save event times for averaging/marking traces 
+            meanEventTimes.(align{aa})(ii,:) = [0 mean(respTime) mean(respOffset)];
+        else
+            meanEventTimes.(align{aa})(ii,:) = [-mean(respTime) 0 mean(respOffset-respTime)];
+        end
         
         for ff = 1:length(freq)
             nTrials = Results(ii).(align{aa}).parameters{8};
@@ -57,8 +66,13 @@ for ii = 1:ns
                 z_amp = (signal_ch - mean(mean(base_ch,2))) / std(mean(base_ch,2));
                 hold on;
                 ph(h) = plot(ah(jj), trTime, mean(z_amp,2),'Color', colors{ff}, 'LineWidth', 2);
-                ylim([-7 10]);
+                yl = [-10 15];
+                ylim([yl(1) yl(2)]);
+                xlim([trTime(1) trTime(end)]);
                 
+                eventPlotx = repmat(meanEventTimes.(align{aa})(ii,:), 2,1);
+                yl = [yl(1) yl(1) yl(1); yl(end) yl(end) yl(end)];
+                plot(ah(jj),eventPlotx, yl, 'k', 'LineWidth', .5);
                 if ff==length(ff)
                     if jj==1
                         xlabel(ah(jj), ['Time relative to ' align_labels{aa} ' (sec)']);
@@ -78,6 +92,6 @@ for ii = 1:ns
         
         title([Results(ii).Session ', ' align{aa} ' aligned']);
         session = strtok(Results(ii).Session,'.');
-        saveas(gcf, sprintf('%s%sBandpassSignals%s%s-%s',figDir,filesep,filesep,session,align{aa}),'bmp');
+        %saveas(gcf, sprintf('%s%sBandpassSignals%s%s-%s',figDir,filesep,filesep,session,align{aa}),'bmp');
     end
 end
