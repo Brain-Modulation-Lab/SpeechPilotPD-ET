@@ -57,6 +57,7 @@ for s=1:length(subjects)
         else 
             reject=unique(reject);
         end
+            
         trIndx=setdiff(1:60,reject);
         E0=data.trials.BaseFwd(trIndx);
         E1=data.trials.BaseBack(trIndx); 

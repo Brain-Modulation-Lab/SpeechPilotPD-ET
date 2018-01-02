@@ -1,4 +1,4 @@
-function ah = plotEcogChannelTrials(time, signal, rejectedTrials, channelUsed)
+function ah = plotEcogChannelTrials(time, signal, rejectedTrials, artifactTrials, channelUsed)
 %function plotEcogChannel(ah, signal, rejected)
 %
 % ah - axes handle
@@ -15,7 +15,11 @@ for ii=1:nch
     stdChan = mean(nanstd(signal(:,:,ii),0,1));
     for jj=1:nt
         ph = plot(time, signal(:,jj,ii)./(stdChan*4) - jj, 'k');
-        if any(jj==rejectedTrials) set(ph, 'Color', 'r'); end
+        if any(jj==artifactTrials) 
+                set(ph, 'Color', 'r'); 
+        elseif any(jj==rejectedTrials)
+                set(ph, 'Color', 'b');
+        end
     end
     ah(ii) = get(ph, 'Parent');
     xlabel('Time from Word Presentation (s)');
