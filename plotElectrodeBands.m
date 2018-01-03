@@ -1,4 +1,7 @@
-% plot the responses for each electrode in the results trial
+% plotElectrodeBands.m
+% ---------------------
+% This script compiles population responses from the large population dataset, plotting the responses 
+% for each electrode in the results structure along the way.
 
 align = {'Cue', 'Onset'};
 freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
