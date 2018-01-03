@@ -11,6 +11,6 @@ trialM = permute(cat(3,trial{:}), [1 3 2]); %time x trial x channel
 ah = plotEcogChannelTrials(plotTime, trialM, reject, artifact, chUsed);
 for ii=1:length(ah)
     title(ah(ii),sprintf('LFP in trials %s - %s', subjects{s}, data.labels{chUsed(ii)}));
-    %saveas(ah(ii).Parent, sprintf('%s%sCRA_EEGtrials%s%s-Session%d-%s',figDir,filesep,filesep,subjects{s},strtok(tmp(fi).name,'.'),data.labels{chUsed(ii)}),'bmp');
+    saveas(ah(ii).Parent, sprintf('%s%sCRA_EEGtrials%s%s-Session%d-%s',figDir,filesep,filesep,subjects{s},strtok(tmp(fi).name,'.'),data.labels{chUsed(ii)}),'bmp');
     close(ah(ii).Parent);
 end
