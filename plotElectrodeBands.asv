@@ -5,9 +5,8 @@
 
 align = {'Cue', 'Onset'};
 freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
-group='PD';
-electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
-electrodeLocs = readElectrodeLocXLS(electrodeFile, group); 
+subj={'PD'};
+electrodeLocs =  
 rows = ceil(length(freq)/2);
 PopResults = struct([]); chEventTimes = [];
 for aa = 1:length(align)
