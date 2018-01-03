@@ -5,8 +5,10 @@
 % A subfield for 
 
 setDirectories; %platform specific locations 
+electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 subjectLists; %load lists of subjects
 subjects = PD_subjects;
+group = 'PD';
 %subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
 subjects = {'DBS4056'};
 pbSpect = 0;
@@ -41,14 +43,19 @@ for s=1:length(subjects)
     tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
-        data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs', 'badch','labels', 'EcogLabels');
+        data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs', 'badch','labels', 'EcogLabels','Side', 'SubjectID');
         if isfield(data, 'EcogLabels') data.labels = data.EcogLabels; end
         disp(['Loaded data from ' tmp(fi).name]);
         %data=load([datadir filesep tmp(fi).name],'Ecog','trials','nfs');
         chUsed = setdiff(1:size(data.Ecog,2), data.badch); %select the good channels
         input=filtfilt(hpFilt,data.Ecog(:,chUsed));
-        if ref;  input= bsxfun(@minus,input,mean(input,2));  end
+        if ref;  input= bsxfun(@minus,input,mean(input,2));  end %common reference averaging
         nch=size(input,2);
+        electrodeLocs = readElectrodeLocXLS(electrodeFile, group); %need to read in a match to the anatomically localized
+        ematch = find(strcmp(data.SubjectID, {electrodeLocs.subject}) & strcmpi(data.Side, {electrodeLocs.side}));
+        for ii = 1:length(ematch) % There can be multiple strips per recording
+            locLabels(cell2num({electrodeLocs(ematch(ii)).channels})) = electrodeLocs(ematch(ii)).labels;
+        end
         %reject=[find(isnan(data.trials.SpOnset))' find(isnan(data.trials.SpOffset))' data.trials.ResponseReject.all'];
         if (isfield(data.trials, 'SpEnd')); data.trials.SpOffset = data.trials.SpEnd; end
         reject = [find(isnan(data.trials.SpOnset))' find(isnan(data.trials.SpOffset))'];
