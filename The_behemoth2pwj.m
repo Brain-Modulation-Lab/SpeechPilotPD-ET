@@ -10,7 +10,7 @@ subjectLists; %load lists of subjects
 subjects = PD_subjects;
 group = 'PD';
 %subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
-subjects = {'DBS4056'};
+%subjects = {'DBS4046'};
 pbSpect = 0;
 fq=[2:2:200]'; %frequencies
 stat.voxel_pval=0.05; stat.cluster_pval=0.05; stat.surrn=1;
@@ -43,19 +43,21 @@ for s=1:length(subjects)
     tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
+        clear locLabels;
         data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs', 'badch','labels', 'EcogLabels','Side', 'SubjectID');
         if isfield(data, 'EcogLabels') data.labels = data.EcogLabels; end
         disp(['Loaded data from ' tmp(fi).name]);
-        %data=load([datadir filesep tmp(fi).name],'Ecog','trials','nfs');
+        electrodeLocs = readElectrodeLocXLS(electrodeFile, group); %need to read in a match to the anatomically localized
+        ematch = find(strcmp(data.SubjectID, {electrodeLocs.subject}) & strcmpi(data.Side, {electrodeLocs.side}));
+        for ii = 1:length(ematch) % There can be multiple strips per recording
+            locLabels(cell2mat({electrodeLocs(ematch(ii)).channels})) = electrodeLocs(ematch(ii)).labels;
+        end
+        
         chUsed = setdiff(1:size(data.Ecog,2), data.badch); %select the good channels
         input=filtfilt(hpFilt,data.Ecog(:,chUsed));
         if ref;  input= bsxfun(@minus,input,mean(input,2));  end %common reference averaging
         nch=size(input,2);
-        electrodeLocs = readElectrodeLocXLS(electrodeFile, group); %need to read in a match to the anatomically localized
-        ematch = find(strcmp(data.SubjectID, {electrodeLocs.subject}) & strcmpi(data.Side, {electrodeLocs.side}));
-        for ii = 1:length(ematch) % There can be multiple strips per recording
-            locLabels(cell2num({electrodeLocs(ematch(ii)).channels})) = electrodeLocs(ematch(ii)).labels;
-        end
+        
         %reject=[find(isnan(data.trials.SpOnset))' find(isnan(data.trials.SpOffset))' data.trials.ResponseReject.all'];
         if (isfield(data.trials, 'SpEnd')); data.trials.SpOffset = data.trials.SpEnd; end
         reject = [find(isnan(data.trials.SpOnset))' find(isnan(data.trials.SpOffset))'];
@@ -100,15 +102,18 @@ for s=1:length(subjects)
                 bdur=round(1*data.nfs);
                 
                 disp('Calculating wavelet spectra');
-                [Results(h).(Cond{c}).zsc, tr, Results(h).Base.spect]=calc_ERSP(input, data.nfs, fq, E2use, prestim/data.nfs, poststim/data.nfs, E1, 1,stat);
+                %[Results(h).(Cond{c}).zsc, tr, Results(h).Base.spect]=calc_ERSP(input, data.nfs, fq, E2use, prestim/data.nfs, poststim/data.nfs, E1, 1,stat);
+                [zsc, tr, base_spect]=calc_ERSP(input, data.nfs, fq, E2use, prestim/data.nfs, poststim/data.nfs, E1, 1,stat);
+                %Results(h).(Cond{c}).mean_zsc = squeeze(nanmean(zsc, 3));
+                Results(h).Base.spect = squeeze(nanmean(base_spect,3));
                 if pbSpect
                     trTime = -prestim:poststim;
-                    plotSpect(trTime(:), fq, Results(h).(Cond{c}).zsc(:,:,1));
+                    plotSpect(trTime(:), fq, zsc(:,:,1));
                 end
                 Results(h).(Cond{c}).meanPSD = squeeze(mean(abs(tr),3));
                 Results(h).(Cond{c}).parameters={'prestim',prestim/data.nfs,'poststim',...
                     poststim/data.nfs,'baselinedur',bdur/data.nfs,'TrialN',nt,...
-                    'trialsUsed',trIndx,'ChannelN',nch,'ComRef',ref, 'ChannelsUsed', chUsed};
+                    'trialsUsed',trIndx,'ChannelN',nch,'ComRef',ref, 'ChannelsUsed', chUsed, 'CorticalLocations', locLabels(chUsed)};
                 trial=arrayfun(@(x) input(x-prestim-pad:x+poststim+pad,:),round(E2use*data.nfs),'Uni',0);
                 trial=cat(2,trial{:});
                 base=arrayfun(@(x) input(x-bdur-pad:x+pad,:),round(E1*data.nfs),'Uni',0);
@@ -161,5 +166,6 @@ for s=1:length(subjects)
 %         break;
 %     end
 end
+Results;
 disp('Saving population data file');
-%save('Band_modulation_referenced_DBS2003_v3','Results','-v7.3');
+save('Band_modulation_referenced_PD_v4','Results','-v7.3');

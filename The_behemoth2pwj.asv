@@ -5,8 +5,10 @@
 % A subfield for 
 
 setDirectories; %platform specific locations 
+electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 subjectLists; %load lists of subjects
 subjects = PD_subjects;
+group = 'ET';
 %subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
 subjects = {'DBS4056'};
 pbSpect = 0;
@@ -41,14 +43,20 @@ for s=1:length(subjects)
     tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
-        data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs', 'badch','labels', 'EcogLabels');
+        data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs', 'badch','labels', 'EcogLabels','Side', 'SubjectID');
         if isfield(data, 'EcogLabels') data.labels = data.EcogLabels; end
         disp(['Loaded data from ' tmp(fi).name]);
-        %data=load([datadir filesep tmp(fi).name],'Ecog','trials','nfs');
+        electrodeLocs = readElectrodeLocXLS(electrodeFile, group); %need to read in a match to the anatomically localized
+        ematch = find(strcmp(data.SubjectID, {electrodeLocs.subject}) & strcmpi(data.Side, {electrodeLocs.side}));
+        for ii = 1:length(ematch) % There can be multiple strips per recording
+            locLabels(cell2mat({electrodeLocs(ematch(ii)).channels})) = electrodeLocs(ematch(ii)).labels;
+        end
+        
         chUsed = setdiff(1:size(data.Ecog,2), data.badch); %select the good channels
         input=filtfilt(hpFilt,data.Ecog(:,chUsed));
-        if ref;  input= bsxfun(@minus,input,mean(input,2));  end
+        if ref;  input= bsxfun(@minus,input,mean(input,2));  end %common reference averaging
         nch=size(input,2);
+        
         %reject=[find(isnan(data.trials.SpOnset))' find(isnan(data.trials.SpOffset))' data.trials.ResponseReject.all'];
         if (isfield(data.trials, 'SpEnd')); data.trials.SpOffset = data.trials.SpEnd; end
         reject = [find(isnan(data.trials.SpOnset))' find(isnan(data.trials.SpOffset))'];
@@ -70,7 +78,7 @@ for s=1:length(subjects)
         [artifactInd]=auto_reject2(input,[E4(:),E5(:)],1200);
         artifactInd=unique(horzcat(artifactInd{:}));
         E0(artifactInd)=[];    E1(artifactInd)=[];   E2(artifactInd)=[];     E3(artifactInd)=[];
-        artifact = trIndex(artifactInd);
+        artifact = trIndx(artifactInd);
         trIndx(artifactInd)=[];
         makeLFPplots; % broken out script that saves plots of all of the trials by channel and trial
         
@@ -93,7 +101,8 @@ for s=1:length(subjects)
                 bdur=round(1*data.nfs);
                 
                 disp('Calculating wavelet spectra');
-                [Results(h).(Cond{c}).zsc, tr, Results(h).Base.spect]=calc_ERSP(input, data.nfs, fq, E2use, prestim/data.nfs, poststim/data.nfs, E1, 1,stat);
+                %[Results(h).(Cond{c}).zsc, tr, Results(h).Base.spect]=calc_ERSP(input, data.nfs, fq, E2use, prestim/data.nfs, poststim/data.nfs, E1, 1,stat);
+                [zsc, tr, Results(h).Base.spect]=calc_ERSP(input, data.nfs, fq, E2use, prestim/data.nfs, poststim/data.nfs, E1, 1,stat);
                 if pbSpect
                     trTime = -prestim:poststim;
                     plotSpect(trTime(:), fq, Results(h).(Cond{c}).zsc(:,:,1));
