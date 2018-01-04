@@ -12,6 +12,7 @@ codeDir = '~pwjones/Documents/RichardsonLab/matlab/SpeechPilotPD-ET';
 
 %basedir = '/Volumes/ToughGuy/RichardsonLabData/ET';
 basedir='\\136.142.16.9\Nexus\Electrophysiology_Data\DBS_Intraop_Recordings';
+basedir='/Volumes/Nexus/Electrophysiology_Data/DBS_Intraop_Recordings';
 %%
 for s=1:length(subjects)
     subjDir = [basedir filesep subjects{s} filesep 'Preprocessed Data'];
@@ -20,13 +21,29 @@ for s=1:length(subjects)
     
     for ii=1:length(tmp)
         data=load([subjDir filesep tmp(ii).name]);
-        if ~isfield(data, 'Ecog')
-            ecogi = strncmp('Strip', data.labels, 5);
-            data.Ecog = data.filt(:,ecogi);
-            data.EcogLabels = data.labels(ecogi);
-            %data.labels = data.labels(~ecogi);
-            %data.filt = data.filt(:,~ecogi);
-            
+%         if ~isfield(data, 'Ecog')
+%             ecogi = strncmp('Strip', data.labels, 5);
+%             data.Ecog = data.filt(:,ecogi);
+%             data.EcogLabels = data.labels(ecogi);
+%             %data.labels = data.labels(~ecogi);
+%             %data.filt = data.filt(:,~ecogi);
+%             
+%             save([subjDir filesep tmp(ii).name], '-struct', 'data');
+%         end
+        changed = 0;
+        if ~isfield(data, 'SubjectID')
+            name = strtok(tmp(ii).name, '-');
+            data.SubjectID = name;
+        end
+        if ~isfield(data, 'Side')
+            sidecell = cell2mat(data.Side);
+            if strcmpi(sidecell(1), 'L')
+                data.Side = 'Left';
+            else
+                data.Side = 'Right';
+            end
+        end
+        if changed
             save([subjDir filesep tmp(ii).name], '-struct', 'data');
         end
     end
