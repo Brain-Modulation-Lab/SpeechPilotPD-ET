@@ -24,6 +24,18 @@ for ii=1:length(entryRows)
                 labels(inds) = raw(er-1+(1:14),(2*jj)+1);
                 nums(inds) = [raw{er-1+(1:14),2*jj}];
             end
+        case 32
+            for jj=1:2 %rows of electrodes in strip
+                inds = (jj-1)*16+(1:16);
+                labels(inds) = raw(er-1+(1:16),(2*jj)+1);
+                nums(inds) = [raw{er-1+(1:16),2*jj}];
+            end    
+        case 36
+            for jj=1:2 %rows of electrodes in strip
+                inds = (jj-1)*18+(1:18);
+                labels(inds) = raw(er-1+(1:18),(2*jj)+1);
+                nums(inds) = [raw{er-1+(1:18),2*jj}];
+            end        
         case 54
             for jj=1:3 %rows of electrodes in strip
                 inds = (jj-1)*18+(1:18);

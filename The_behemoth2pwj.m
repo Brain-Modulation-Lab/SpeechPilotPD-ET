@@ -168,4 +168,4 @@ for s=1:length(subjects)
 end
 Results;
 disp('Saving population data file');
-save('Band_modulation_referenced_PD_v4','Results','-v7.3');
+save('Band_modulation_referenced_PD2_v4','Results','-v7.3');
