@@ -4,7 +4,7 @@
 
 subjectLists; %load lists of subjects
 subjects = PD_subjects;
-%codeDir = '~pwjones/Documents/RichardsonLab/matlab/SpeechPilotPD-ET';
+codeDir = '~pwjones/Documents/RichardsonLab/matlab/SpeechPilotPD-ET';
 
 %basedir = '/Volumes/ToughGuy/RichardsonLabData/ET';
 basedir='\\136.142.16.9\Nexus\Electrophysiology_Data\DBS_Intraop_Recordings';
@@ -28,18 +28,16 @@ for s=1:length(subjects)
 %         end
         changed = 0;
         if ~isfield(data, 'SubjectID')
-            name = strtok(tmp(ii).name, '_');
+            name = strtok(tmp(ii).name, '-');
             data.SubjectID = name;
-            changed = 1;
         end
         if ~isfield(data, 'Side')
-            sidecell = cell2mat(data.side);
+            sidecell = cell2mat(data.Side);
             if strcmpi(sidecell(1), 'L')
                 data.Side = 'Left';
             else
                 data.Side = 'Right';
             end
-            changed=1;
         end
         if changed
             save([subjDir filesep tmp(ii).name], '-struct', 'data');
