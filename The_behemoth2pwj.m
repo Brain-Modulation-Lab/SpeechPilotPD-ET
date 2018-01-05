@@ -89,11 +89,11 @@ for s=1:length(subjects)
                 switch Cond{c}
                     case 'Cue'
                         prestim=round(0.5*data.nfs);
-                        poststim=round(mean(E2-E1)*data.nfs);
+                        poststim=round(1+mean(E2-E1)*data.nfs);
                         E2use=E1;
                     case 'Onset'
                         prestim=round(0.5+mean(E2-E1)*data.nfs);
-                        poststim=round(1+mean(E3-E2)*data.nfs);
+                        poststim=round(1.5+mean(E3-E2)*data.nfs);
                         E2use=E2;
                 end
                 
