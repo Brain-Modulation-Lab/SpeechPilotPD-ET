@@ -3,10 +3,11 @@
 % This script compiles population responses from the large population dataset, plotting the responses 
 % for each electrode in the results structure along the way.
 
+setDirectories;
 align = {'Cue', 'Onset'};
 freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
 locations = {'Precentral Gyrus', 'Postcentral Gyrus', 'Superior Temporal Gyrus'};
-group='PD';
+group='ET';
 electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 electrodeLocs = readElectrodeLocXLS(electrodeFile, group); 
 rows = ceil(length(freq)/2);
@@ -104,7 +105,7 @@ for ll = 1:length(locations)
 
 
         eval([align{aa} '= struct(''popZ'', popZ, ''subj'', subj, ''chan'', chan,''time'', popTime, ''gammaMax'', gammaMax, ''chEventTimes'', chEventTimes);']);
-%         eval(['PopResults(1).loc(ll).' align{aa} '=' align{aa}]);
+        eval(['PopResults(1).loc(ll).' align{aa} '=' align{aa}]);
     end
 end
 PopResults.bands = freq;
