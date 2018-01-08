@@ -5,7 +5,8 @@
 
 setDirectories;
 align = {'Cue', 'Onset'};
-freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
+%freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
+freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2'};
 locations = {'Precentral Gyrus', 'Postcentral Gyrus', 'Superior Temporal Gyrus'};
 group='ET';
 electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
@@ -14,9 +15,9 @@ rows = ceil(length(freq)/2);
 PopResults = struct([]); chEventTimes = [];
 for ll = 1:length(locations)
     for aa = 1:length(align)
-        figure;
+        tracef = figure;
         %lets figure out the timebase we need for the population
-        minT = 0; maxT = 0; nContactsTotal = 0; meanEventTimes = [];
+        minT = 0; maxT = 0; nContactsTotal = 0; meanEventTimes = []; nTrialsTotal = 0;
         for ii=1:length(Results)
             trTime = linspace(-Results(ii).(align{aa}).parameters{2}, Results(ii).(align{aa}).parameters{4}, size(Results(ii).(align{aa}).meanPSD,2));
             minT = min(minT, -Results(ii).(align{aa}).parameters{2});
@@ -27,7 +28,8 @@ for ll = 1:length(locations)
             contacts = Results(ii).Cue.parameters{16};
 
             % calculate the trial timings 
-            trialsUsed = Results(ii).Cue.parameters{10}; trialsUsed = trialsUsed(:);
+            trialsUsed = Results(ii).Cue.parameters{10}; trialsUsed = trialsUsed(:); nTrials = length(trialsUsed);
+            nTrialsTotal = nTrialsTotal + nTrials*length(locMatch);
             respTime = reshape(Results(ii).trials.SpOnset(trialsUsed),[],1) - reshape(Results(ii).trials.CommandStim(trialsUsed), [],1);
             respOffset = reshape(Results(ii).trials.SpOffset(trialsUsed),[],1) - reshape(Results(ii).trials.CommandStim(trialsUsed),[],1);
             if strcmp(align{aa}, 'Cue') %save event times for averaging/marking traces 
@@ -42,11 +44,12 @@ for ll = 1:length(locations)
         popZeroInd = find(popTime >= 0,1);
         popZ = zeros(length(popTime), nContactsTotal, length(freq));
 
-        meanz = struct([]); gammaMax = []; subj=[]; chan=[];
+        meanz = struct([]); gammaMax = []; subj=[]; chan=[]; 
         trTime = linspace(-Results(1).(align{aa}).parameters{2}, Results(1).(align{aa}).parameters{4}, size(Results(1).(align{aa}).meanPSD,2));
         for ff = 1:length(freq) %frequency bands/plots
             zM = NaN*zeros(length(popTime), nContactsTotal);
-            zmi = 1;
+            trial_z = NaN*zeros(length(popTime), nTrialsTotal); all_latencies = zeros(nTrialsTotal,1);
+            zmi = 1; ti = 0;
             for ii=1:length(Results) %subjects
                 nTrials = Results(ii).(align{aa}).parameters{8};
                 % selecting by contact location
@@ -54,23 +57,32 @@ for ll = 1:length(locations)
                 locMatch = find(strcmpi(contactLocs, locations{ll})); 
                 nchUsed = length(locMatch);
                 nch = Results(ii).(align{aa}).parameters{12};
+                trialsUsed = Results(ii).Cue.parameters{10}; trialsUsed = trialsUsed(:);
                 trTime = linspace(-Results(ii).(align{aa}).parameters{2}, Results(ii).(align{aa}).parameters{4}, size(Results(ii).(align{aa}).meanPSD,2));
                 base = abs(Results(ii).((align{aa})).(freq{ff}).bs);
                 signal = abs(Results(ii).((align{aa})).(freq{ff}).tr);
 
+               
                 for jj=1:nchUsed  %electrode contacts
                     eNum = locMatch(jj);
                     signal_ch = signal(:,eNum:nch:end);
                     base_ch = base(:,eNum:nch:end);
                     z_amp = (signal_ch - mean(mean(base_ch,2))) / std(mean(base_ch,2));
                     mean_z = mean(z_amp,2);
-
+                    respTime = reshape(Results(ii).trials.SpOnset(trialsUsed),[],1) - reshape(Results(ii).trials.CommandStim(trialsUsed), [],1);
+                    [~,latencyi] = sort(respTime);
+                    if strcmpi(align{aa}, 'Onset') respTime = -respTime; end
+                    
+                    
                     meanz(ii,jj).amp = mean_z;  %save the signals to do some averaging
                     meanz(ii,jj).time = trTime;
                     zi = find(trTime >= 0,1);
                     len = length(mean_z);
                     popInds = (popZeroInd - zi) + (1:len);
                     zM(popInds, zmi) = mean_z;
+                    trial_z(popInds,ti+(1:length(trialsUsed))) = z_amp(:,latencyi);
+                    all_latencies(ti+(1:length(trialsUsed))) = respTime(latencyi);
+                    ti = ti+length(trialsUsed);
                     if isequal(freq{ff}, 'BroadbandGamma')
                         gammaMax(zmi) =  max(mean_z);
                         subj(zmi) = ii;
@@ -78,6 +90,7 @@ for ll = 1:length(locations)
                     end
 
                     if gammaMax(zmi) >= 5
+                        figure(tracef);
                         subplot(rows, 2, ff);
                         plot(trTime, mean_z, 'k'); hold on;
                     end
@@ -98,9 +111,17 @@ for ll = 1:length(locations)
             else
                 set(gca, 'Xlim', [-.5 1.2]);
             end
+            % Plot the trial-wise responses for all subjects
+            figure;
+            pcolor(popTime, 1:size(trial_z,2), trial_z'); 
+            shading flat; hold on;
+            xp = [all_latencies, all_latencies]';
+            yp = repmat([0;1], 1, nTrialsTotal) + (0:(nTrialsTotal-1)); 
+            plot(xp, yp, 'r-', 'Linewidth', 1); 
+            title(['Alignment: ' align{aa} ' ' freq{ff} ' ' locations{ll}]);
             popZ(:,:,ff) = zM;
         end
-        axes(gcf, 'Position', [0, .9, .8, .1], 'Visible', 'off', 'Fontsize', 20);
+        axes(tracef, 'Position', [0, .9, .8, .1], 'Visible', 'off', 'Fontsize', 20);
         text(.5, .7, [locations{ll} '  Alignment: ' align{aa}]);
 
 

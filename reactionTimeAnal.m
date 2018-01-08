@@ -1,11 +1,9 @@
 % Reaction Times 
-setDirectories
-
+setDirectories;
 
 for ii = 1:length(Results)
-    phys = Results(ii).Onset;
     subjName = strtok(Results(ii).Session, '_');
-    data = load([datadir filesep subjName filesep Results(ii).Session]);
+    trialsUsed = Results(ii).Onset.parameters{10};
+    spLatency = Results(ii).trials.SpOnset(trialsUsed) - Results(ii).trials.CommandStim(trialsUsed);
     
-    dataTime = -phys.parameters{2}:data.nfs
 end

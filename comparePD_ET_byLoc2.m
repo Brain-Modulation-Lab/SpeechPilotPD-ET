@@ -5,6 +5,7 @@ PD = load('PD_populationAvgs_Loc.mat');
 gammaThresh = 5;
 align = {'Cue', 'Onset'};
 freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
+freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','alpha'};
 rows = length(freq);
 for ll = 1:length(ET.PopResults.loc)
     figure;
@@ -31,8 +32,16 @@ for ll = 1:length(ET.PopResults.loc)
             %plot(PD.PopResults.loc(ll).(align{aa}).time, PDmean-PDsem, '--r', 'LineWidth', 1);
             %plot(PD.PopResults.loc(ll).(align{aa}).time, PDmean+PDsem, '--r', 'LineWidth', 1);
             %plot(PD.PopResults.loc(ll).(align{aa}).time, PDmean, 'r', 'LineWidth', 2);
-            title(freq{ff});
-            set(gca, 'Ylim', [-5 5], 'TickDir', 'out');
+            title(freq{ff}, 'Fontsize', 16);
+            set(gca, 'Ylim', [-5 10], 'TickDir', 'out');
+            switch freq{ff}
+                case 'beta1'
+                   set(gca, 'Ylim', [-7 2]);
+                case 'beta2'
+                   set(gca, 'Ylim', [-7 2]);
+                case 'alpha'
+                    set(gca, 'Ylim', [-6 2]);
+            end
             plot([t(1) t(end)], [3 3], '--k', 'LineWidth', 1); %3 SD lines
             plot([t(1) t(end)], [-3 -3], '--k', 'LineWidth', 1);
             PDeventPlotx = mean(PD.PopResults.loc(ll).(align{aa}).chEventTimes);
@@ -48,7 +57,7 @@ for ll = 1:length(ET.PopResults.loc)
             end
         end
 
-        axes('Parent', gcf, 'Position', [0, .9, .8, .1], 'Visible', 'off', 'Fontsize', 20);
+        axes('Parent', gcf, 'Position', [0, .9, .8, .1], 'Visible', 'off', 'Fontsize', 16);
         text(.5, .7, [ET.PopResults.locations{ll} '  Alignment: ' align{aa}]);
     end
 end
