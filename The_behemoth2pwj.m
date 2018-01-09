@@ -7,8 +7,8 @@
 setDirectories; %platform specific locations 
 electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 subjectLists; %load lists of subjects
-subjects = PD_subjects;
-group = 'PD';
+subjects = ET_subjects;
+group = 'ET';
 %subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
 %subjects = {'DBS4046'};
 pbSpect = 0;
@@ -25,9 +25,9 @@ load([codeDir filesep 'Filters' filesep 'BroadbandGammaFilt.mat']);
 
 pad=4000; % Needs to be > longest filter length, 2713 samples
 Cond={'Cue','Onset'};
-freq={'alpha','beta1','beta2', 'Gamma', 'Hgamma', 'BroadbandGamma'};
+%freq={'alpha','beta1','beta2', 'Gamma', 'Hgamma', 'BroadbandGamma'};
 %freq={'beta1','beta2','BroadbandGamma'};
-%freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
+freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
 if ispc
     datadir='\\136.142.16.9\Nexus\Electrophysiology_Data\DBS_Intraop_Recordings';
 else
@@ -133,21 +133,21 @@ for s=1:length(subjects)
                     Results(h).(Cond{c}).(freq{f}).tr=cmp_tr;
                     Results(h).(Cond{c}).(freq{f}).bs=cmp_bs;
                     
-%                     % normalize complex data for IPC calculation
-%                     cmp_tr=cmp_tr./abs(cmp_tr);
-%                     cmp_bs=cmp_bs./abs(cmp_bs);
-%                     
-%                     % intertrial phase consistency
-%                     Results(h).(Cond{c}).(freq{f}).IPC_tr=cell2mat(arrayfun(@(x) abs(mean(cmp_tr(:,x:nch:end),2)),1:nch,'Uni',0));
-%                     
-%                     % Rayleigh test
-%                     R = nt*Results(h).(Cond{c}).(freq{f}).IPC_tr;
-%                     Results(h).(Cond{c}).(freq{f}).z_IPC = (R.^2) / nt;
-%                     %  P-value for Rayleigh test
-%                     Results(h).(Cond{c}).(freq{f}).p_IPC = exp(sqrt(1+4*nt+4*(nt^2-R.^2))-(1+2*nt));
-%                     
-%                     % baseline IPC
-%                     Results(h).(Cond{c}).(freq{f}).IPC_bs=cell2mat(arrayfun(@(x) abs(mean(cmp_bs(:,x:3:end),2)),1:nch,'Uni',0));
+                    % normalize complex data for IPC calculation
+                    cmp_tr=cmp_tr./abs(cmp_tr);
+                    cmp_bs=cmp_bs./abs(cmp_bs);
+                    
+                    % intertrial phase consistency
+                    Results(h).(Cond{c}).(freq{f}).IPC_tr=cell2mat(arrayfun(@(x) abs(mean(cmp_tr(:,x:nch:end),2)),1:nch,'Uni',0));
+                    
+                    % Rayleigh test
+                    R = nt*Results(h).(Cond{c}).(freq{f}).IPC_tr;
+                    Results(h).(Cond{c}).(freq{f}).z_IPC = (R.^2) / nt;
+                    %  P-value for Rayleigh test
+                    Results(h).(Cond{c}).(freq{f}).p_IPC = exp(sqrt(1+4*nt+4*(nt^2-R.^2))-(1+2*nt));
+                    
+                    % baseline IPC
+                    Results(h).(Cond{c}).(freq{f}).IPC_bs=cell2mat(arrayfun(@(x) abs(mean(cmp_bs(:,x:3:end),2)),1:nch,'Uni',0));
                 end
             end
             Results(h).Session=tmp(fi).name;
@@ -168,4 +168,4 @@ for s=1:length(subjects)
 end
 Results;
 disp('Saving population data file');
-save('Band_modulation_referenced_PD_v5','Results','-v7.3');
+save('Band_modulation_referenced_ET_v5','Results','-v7.3');
