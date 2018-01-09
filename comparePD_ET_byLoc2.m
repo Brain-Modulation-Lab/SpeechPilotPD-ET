@@ -20,11 +20,17 @@ for ll = 1:length(ET.PopResults.loc)
             nPD = sum(PDsel(:));
             PDmean = nanmean(PD.PopResults.loc(ll).(align{aa}).popZ(:,PDsel,ff), 2);
             PDsem = nanstd(PD.PopResults.loc(ll).(align{aa}).popZ(:,PDsel,ff),0, 2)./sqrt(nPD);
-            t = ET.PopResults.loc(ll).(align{aa}).time;
+            et_t = ET.PopResults.loc(ll).(align{aa}).time;  
+            pd_t = PD.PopResults.loc(ll).(align{aa}).time;
+            
             plot_err_poly(gca, ET.PopResults.loc(ll).(align{aa}).time, ETmean, ETsem, [0 0 1], [.5 .5 1],1);
             hold on;
             plot_err_poly(gca, PD.PopResults.loc(ll).(align{aa}).time, PDmean, PDsem, [1 0 0], [1 .5 .5],1);
-
+            etzi = find(ET.PopResults.loc(ll).(align{aa}).time > 0, 1); et_range = (-etzi+1):(length(et_t)-etzi);
+            pdzi = find(PD.PopResults.loc(ll).(align{aa}).time > 0, 1); pd_range = (-pdzi+1):(length(pd_t)-pdzi);
+            commont = intersect(et_range, pd_range);
+            [h, p] = clusterPermuteTtest(PD.PopResults.loc(ll).(align{aa}).popZ(commont+pdzi,PDsel,ff)', ET.PopResults.loc(ll).(align{aa}).popZ(commont+etzi,ETsel,ff)');
+            hold on; plot(et_t(commont+etzi), h*10, 'k-');
             %plot(ET.PopResults.loc(ll).(align{aa}).time, ETmean, 'b', 'LineWidth', 2);
             %hold on;
             %plot(ET.PopResults.loc(ll).(align{aa}).time, ETmean-ETsem, 'b--', 'LineWidth', 1);
@@ -42,8 +48,8 @@ for ll = 1:length(ET.PopResults.loc)
                 case 'alpha'
                     set(gca, 'Ylim', [-6 2]);
             end
-            plot([t(1) t(end)], [3 3], '--k', 'LineWidth', 1); %3 SD lines
-            plot([t(1) t(end)], [-3 -3], '--k', 'LineWidth', 1);
+            plot([et_t(1) et_t(end)], [3 3], '--k', 'LineWidth', 1); %3 SD lines
+            plot([et_t(1) et_t(end)], [-3 -3], '--k', 'LineWidth', 1);
             PDeventPlotx = mean(PD.PopResults.loc(ll).(align{aa}).chEventTimes);
             PDeventPlotx = repmat(PDeventPlotx, 2,1)
             ETeventPlotx = mean(ET.PopResults.loc(ll).(align{aa}).chEventTimes);
