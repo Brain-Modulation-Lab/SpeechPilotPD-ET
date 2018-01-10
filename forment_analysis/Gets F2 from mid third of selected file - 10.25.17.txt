@@ -1,0 +1,17 @@
+n = numberOfSelected ("Sound")
+for i to n
+	sound [i] = selected ("Sound", i)
+endfor
+for i to n
+	selectObject: sound [i]
+	To Formant (burg): 0, 5, 5500, 0.025, 50
+    duration = Get total duration
+	initialTime = duration / 3
+	finalTime = initialTime + initialTime
+    f2 = Get mean: 2, initialTime, finalTime, "Hertz"
+	appendInfoLine: f2
+endfor
+selectObject ( )   ; deselect all objects
+for i from 1 to n
+	plusObject: sound [i]
+endfor

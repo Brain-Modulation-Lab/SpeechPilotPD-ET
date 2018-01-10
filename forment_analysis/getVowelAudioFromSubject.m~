@@ -1,0 +1,72 @@
+% Launch this from the 'Preprocessesed Data' directory of the subject with the 
+% session numbers you want process set
+
+% what vowel IPA codes do you want?
+vowels = {'i', '\textscripta', 'u'};
+% What sessions do you want to process?
+sessions = [1 2 3];
+% events per trial for this task
+EventsPerTrial = 4;
+mkdir('Analysis');
+
+% Just looks at the coding filenames and gets the sessions from them
+files = dir(['AudioCodingFiles' filesep 'DBS*']);
+fileSession = [];
+for ii=1:length(files)
+    scanres = textscan(files(ii).name, 'DBS%d_%cession%d');
+    fileSession(ii) = scanres{3}; 
+end
+%matches 
+j=1;
+for ss=1:length(sessions)
+    match = find(fileSession == sessions(ss));
+    if ~isempty(match)
+        fi(ss) = match;
+    else
+        fi(ss) = 0;
+    end
+end
+
+%just loop for the sessions you want to do
+for ss = 1:length(sessions)
+    if fi(ss)
+        load(['AudioCodingFiles' filesep files(fi(ss)).name]);
+        % initialize output variable
+        VowelAudio = {[] [] []};
+        VowelTrials = {[] [] []};
+        
+        for trial = 1:length(CodingMatrix)
+            % determine
+            if ~isemptCodingMatrix{1,trial}
+            codes = strsplit(CodingMatrix{1,trial}, '/');
+            
+            for v = 1:length(vowels)
+                idx = find(cellfun(@(x) strcmp(vowels(v), x), codes));
+                if ~isempty(idx) && ~isempty(CodingMatrix{9,trial}) && ~isempty(CodingMatrix{10,trial})
+                    VowelAudio{v}{end+1} = ...
+                        Audio(round(Afs*(EventTimes(SkipEvents+EventsPerTrial*trial)+CodingMatrix{9,trial})): ...
+                        round(Afs*(EventTimes(SkipEvents+EventsPerTrial*trial)+CodingMatrix{10,trial})));
+                    VowelTrials{v}{end+1} = trial;
+                end
+            end
+            
+        end
+        % go to output folder and write files
+        session = num2str(sessions(ss));
+        
+        mkdir(['Analysis' filesep 'VowelFiles']);
+        sessionDir = ['Analysis' filesep 'VowelFiles' filesep 'Session' session];
+        mkdir(sessionDir)
+        for v = 1:length(vowels)
+            vowelDir = [sessionDir filesep strrep(vowels{v}, '\', '')];
+            mkdir(vowelDir)
+            for i=1:length(VowelAudio{v})
+                temp = VowelAudio{v}{i};
+                audiowrite([vowelDir, filesep, 'trial',num2str(VowelTrials{v}{i}),'.wav'],temp/(max(temp)-min(temp)),Afs);
+            end
+        end
+        %player = audioplayer(Afs);
+    end
+end
+
+

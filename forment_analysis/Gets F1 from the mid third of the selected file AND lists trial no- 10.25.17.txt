@@ -1,0 +1,29 @@
+n = numberOfSelected ("Sound")
+for i to n
+	sound [i] = selected ("Sound", i)
+	name$ = selected$ ("Sound", i)
+	appendInfoLine: name$
+endfor
+for i to n
+	selectObject: sound [i]
+	To Formant (burg): 0, 5, 5500, 0.025, 50
+	duration = Get total duration
+	initialTime = duration / 3
+	finalTime = initialTime + initialTime
+    f1 = Get mean: 1, initialTime, finalTime, "Hertz"
+	appendInfoLine: f1
+endfor
+selectObject ( )   ; deselect all objects
+for i from 1 to n
+	plusObject: sound [i]
+endfor
+
+	#This code below will correctly gather the total duration of the vowel,
+	# then it will mark the beginning and ending time points for the middle 3rd.
+		#To Formant (burg): 0, 5, 5500, 0.025, 50
+		#duration = Get total duration
+		#appendInfoLine = duration
+		#initialTime = duration / 3
+		#finalTime = initialTime + initialTime
+		#appendInfoLine: duration, "inital", initialTime, "final", finalTime
+

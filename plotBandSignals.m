@@ -4,7 +4,7 @@ align_labels = {'Cue Presentation', 'Speech Onset'};
 ns = length(Results);
 
 freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
-freq={'BroadbandGamma','beta1','beta2','alpha','theta','delta'};
+%freq={'BroadbandGamma','beta1','beta2','alpha','theta','delta'};
 colors = {'k','r', [1 .3 .3], 'b',[.5 .5 .5], 'y','g', 'c','m'};
 %freq={'BroadbandGamma','beta1','beta2','delta','theta','alpha'};
 %colors = {'k', 'r', [1 .3 .3], 'y','g','c','m'};

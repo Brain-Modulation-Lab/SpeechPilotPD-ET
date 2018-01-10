@@ -1,7 +1,7 @@
 %compareET_PD_byLocation
 
-ET = load('ET_populationAvgs_Loc.mat');
-PD = load('PD_populationAvgs_Loc.mat');
+%ET = load('ET_populationAvgs_Loc2.mat');
+%PD = load('PD_populationAvgs_Loc2.mat');
 gammaThresh = 5;
 align = {'Cue', 'Onset'};
 freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
