@@ -9,6 +9,7 @@ else
     codeDir = '~pwjones/Documents/RichardsonLab/matlab/SpeechPilotPD-ET';
     docDir = '~pwjones/Documents/RichardsonLab/ET-PD project';
     datadir = '/Volumes/ToughGuy/RichardsonLabData/ET'; %sample data
+    datadir = '/Volumes/Nexus/Electrophysiology_Data/DBS_Intraop_Recordings';
     figDir = '~pwjones/Documents/RichardsonLab/SRP/figureDump';
     savedDataDir = '/Volumes/ToughGuy/RichardsonLabData/ET';
 end
