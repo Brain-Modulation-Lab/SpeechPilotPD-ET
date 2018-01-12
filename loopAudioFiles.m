@@ -11,6 +11,9 @@ for s = 1:length(subjects)
     end
     files = dir([d filesep 'DBS*']);
     for ii = 1:length(files)
-        sessionBehavior(n+1).snrVoice = computeLoudnessRMS([d filesep files(ii).name]);
+        fname = [d filesep files(ii).name];
+        sessionBehavior(n+1).snrVoice = computeLoudnessRMS(fname);
+        [sessionBehavior(n+1).SpLatency, sessionBehavior(n+1).SpDuration] = responseTimingsFromCodingFile(fname);
+        n = n+1;
     end
 end
