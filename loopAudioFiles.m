@@ -2,9 +2,10 @@
 
 subjectLists;
 setDirectories;
-subjects = PD_subjects;
+clear sessionBehavior;
+subjects = ET_subjects;
 n = 0;
-for s = 1:length(subjects)
+for s = 3:length(subjects)
     d = [datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'AudioCodingFiles'];
     if isdir([d filesep 'CHECKED'])
         d = [d filesep 'CHECKED'];
@@ -12,8 +13,12 @@ for s = 1:length(subjects)
     files = dir([d filesep 'DBS*']);
     for ii = 1:length(files)
         fname = [d filesep files(ii).name];
-        sessionBehavior(n+1).snrVoice = computeLoudnessRMS(fname);
-        [sessionBehavior(n+1).SpLatency, sessionBehavior(n+1).SpDuration] = responseTimingsFromCodingFile(fname);
+        load(fname);
+        sessionBehavior(n+1).snrVoice = computeLoudnessRMS(Audio, Afs, trials);
+        [sessionBehavior(n+1).SpLatency, sessionBehavior(n+1).SpDuration] = responseTimingsFromCodingFile(trials);
+        sessionBehavior(n+1).session = files(ii).name;
         n = n+1;
     end
 end
+
+save('ET_populationBehavior.mat', 'sessionBehavior', '-v7.3');

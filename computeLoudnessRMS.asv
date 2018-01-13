@@ -26,7 +26,7 @@ for tr = 1:length(trials.SpOnset)
         rmsBase(tr) = NaN;
     end
     
-    if pb && ~isnan(spEnd) && ~isnan(spStart)
+    if pb && ~isnan(spEnd) && ~isnan(sp
         hold on;
         plot(baselineStart:baselineEnd, Audio(baselineStart:baselineEnd), 'b');
         plot(spStart:spEnd, Audio(spStart:spEnd), 'r');
