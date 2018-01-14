@@ -1,4 +1,4 @@
-function [latency, duration, commandT] = responseTimingsFromCodingFile(Audio, Afs, CodingMatrix, EventTimes, SkipEvents)
+function [latency, duration] = responseTimingsFromCodingFile(Audio, CodingMatrix, EventTimes, SkipEvents)
 
 pb = 1;
 maxTrial = 60;
@@ -12,8 +12,7 @@ SpOnLat = CodingMatrix(5, 1:maxTrial);
 SpOffLat = CodingMatrix(6,1:maxTrial);
 onset = cellfun(@(x) nancheck(x), SpOnLat);
 offset = cellfun(@(x) nancheck(x), SpOffLat);
-duration = offset-onset;
-latency = onset;
+wordDuration = offset-onset;
 
 if pb
     figure;
