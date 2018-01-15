@@ -1,7 +1,7 @@
 function [snrVoice, rmsVoice, rmsBase] = computeLoudnessRMS(Audio, Afs, lat, dur, commandT)
 %Loudness comparison between baseline and speech
 
-pb=1;
+pb=0;
 if pb
     figure;
     plot(Audio, 'k');

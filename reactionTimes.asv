@@ -21,15 +21,9 @@ for ii=1:nSessions
     allSNRM(:,ii) = sessionBehavior(ii).snrVoice;
 end
 
-%% Population reaction time characterization for each group
-PDlat = [sessionBehavior(labels==1).SpLatency];
-ETlat = [sessionBehavior(labels==0).SpLatency];
-figure; histogram(PDlat);
-
-%%
 figure;
-boxplot(allLatsM, labels, 'notch', 'on'); title('Response Latencies by Session');
+boxplot(allLatsM, labels, 'notched'); title('Response Latencies by Session');
 figure;
-boxplot(allDurM, labels, 'notch', 'on');  title('Response Duration by Session');
+boxplot(allDurM, labels, 'notched');  title('Response Duration by Session');
 figure;
-boxplot(allSNRM, labels, 'notch', 'on');  title('Voice RMS SNR by session');
+boxplot(allSNRM, labels, ');  title('Voice RMS SNR by session');
