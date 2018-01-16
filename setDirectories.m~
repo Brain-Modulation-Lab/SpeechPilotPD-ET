@@ -12,5 +12,5 @@ else
     datadir = '/Volumes/Nexus/Electrophysiology_Data/DBS_Intraop_Recordings';
     figDir = '~pwjones/Documents/RichardsonLab/SRP/figureDump';
     savedDataDir = '/Volumes/ToughGuy/RichardsonLabData/ET';
-    savedDataDir = '~pwjones/Documents/RichardsonLabData/';
+    savedDataDir = '~pwjones/Documents/RichardsonLab/RichardsonLabData/ET';
 end
