@@ -43,7 +43,8 @@ xlabel('Speech Onset Latency (sec)');
 ylabel('Proportion of Responses');
 set(gcf, 'Renderer', 'Painters');
 disp('Reaction Time Wilcoxon Rank Sum')
-[p,h] = ranksum(ETlat, PDlat)
+[p,h] = ranksum(ETmedian, PDmedian);
+di
 
 %% Speech Duration
 PDdur = [sessionBehavior(PDsession==1).SpDuration];
@@ -66,8 +67,6 @@ xlim([0 1.6]);
 xlabel('Speech Duration (sec)');
 ylabel('Proportion of Responses');
 set(gcf, 'Renderer', 'Painters');
-disp('Speech Duration Wilcoxon Rank Sum')
-[p,h] = ranksum(ETdur, PDdur)
 
 %% Load in the Formant analysis
 % inconsistent in format between ET and PD datasets, but computed in the same way 
