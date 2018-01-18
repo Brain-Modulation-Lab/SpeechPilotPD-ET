@@ -6,11 +6,11 @@
 plotResponseHists = 0;
 setDirectories;
 align = {'Cue', 'Onset'};
-align = {'Onset'};
+%align = {'Onset'};
 %freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
 freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2', 'alpha'};
 locations = {'Precentral Gyrus', 'Postcentral Gyrus', 'Superior Temporal Gyrus'};
-group='ET';
+group='PD';
 load([savedDataDir filesep group '_populationBehavior.mat']); %load population behavior
 electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 electrodeLocs = readElectrodeLocXLS(electrodeFile, group); 
@@ -91,12 +91,13 @@ for ll = 1:length(locations)
                     len = length(mean_z);
                     if strcmpi(align{aa}, 'Onset') 
                         respTime = -respTime; 
-                        if plotResponseHists
-                            [pvals(zmi), h] = checkElectrodeSignificance(base_ch, signal_ch, zeroi, hist_ah(zmi));
-                        else 
-                            [pvals(zmi), h] = checkElectrodeSignificance(base_ch, signal_ch, zeroi);
-                        end
-                    end 
+                    end
+                    if plotResponseHists
+                        [pvals(zmi), h] = checkElectrodeSignificance(base_ch, signal_ch, zeroi, hist_ah(zmi));
+                    else 
+                        [pvals(zmi), h] = checkElectrodeSignificance(base_ch, signal_ch, zeroi);
+                    end
+                     
                     popInds = (popZeroInd - zeroi) + (1:len);
                     zM(popInds, zmi) = mean_z;
                     trial_z(popInds,ti+(1:length(trialsUsed))) = z_amp(:,latencyi);
@@ -113,7 +114,7 @@ for ll = 1:length(locations)
                         traceah = subplot(rows, 2, ff);
                         plot(trTime, mean_z, 'k'); hold on;
                     end
-                    chEventTimes(zmi,:) = mean(eventTimes, 1);
+                    chEventTimes(zmi,:) = nanmedian(eventTimes, 1);
                     zmi = zmi+1;
                 end
                 
@@ -123,13 +124,13 @@ for ll = 1:length(locations)
                     sessioni = (subj_ti_start:(ti-1))+1;
                     minz = min(min(trial_z(popInds, sessioni)));
                     maxz = max(max(trial_z(popInds, sessioni)));
-                    caxis([minz maxz]); caxis([-10 40]);
+                    %caxis([minz maxz]); caxis([-10 ]);
                     pcolor(trTime, 1:size(trial_z(popInds, sessioni),2), trial_z(popInds, sessioni)'); 
                     shading flat; hold on;
-                    colormap('copper'); colorbar;
+                    colormap('parula'); colorbar;
                     xp = [all_latencies(sessioni), all_latencies(sessioni)]';
                     yp = repmat([0;1], 1, length(sessioni)) + (0:(length(sessioni)-1)); 
-                    plot(xp, yp, 'r-', 'Linewidth', 1); 
+                    plot(xp, yp, 'r-', 'Linewidth', 2); 
                     title([Results(ii).Session 'Alignment: ' align{aa} ' ' freq{ff} ' ' locations{ll}]);
                     xlabel('Time (sec)');
                     ylabel('Trial Number (sorted by response latency)');
@@ -156,13 +157,13 @@ for ll = 1:length(locations)
         axes(tracef, 'Position', [0, .9, .8, .1], 'Visible', 'off', 'Fontsize', 20);
         text(.5, .7, [locations{ll} '  Alignment: ' align{aa}]);
 
-        eval([align{aa} '= struct(''popZ'', popZ, ''popPvals'', popPvals, ''subj'', subj, ''chan'', chan,''time'', popTime, ''gammaMax'', gammaMax, ''chEventTimes'', chEventTimes);']);
+        eval([align{aa} '= struct(''popZ'', popZ, ''popPvals'', popPvals, ''subj'', subj, ''chan'', chan,''time'', popTime, ''gammaMax'', gammaMax, ''chEventTimes'', chEventTimes, ''eventTimes'', eventTimes);']);
         eval(['PopResults(1).loc(ll).' align{aa} '=' align{aa}]);
     end
 end
 PopResults.bands = freq;
 PopResults.locations = locations;
-%save('ET_populationAvgs_Loc2.mat', 'PopResults', '-v7.3'); 
+save([group '_populationAvgs_Loc2.mat'], 'PopResults', '-v7.3'); 
 %% 
 % Assemble averages that are aligned on the proper timing
 % dt = mean(diff(trTime));
