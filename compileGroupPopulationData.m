@@ -11,6 +11,7 @@ align = {'Onset'};
 freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2', 'alpha'};
 locations = {'Precentral Gyrus', 'Postcentral Gyrus', 'Superior Temporal Gyrus'};
 group='ET';
+load([savedDataDir filesep group '_populationBehavior.mat']); %load population behavior
 electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 electrodeLocs = readElectrodeLocXLS(electrodeFile, group); 
 rows = ceil(length(freq)/2);
@@ -19,7 +20,7 @@ for ll = 1:length(locations)
     for aa = 1:length(align)
         tracef = figure;
         %figure out the timebase we need for the population
-        minT = 0; maxT = 0; nContactsTotal = 0; meanEventTimes = []; nTrialsTotal = 0;
+        minT = 0; maxT = 0; nContactsTotal = 0; eventTimes = [NaN NaN NaN]; nTrialsTotal = 0;
         for ii=1:length(Results)
             trTime = linspace(-Results(ii).(align{aa}).parameters{2}, Results(ii).(align{aa}).parameters{4}, size(Results(ii).(align{aa}).meanPSD,2));
             minT = min(minT, -Results(ii).(align{aa}).parameters{2});
@@ -34,12 +35,17 @@ for ll = 1:length(locations)
             nTrialsTotal = nTrialsTotal + nTrials*length(locMatch);
             respTime = reshape(Results(ii).trials.SpOnset(trialsUsed),[],1) - reshape(Results(ii).trials.CommandStim(trialsUsed), [],1);
             respOffset = reshape(Results(ii).trials.SpOffset(trialsUsed),[],1) - reshape(Results(ii).trials.CommandStim(trialsUsed),[],1);
+%             % Can inttegrate updated behavioral measures but won't change
+%             % the alignment which is already done
+%             respTime = reshape(sessionBehavior(ii).SpLatency(trialsUsed), [],1);
+%             respOffset = respTime + reshape(sessionBehavior(ii).SpDuration(trialsUsed), [],1);
             if strcmp(align{aa}, 'Cue') %save event times for averaging/marking traces 
-                meanEventTimes(ii,:) = [0 mean(respTime) mean(respOffset)];
+                eventTimes = cat(1, eventTimes, [zeros(nTrials,1) respTime respOffset]);
             else
-                meanEventTimes(ii,:) = [-mean(respTime) 0 mean(respOffset-respTime)];
+                eventTimes = cat(1, eventTimes, [-respTime zeros(nTrials,1) respOffset-respTime]);
             end
         end
+        medEventTimes = nanmedian(eventTimes);
         dt= mean(diff(trTime));
         minT = minT - dt*2; maxT = maxT+dt*2; %just to get an element of padding in case
         popTime = linspace(minT, maxT, (maxT-minT)/dt);
@@ -77,6 +83,7 @@ for ll = 1:length(locations)
                     z_amp = (signal_ch - mean(base_ch(:))) ./ std(base_ch(:));
                     mean_z = mean(z_amp,2);
                     respTime = reshape(Results(ii).trials.SpOnset(trialsUsed),[],1) - reshape(Results(ii).trials.CommandStim(trialsUsed), [],1);
+                    %compareResponseLatencies; %In for a sec, can remove once response latencies are verified
                     [~,latencyi] = sort(respTime);
                     meanz(ii,jj).amp = mean_z;  %save the signals to do some averaging
                     meanz(ii,jj).time = trTime;
@@ -106,7 +113,7 @@ for ll = 1:length(locations)
                         traceah = subplot(rows, 2, ff);
                         plot(trTime, mean_z, 'k'); hold on;
                     end
-                    chEventTimes(zmi,:) = meanEventTimes(ii,:);
+                    chEventTimes(zmi,:) = mean(eventTimes, 1);
                     zmi = zmi+1;
                 end
                 
@@ -134,7 +141,7 @@ for ll = 1:length(locations)
             plot(traceah, [trTime(1) trTime(end)], [-3 -3], '--r', 'LineWidth', 1);
             sel = gammaMax >= 3;
             plot(traceah, popTime, nanmean(zM(:,sel), 2), 'r', 'LineWidth',2);
-            eventPlotx = repmat(mean(chEventTimes),2,1);
+            eventPlotx = repmat(medEventTimes,2,1);
             plot(traceah, eventPlotx, [-10 -10 -10;10 10 10], 'k--'); 
             title(freq{ff});
             set(gca, 'Ylim', [-10 10]);
