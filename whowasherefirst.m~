@@ -75,22 +75,22 @@ for s=1:length(subjects)
             end
             [rhoC,pvalC]=corr(CueR,rxn(ic));
             [rhoS,pvalS]=corr(SPR,rxn(ic));
-            Results(h).rxn=rxn(ic);
-            Results(h).CR=CueR;
-            Results(h).SPR=SPR;
-            Results(h).rhoCpearson=rhoC;
-            Results(h).pvalCpearson=pvalC;
-            Results(h).rhoSpearson=rhoS;
-            Results(h).pvalSpearson=pvalS;
-            [rhoC,pvalC]=corr(CueR,rxn(ic),'type','Spearman');
-            [rhoS,pvalS]=corr(SPR,rxn(ic),'type','Spearman');
-            Results(h).rhoCspearman=rhoC;
-            Results(h).pvalCspearman=pvalC;
-            Results(h).rhoSspearman=rhoS;
-            Results(h).pvalSspearman=pvalS;
-            Results(h).Session=tmp(fi).name;
-            Results(h).Channel=c;
-            h=h+1;
+%             Results(h).rxn=rxn(ic);
+%             Results(h).CR=CueR;
+%             Results(h).SPR=SPR;
+%             Results(h).rhoCpearson=rhoC;
+%             Results(h).pvalCpearson=pvalC;
+%             Results(h).rhoSpearson=rhoS;
+%             Results(h).pvalSpearson=pvalS;
+%             [rhoC,pvalC]=corr(CueR,rxn(ic),'type','Spearman');
+%             [rhoS,pvalS]=corr(SPR,rxn(ic),'type','Spearman');
+%             Results(h).rhoCspearman=rhoC;
+%             Results(h).pvalCspearman=pvalC;
+%             Results(h).rhoSspearman=rhoS;
+%             Results(h).pvalSspearman=pvalS;
+%             Results(h).Session=tmp(fi).name;
+%             Results(h).Channel=c;
+%             h=h+1;
             plot(rxn(ia),1:length(E1),'Color','k')
             shading flat
             set(gca,'Ydir','normal','Clim',[-5 5]);colormap  jet;

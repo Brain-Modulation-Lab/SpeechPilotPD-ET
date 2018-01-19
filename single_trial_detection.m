@@ -1,13 +1,19 @@
-function [ActOnset,ZBB]=single_trial_detection(signal,sr,base,trial,tlen,f2u) 
-% single-trail activation based on Coon et al 2016
+function [ActOnset,ZBB]=single_trial_detection(signal,sr,base,trial,tlen,filt2u) 
+% single-trial activation based on Coon et al 2016
+% Signal - Dimensions: Time - only accepts a single vector signal
+% representing a continuously sampled trace at sr.
+% SR - sampling rate
+% base - baseline data vector
+% trial - times of the events for each trial
+% f2u - The frequency band center you want to take (-/+ 7.5 Hz)
 
 ch=size(signal,2);
 
-BBFilt = designfilt('bandpassiir','StopbandFrequency1',f2u-10,'PassbandFrequency1',f2u-7.5,'PassbandFrequency2',f2u+7.5, ...
-    'StopbandFrequency2',f2u+10,'StopbandAttenuation1',40,'PassbandRipple',0.01, ...
-    'StopbandAttenuation2',40,'DesignMethod','butter','SampleRate',sr);
+% BBFilt = designfilt('bandpassiir','StopbandFrequency1',f2u-10,'PassbandFrequency1',f2u-7.5,'PassbandFrequency2',f2u+7.5, ...
+%     'StopbandFrequency2',f2u+10,'StopbandAttenuation1',40,'PassbandRipple',0.01, ...
+%     'StopbandAttenuation2',40,'DesignMethod','butter','SampleRate',sr);
 
-BB=abs(hilbert(filtfilt(BBFilt,signal)));
+BB=abs(hilbert(filtfilt(filt2u,signal)));
 
 for i=1:ch
  BB(:,i)=smooth(BB(:,i),200);   

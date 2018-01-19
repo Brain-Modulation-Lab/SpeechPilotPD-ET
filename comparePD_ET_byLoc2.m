@@ -1,7 +1,7 @@
 %compareET_PD_byLocation
 
-%ET = load('ET_populationAvgs_Loc2.mat');
-%PD = load('PD_populationAvgs_Loc2.mat');
+ET = load('ET_populationAvgs_Loc2.mat');
+PD = load('PD_populationAvgs_Loc2.mat');
 gammaThresh = 5;
 align = {'Cue', 'Onset'};
 freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
@@ -50,9 +50,9 @@ for ll = 1:length(ET.PopResults.loc)
             end
             plot([et_t(1) et_t(end)], [3 3], '--k', 'LineWidth', 1); %3 SD lines
             plot([et_t(1) et_t(end)], [-3 -3], '--k', 'LineWidth', 1);
-            PDeventPlotx = mean(PD.PopResults.loc(ll).(align{aa}).chEventTimes);
+            PDeventPlotx = median(PD.PopResults.loc(ll).(align{aa}).chEventTimes);
             PDeventPlotx = repmat(PDeventPlotx, 2,1)
-            ETeventPlotx = mean(ET.PopResults.loc(ll).(align{aa}).chEventTimes);
+            ETeventPlotx = median(ET.PopResults.loc(ll).(align{aa}).chEventTimes);
             ETeventPlotx = repmat(ETeventPlotx, 2,1)
             plot(ETeventPlotx, [-5 -5 -5; 5 5 5], 'b', 'LineWidth',1);
             plot(PDeventPlotx, [-5 -5 -5; 5 5 5], 'r', 'LineWidth',1);
