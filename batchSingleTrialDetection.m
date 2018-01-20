@@ -2,6 +2,7 @@ setDirectories; %platform specific locations
 electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 subjectLists; %load lists of subjects
 subjects = PD_subjects;
+%subjects = PD_subjects(6:end);
 group = 'PD';
 
 stat.voxel_pval=0.05; stat.cluster_pval=0.05; stat.surrn=1;
@@ -28,7 +29,7 @@ for s=1:length(subjects)
     tmp=dir([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'DBS*.mat']);
     %tmp = dir([datadir filesep subjects{s} '*.mat']);
     for fi=1:length(tmp)
-        data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs', 'badch','labels', 'EcogLabels','Side', 'SubjectID');
+        data=load([datadir filesep subjects{s} filesep 'Preprocessed Data' filesep tmp(fi).name],'Ecog','trials','nfs', 'badch','labels', 'EcogLabels','Side', 'SubjectID', 'Session');
         if isfield(data, 'EcogLabels') data.labels = data.EcogLabels; end
         disp(['Loaded data from ' tmp(fi).name]);
         %need to read in a match to the anatomically localized
@@ -65,8 +66,9 @@ for s=1:length(subjects)
         tlen=round((0.5+max(E3-E1))*data.nfs);
         
         %% Calculate and plot the single trial response detection
-        [ah, fh] = subplot_pete(ch, 1,'','', tmp(fi).name);
-        fh.Position = [20 20 1000 1200]; % We want to make these big, then save them
+        ncol = ceil(ch/14);
+        [ah, fh] = subplot_pete(ceil(ch/ncol), ncol,'','', tmp(fi).name);
+        fh.Position = [20 20 1400 1200]; % We want to make these big, then save them
         rxn=E2-E1;    [~,ia]=sort(rxn,'ascend');
         clearvars ZBB ActOnset
         ci = 1;
@@ -79,14 +81,17 @@ for s=1:length(subjects)
             image(0:1/200:size(ZBB,1)/200,1:size(ZBB,2),ZBB(:,ia,c)','CDataMapping','scaled')
             hold on
             if sum(isnan(ActOnset(:,c)))~=length(ActOnset)
-                scatter(ActOnset(ia,c)/200,1:length(E1),35,'*','k')
+                scatter(ActOnset(ia,c)/200,1:length(E1),35,'*','r')
             end
-            [rhoC,pvalC]=corr(CueR,rxn(ic));
-            [rhoS,pvalS]=corr(SPR,rxn(ic));
-            
-            plot(rxn(ia),1:length(E1),'Color','k')
+            if ~isempty(CueR)
+                [rhoC,pvalC]=corr(CueR,rxn(ic));
+                [rhoS,pvalS]=corr(SPR,rxn(ic));
+            else
+                rhoC =NaN; pvalC = NaN; rhoS = NaN, pvalS=NaN;
+            end
+            plot(rxn(ia),1:length(E1),'Color','k', 'Linewidth', 2)
             shading flat
-            set(gca,'Ydir','normal','Clim',[-5 10]);colormap  jet;
+            set(gca,'Ydir','normal','Clim',[-2 5]);colormap  parula;
             
             tt=[];
             if pvalC<0.05
@@ -105,8 +110,12 @@ for s=1:length(subjects)
             Results(h).chan(ci).pvalCpearson=pvalC;
             Results(h).chan(ci).rhoSpearson=rhoS;
             Results(h).chan(ci).pvalSpearson=pvalS;
-            [rhoC,pvalC]=corr(CueR,rxn(ic),'type','Spearman');
-            [rhoS,pvalS]=corr(SPR,rxn(ic),'type','Spearman');
+            if ~isempty(CueR)
+                [rhoC,pvalC]=corr(CueR,rxn(ic),'type','Spearman');
+                [rhoS,pvalS]=corr(SPR,rxn(ic),'type','Spearman');
+            else
+                rhoC =NaN; pvalC = NaN; rhoS = NaN, pvalS=NaN;
+            end
             Results(h).chan(ci).rhoCspearman=rhoC;
             Results(h).chan(ci).pvalCspearman=pvalC;
             Results(h).chan(ci).rhoSspearman=rhoS;
@@ -117,9 +126,10 @@ for s=1:length(subjects)
             ci=ci+1;
             %                         set(gca,'Ydir','normal');colormap  jet;
         end
-     saveas(fh, sprintf('%s%sSingleTrialDetection%s%sSession%d.bmp',figDir,filesep,filesep,data.SubjectID,data.Session),'bmp');
-     close fh;
+     saveas(fh, sprintf('%s%sSingleTrialDetection%s%sSession%d.bmp',figDir,filesep,filesep,data.SubjectID,fi),'bmp');
+     close(fh);
     end
+    h = h+1;
 end
 
 save([savedDataDir filesep group '_SingleTrialActivity.mat']);
