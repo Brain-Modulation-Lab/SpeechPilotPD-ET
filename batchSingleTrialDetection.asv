@@ -71,6 +71,7 @@ for s=1:length(subjects)
         fh.Position = [20 20 1400 1200]; % We want to make these big, then save them
         rxn=E2-E1;    [~,ia]=sort(rxn,'ascend');
         clearvars ZBB ActOnset
+        ci = 1;
         for c=1:ch
             [ActOnset(:,c),ZBB(:,:,c)]=single_trial_detection(input(:,chUsed(c)),data.nfs,E1,E1,tlen,HgammaFilt);
             ic=~isnan(ActOnset(:,c));
@@ -102,26 +103,27 @@ for s=1:length(subjects)
             end
             title(tt)
             
-            Results(h).rxn=rxn(ic);
-            Results(h).CR=CueR;
-            Results(h).SPR=SPR;
-            Results(h).rhoCpearson=rhoC;
-            Results(h).pvalCpearson=pvalC;
-            Results(h).rhoSpearson=rhoS;
-            Results(h).pvalSpearson=pvalS;
+            Results(h).chan(ci).rxn=rxn(ic);
+            Results(h).chan(ci).CR=CueR;
+            Results(h).chan(ci).SPR=SPR;
+            Results(h).chan(ci).rhoCpearson=rhoC;
+            Results(h).chan(ci).pvalCpearson=pvalC;
+            Results(h).chan(ci).rhoSpearson=rhoS;
+            Results(h).chan(ci).pvalSpearson=pvalS;
             if ~isempty(CueR)
                 [rhoC,pvalC]=corr(CueR,rxn(ic),'type','Spearman');
                 [rhoS,pvalS]=corr(SPR,rxn(ic),'type','Spearman');
             else
                 rhoC =NaN; pvalC = NaN; rhoS = NaN, pvalS=NaN;
             end
-            Results(h).rhoCspearman=rhoC;
-            Results(h).pvalCspearman=pvalC;
-            Results(h).rhoSspearman=rhoS;
-            Results(h).pvalSspearman=pvalS;
-            Results(h).Session=tmp(fi).name;
-            Results(h).Channel=c;
-            Results(h).Locations = locLabels{c};
+            Results(h).chan(ci).rhoCspearman=rhoC;
+            Results(h).chan(ci).pvalCspearman=pvalC;
+            Results(h).chan(ci).rhoSspearman=rhoS;
+            Results(h).chan(ci).pvalSspearman=pvalS;
+            Results(h).chan(ci).Session=tmp(fi).name;
+            Results(h).chan(ci).Channel=c;
+            Results(h).chan(ci).Locations = locLabels{c};
+            ci=ci+1;
             h = h+1;
             %                         set(gca,'Ydir','normal');colormap  jet;
         end

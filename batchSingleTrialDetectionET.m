@@ -1,9 +1,9 @@
 setDirectories; %platform specific locations 
 electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 subjectLists; %load lists of subjects
-subjects = PD_subjects;
+subjects = ET_subjects;
 %subjects = PD_subjects(6:end);
-group = 'PD';
+group = 'ET';
 
 stat.voxel_pval=0.05; stat.cluster_pval=0.05; stat.surrn=1;
 
@@ -46,7 +46,7 @@ for s=1:length(subjects)
         ch = length(chUsed);
         input=filtfilt(hpFilt,data.Ecog);
       
-        reject=[find(isnan(data.trials.SpOnset))' find(isnan(data.trials.SpEnd))' data.trials.ResponseReject.all'];
+        reject=[find(isnan(data.trials.SpOnset))' find(isnan(data.trials.SpOffset))'];
         if length(data.trials.BaseRejectNoise)<10
             reject=unique([reject , data.trials.BaseRejectNoise']);
         else
@@ -56,7 +56,7 @@ for s=1:length(subjects)
         E0=data.trials.BaseFwd(setdiff(1:60,reject));
         E1=data.trials.BaseBack(setdiff(1:60,reject));
         E2=data.trials.SpOnset(setdiff(1:60,reject));
-        E3=data.trials.SpEnd(setdiff(1:60,reject));
+        E3=data.trials.SpOffset(setdiff(1:60,reject));
         
         [artifact]=auto_reject2(input,E1,1200);
         artifact=unique(horzcat(artifact{:}));
@@ -74,8 +74,8 @@ for s=1:length(subjects)
         for c=1:ch
             [ActOnset(:,c),ZBB(:,:,c)]=single_trial_detection(input(:,chUsed(c)),data.nfs,E1,E1,tlen,HgammaFilt);
             ic=~isnan(ActOnset(:,c));
-            CueR=ActOnset(ic,c)/200;
-            SPR=(E2(ic)-ActOnset(ic,c))/200;
+            CueR=ActOnset(ic,c)/200; % Activity onset relative to Cue.
+            SPR=(E2(ic)-ActOnset(ic,c))/200; %Time difference between Speech Onset and Activity Onset
             axes(ah(c));
             image(0:1/200:size(ZBB,1)/200,1:size(ZBB,2),ZBB(:,ia,c)','CDataMapping','scaled')
             hold on
@@ -113,7 +113,7 @@ for s=1:length(subjects)
                 [rhoC,pvalC]=corr(CueR,rxn(ic),'type','Spearman');
                 [rhoS,pvalS]=corr(SPR,rxn(ic),'type','Spearman');
             else
-                rhoC =NaN; pvalC = NaN; rhoS = NaN, pvalS=NaN;
+                rhoC =NaN; pvalC = NaN; rhoS = NaN; pvalS=NaN;
             end
             Results(h).rhoCspearman=rhoC;
             Results(h).pvalCspearman=pvalC;
@@ -122,8 +122,7 @@ for s=1:length(subjects)
             Results(h).Session=tmp(fi).name;
             Results(h).Channel=c;
             Results(h).Locations = locLabels{c};
-            h = h+1;
-            %                         set(gca,'Ydir','normal');colormap  jet;
+             h = h+1;
         end
      saveas(fh, sprintf('%s%sSingleTrialDetection%s%sSession%d.bmp',figDir,filesep,filesep,data.SubjectID,fi),'bmp');
      close(fh);
