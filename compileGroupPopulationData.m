@@ -4,6 +4,7 @@
 % for each electrode in the results structure along the way.
 
 plotResponseHists = 0;
+plotTrials = 0;
 setDirectories;
 align = {'Cue', 'Onset'};
 %align = {'Onset'};
@@ -15,7 +16,7 @@ load([savedDataDir filesep group '_populationBehavior.mat']); %load population b
 electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 electrodeLocs = readElectrodeLocXLS(electrodeFile, group); 
 rows = ceil(length(freq)/2);
-PopResults = struct([]); chEventTimes = [];
+PopResults = struct([]); medEventTimes = [];
 for ll = 1:length(locations)
     for aa = 1:length(align)
         tracef = figure;
@@ -114,12 +115,13 @@ for ll = 1:length(locations)
                         traceah = subplot(rows, 2, ff);
                         plot(trTime, mean_z, 'k'); hold on;
                     end
-                    chEventTimes(zmi,:) = nanmedian(eventTimes, 1);
+                    medEventTimes(zmi,:) = nanmedian(eventTimes, 1);
+                    meanEventTimes(zmi,:) = nanmean(eventTimes, 1);
                     zmi = zmi+1;
                 end
                 
                 % Plot the trial-wise responses for session
-                if nchUsed > 0
+                if nchUsed > 0 && plotTrials
                     fh = figure;
                     sessioni = (subj_ti_start:(ti-1))+1;
                     minz = min(min(trial_z(popInds, sessioni)));
@@ -157,7 +159,7 @@ for ll = 1:length(locations)
         axes(tracef, 'Position', [0, .9, .8, .1], 'Visible', 'off', 'Fontsize', 20);
         text(.5, .7, [locations{ll} '  Alignment: ' align{aa}]);
 
-        eval([align{aa} '= struct(''popZ'', popZ, ''popPvals'', popPvals, ''subj'', subj, ''chan'', chan,''time'', popTime, ''gammaMax'', gammaMax, ''chEventTimes'', chEventTimes, ''eventTimes'', eventTimes);']);
+        eval([align{aa} '= struct(''popZ'', popZ, ''popPvals'', popPvals, ''subj'', subj, ''chan'', chan,''time'', popTime, ''gammaMax'', gammaMax, ''medEventTimes'', medEventTimes,''meanEventTimes'', meanEventTimes, ''eventTimes'', eventTimes);']);
         eval(['PopResults(1).loc(ll).' align{aa} '=' align{aa}]);
     end
 end
