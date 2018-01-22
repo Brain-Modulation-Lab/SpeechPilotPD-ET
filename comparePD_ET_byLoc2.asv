@@ -12,13 +12,13 @@ for ll = 1:length(ET.PopResults.loc)
     for aa = 1:length(align)
         for ff = 1:length(freq) %frequency bands/plots
             subplot(rows, 2, 2*(ff-1)+aa);
-            %ETsel = ET.PopResults.loc(ll).(align{aa}).gammaMax >= gammaThresh;
-            ETsel = ET.PopResults.loc(ll).Onset.popPvals(:,1) < 0.05;
+            ETsel = ET.PopResults.loc(ll).(align{aa}).gammaMax >= gammaThresh;
+            ETsel = ET.PopResults.loc(ll).Onset.popPvals < 0.05;
             nET = sum(ETsel(:));
             ETmean = nanmean(ET.PopResults.loc(ll).(align{aa}).popZ(:,ETsel,ff), 2);
             ETsem = nanstd(ET.PopResults.loc(ll).(align{aa}).popZ(:,ETsel,ff),0, 2)./sqrt(nET);
-            %PDsel = PD.PopResults.loc(ll).(align{aa}).gammaMax >= gammaThresh;
-            PDsel = PD.PopResults.loc(ll).Onset.popPvals(:,1) < 0.05;
+            PDsel = PD.PopResults.loc(ll).(align{aa}).gammaMax >= gammaThresh;
+             ETsel = ET.PopResults.loc(ll).Onset.popPvals < 0.05;
             nPD = sum(PDsel(:));
             PDmean = nanmean(PD.PopResults.loc(ll).(align{aa}).popZ(:,PDsel,ff), 2);
             PDsem = nanstd(PD.PopResults.loc(ll).(align{aa}).popZ(:,PDsel,ff),0, 2)./sqrt(nPD);
@@ -59,7 +59,7 @@ for ll = 1:length(ET.PopResults.loc)
             plot(ETeventPlotx, [-5 -5 -5; 5 5 5], 'b', 'LineWidth',1);
             plot(PDeventPlotx, [-5 -5 -5; 5 5 5], 'r', 'LineWidth',1);
             if strcmp(align{aa},'Onset')
-                set(gca,'Xlim', [-1.5 1]);
+                set(gca,'Xlim', [-1.5 .5]);
             else
                 set(gca, 'Xlim', [-.2 1]);
             end

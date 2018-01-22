@@ -11,7 +11,7 @@ align = {'Cue', 'Onset'};
 %freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
 freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2', 'alpha'};
 locations = {'Precentral Gyrus', 'Postcentral Gyrus', 'Superior Temporal Gyrus'};
-group='PD';
+group='ET';
 load([savedDataDir filesep group '_populationBehavior.mat']); %load population behavior
 electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 electrodeLocs = readElectrodeLocXLS(electrodeFile, group); 
