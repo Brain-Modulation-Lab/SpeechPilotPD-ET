@@ -24,19 +24,14 @@ end
 
 % Come up with count for electrodes
 subjects = [];
-for gg=1:length(groups)
+for gg=1:groups
     load([savedDataDir filesep groups{gg} '_SingleTrialActivity.mat'], 'Results');
     for ll = 1:length(locations)
-        n = 0;
         eval(['subjects=' groups{gg} '_subjects;']);
         for ss = 1:length(subjects)
-            subi = find(strncmp(subjects{ss}, {Results.Session}, 7));
-            chans = [Results(subi).Channel];
-            locs = {Results(subi).Locations};
-            [c, ia] = unique(chans);
-            locmatch = strcmpi(locations{ll}, locs(ia));
-            n = sum(locmatch) + n;
+            subi = find(strncmp(subjects{ss}, {Results.Session});
+            chans = Results(subi).Channel;
+            locs = Results
         end
-        fprintf('In %s group: %d electrodes in %s\n', groups{gg}, n, locations{ll});
     end
 end

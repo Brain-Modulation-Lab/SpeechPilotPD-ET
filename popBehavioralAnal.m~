@@ -103,10 +103,7 @@ meanSNRM = nanmean(allSNRM);
 sel = ~isinf(meanSNRM); 
 [rho, pval] = corr(meanSNRM(sel)', formantratio(sel)');
 % Correlate with response latency
-seshLats = nanmedian(allLatsM);
-[rho,pval] = corr(seshLats', formantratio')
-figure; plot(seshLats, formantratio,'o');
-xlabel('Median Session Latency'); ylabel('Formant Ratio');
+seshnanmedian(allLatsM) 
 
 %% Box plots comparing two groups
 figure;

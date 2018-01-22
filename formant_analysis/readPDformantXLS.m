@@ -19,3 +19,4 @@ for s = 1:length(subjrow)
        ii = ii+1;
    end
 end
+formant_freqs = formant_freqs(1:end-1);
