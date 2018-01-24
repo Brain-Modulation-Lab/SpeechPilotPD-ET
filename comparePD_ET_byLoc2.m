@@ -7,6 +7,7 @@ align = {'Cue', 'Onset'};
 freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
 freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','alpha'};
 rows = length(freq);
+pi = 1;
 for ll = 1:length(ET.PopResults.loc)
     figure;
     for aa = 1:length(align)
@@ -32,7 +33,9 @@ for ll = 1:length(ET.PopResults.loc)
             pdzi = find(PD.PopResults.loc(ll).(align{aa}).time > 0, 1); pd_range = (-pdzi+1):(length(pd_t)-pdzi);
             commont = intersect(et_range, pd_range);
             [h, p] = clusterPermuteTtest(PD.PopResults.loc(ll).(align{aa}).popZ(commont+pdzi,PDsel,ff)', ET.PopResults.loc(ll).(align{aa}).popZ(commont+etzi,ETsel,ff)');
-            hold on; plot(et_t(commont+etzi), h*10, 'k-');
+            p_saved{pi} = p; h_saved{pi} = h;
+            pi = pi+1;
+            hold on; plot(et_t(commont+etzi), h*6.9, 'k-');
             %plot(ET.PopResults.loc(ll).(align{aa}).time, ETmean, 'b', 'LineWidth', 2);
             %hold on;
             %plot(ET.PopResults.loc(ll).(align{aa}).time, ETmean-ETsem, 'b--', 'LineWidth', 1);
@@ -41,7 +44,7 @@ for ll = 1:length(ET.PopResults.loc)
             %plot(PD.PopResults.loc(ll).(align{aa}).time, PDmean+PDsem, '--r', 'LineWidth', 1);
             %plot(PD.PopResults.loc(ll).(align{aa}).time, PDmean, 'r', 'LineWidth', 2);
             title(freq{ff}, 'Fontsize', 16);
-            set(gca, 'Ylim', [-5 10], 'TickDir', 'out');
+            set(gca, 'Ylim', [-5 7], 'TickDir', 'out');
             switch freq{ff}
                 case 'beta1'
                    set(gca, 'Ylim', [-7 2]);
@@ -69,6 +72,8 @@ for ll = 1:length(ET.PopResults.loc)
         text(.5, .7, [ET.PopResults.locations{ll} '  Alignment: ' align{aa}]);
     end
 end
+
+save('comparison_stats.mat', 'p_saved', 'h_saved');
 
 %% Just check the number of electrodes that are significantly responsive
 for ll = 1:length(ET.PopResults.loc)
