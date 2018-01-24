@@ -1,0 +1,66 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red255\green255\blue255;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\cssrgb\c100000\c100000\c100000;}
+\margl1440\margr1440\vieww21520\viewh15820\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\b\fs28 \cf0 Analysis pipeline for PD/ET comparison\
+(last edited 1/23/2018)
+\fs24 \
+
+\b0 \
+
+\b\fs28 Overview/Setting Up
+\b0\fs24 \
+All analysis done in MATLAB\
+Code can all be found at https://github.com/Brain-Modulation-Lab/SpeechPilotPD-ET.git\
+\
+There possibly some dependent files in:\
+https://github.com/Brain-Modulation-Lab/SpeechSpikeAnalysis.git\
+https://github.com/pwjones/matlab_common.git \
+\
+I will work to remove dependencies on these other two projects so that all of the \
+necessary code is self-contained.\
+
+\b \
+- You should clone the repository and use git to update it as you develop/change analyses so that everything stays synched and current in the online repository.
+\b0 \
+\
+Setting up paths: Many of the scripts read or write files in a way that I\'92ve set up to depend on paths that I\'92ve defined once in an m file setDirectories.m. The default lives in the main directory with all of the code, but other uses who may need different paths should make a copy that lives in their default matlab code directory that contains directory specifications that work for their systems. \
+\
+\
+
+\b\fs28 Data Processing/Analysis Pipeline steps
+\b0\fs24 \
+1) Raw data was processed by Witek and Ahmad, ends up on Dyonisis in a file that looks like (paths are gonna be Mac formatted here but obviously may look different to you).\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f1 \cf2 \cb3 \CocoaLigature0 /Volumes/Nexus/Electrophysiology_Data/DBS_Intraop_Recordings/DBS2001/Preprocessed\\ Data/DBS2001_Session1_LT.mat \
+
+\f0 There is a single processed data file for each session, and these are the base of what the functions I\'92ve written work on. \
+\
+2) The main script that works on these is 
+\b The_behemoth2pwj.m, 
+\b0 which goes through each of the subjects in one of the cohorts and compiles the necessary data for further analysis into a Results structure that is a struct array with the length being the number of sessions for that subject group. Basically it does the spectral filtering on the ECoG signal for each subject. This is a fairly computationally intensive step and can take several hours to run on a cohort. These files are saved to ones that look like\
+
+\f1 /Volumes/Nexus/Users/pwjones/code/DataFiles/Band_modulation_referenced_PD_v5.mat 
+\f0 (the most recent PD cohort file, 44.3GB)\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf2 These files are pretty big (at least 10s of GB) and are slow to load into matlab so some further population analysis works on smaller population data subsets. Also, to handle they need one of the servers that have enough memory for them to be loaded into.\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf2 Output: 	
+\i Results
+\i0  structure array: fields Base, Cue, Onset, Session, trials. One element for each session.  \
+		Cue/Onset - fields that contain either cue-aligned or speech onset aligned data. Contains fields for each spectral band (eg \'91beta1\'92), with fields 
+\i z_Amp, tr, bs 
+\i0 (time x channel/trial interleaved, all channels for trial 1, all channels for trial 2, and so on). \
+		
+\i z_Amp
+\i0  - zscored data, 
+\i tr 
+\i0 - band passed signal, 
+\i bs
+\i0  - baseline period for same trials.\
+\
+3) The main scripts that work on the }
