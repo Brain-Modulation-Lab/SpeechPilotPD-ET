@@ -72,7 +72,7 @@ for s=1:length(subjects)
         rxn=E2-E1;    [~,ia]=sort(rxn,'ascend');
         clearvars ZBB ActOnset
         for c=1:ch
-            [ActOnset(:,c),ZBB(:,:,c)]=single_trial_detection(input(:,chUsed(c)),data.nfs,E1,E1,tlen,HgammaFilt);
+            [ActOnset(:,c),ZBB(:,:,c)]=single_trial_detection(input(:,chUsed(c)),data.nfs,E1,E1,[E1(2:end); NaN], tlen,HgammaFilt);
             ic=~isnan(ActOnset(:,c));
             CueR=ActOnset(ic,c)/200; % Activity onset relative to Cue.
             SPR=(E2(ic)-ActOnset(ic,c))/200; %Time difference between Speech Onset and Activity Onset

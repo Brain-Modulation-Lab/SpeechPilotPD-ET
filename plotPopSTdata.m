@@ -15,10 +15,10 @@ for gg = 1:length(groups)
         ah(ll) = subplot(2,2, ll);
         loci = find(strcmpi(locations{ll}, {Results.Locations}));
         locResults = Results(loci);
-        sigC = [locResults.pvalCpearson] < 0.05;
-        sigS = [locResults.pvalSpearson] < 0.05;
+        sigC = [locResults.pvalCspearman] < 0.05;
+        sigS = [locResults.pvalSspearman] < 0.05;
         either = sigC | sigS;
-        plot([Results(loci).rhoCpearson], [Results(loci).rhoSpearson],'o', 'Color', gc{gg});
+        plot([Results(loci).rhoCspearman], [Results(loci)rhoSspearman],'o', 'Color', gc{gg});
         disp(locations{ll});
         medCR = cellfun(@nanmedian, {locResults(sigC).CR});
         medSPR = cellfun(@(x) nanmedian(double(x)), {locResults(sigS).SPR});
