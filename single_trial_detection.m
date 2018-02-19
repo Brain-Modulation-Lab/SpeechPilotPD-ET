@@ -9,6 +9,10 @@ function [ActOnset,ZBB]=single_trial_detection(signal,sr,base,trial,trialend,tle
 % trialend - times of the trials ends for each trial
 % tlen - trial length
 % filt2u - The filter object that you want to use
+% Return values: 
+% ActOnset - The detected activity onset indices 
+% ZBB - the Z-scored activities, 6x downsampled to 200Hz sample rate from
+% 1.2kHz input
 
 ch=size(signal,2);
 
@@ -22,7 +26,7 @@ for i=1:ch
  BB(:,i)=smooth(BB(:,i),200);   
 end
     
-ds = 6; %downsampling factor necessary to get to 200 Hz binning of responses
+ds = 6; %downsampling factor necessary to get to 200 Hz (5ms) binning of responses
 tn=length(trial);  % trial number
 clearvars BBtr BBbase ZBB ZBBb
 BBtr = NaN*zeros(ceil(tlen/ds), tn);
@@ -120,29 +124,9 @@ if ~isempty(ch2keep)
             end
             
         end
-        %     tmp=arrayfun(@(x) find(dt(:,x)>zthresh(i),1,'first'),1:tn,'UniformOutput',0);
-        %     tmp(cellfun(@isempty, tmp))={NaN};
-        %     ActOnset(:,i)=cell2mat(tmp);
-        
-        %
-        %     tmp=arrayfun(@(x) find(db(:,x)>zthresh(i),1,'first'),1:tn,'UniformOutput',0);
-        %     tmp(cellfun(@isempty, tmp))={NaN};
-        %     ActOnsetb(:,i)=cell2mat(tmp);
+       
     end
     
-    % surr=zeros(1000,1);
-    % for i=1:length(ch2keep)
-    %     Atn=sum(~isnan(ActOnset(:,i)));
-    %     Abn=sum(~isnan(ActOnsetb(:,i)));
-    %
-    %     parfor s=1:1000
-    %         tmp=randi(2,Atn+Abn,1);
-    %         surr(s)=sum(tmp==1)-sum(tmp==2);
-    %     end
-    %     pvald(i)=1-cdf('Normal',Atn-Abn,mean(surr),std(surr));
-    % end
-    % ch2keep=ch2keep(pvald<=0.01);
-    % ActOnset(:,pvald>=0.01)=NaN;
 else
     ActOnset=NaN(tn,1);
 end

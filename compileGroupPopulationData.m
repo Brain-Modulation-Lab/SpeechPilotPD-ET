@@ -1,4 +1,4 @@
-% plotElectrodeBands.m
+% compileGroupPopulationData.m
 % ---------------------
 % This script compiles population responses from the large population dataset, plotting the responses 
 % for each electrode in the results structure along the way.
