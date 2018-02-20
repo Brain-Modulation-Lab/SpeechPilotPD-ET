@@ -15,7 +15,6 @@ pbSpect = 0;
 fq=[2:2:200]'; %frequencies
 stat.voxel_pval=0.05; stat.cluster_pval=0.05; stat.surrn=1;
 
-
 load([codeDir filesep 'Filters' filesep 'bandpassfilters.mat']);
 load([codeDir filesep 'Filters' filesep 'highoass_2Hz_fs1200.mat']);
 load([codeDir filesep 'Filters' filesep 'BroadbandGammaFilt.mat']);

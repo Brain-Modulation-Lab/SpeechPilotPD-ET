@@ -63,4 +63,14 @@ Setting up paths: Many of the scripts read or write files in a way that I\'92ve 
 \i bs
 \i0  - baseline period for same trials.\
 \
-3) The main scripts that work on the }
+3) The main scripts that work on the Results structure, which has trial by trial data from all of the bands analyzed, is 
+\b compileGroupPopulationData.m
+\b0 .  This file is run by specifying which dataset it is going through, ET or PD, then running the script while the Results structure is in the workspace. It will save file such as 
+\b ET_populationAvgs_Loc2.mat  
+\b0 This file contains the PopResults structure, which will have trial averaged mean traces, etc, instead of all of the single trial information.  It is much smaller and more managable to work with for population level analyses.\
+\
+4) Those last data files are read and plotted by a number of scripts, each performing a different set of analyses:\
+
+\b \
+\
+}

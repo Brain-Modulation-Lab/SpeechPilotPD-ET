@@ -70,12 +70,16 @@ for s=1:length(subjects)
         [ah, fh] = subplot_pete(ceil(ch/ncol), ncol,'','', tmp(fi).name);
         fh.Position = [20 20 1400 1200]; % We want to make these big, then save them
         rxn=E2-E1;    [~,ia]=sort(rxn,'ascend');
-        clearvars ZBB ActOnset
+        clearvars ZBB ActOnset ActiveWind
         for c=1:ch
             [ActOnset(:,c),ZBB(:,:,c)]=single_trial_detection(input(:,chUsed(c)),data.nfs,E1,E1,[E1(2:end); NaN], tlen,HgammaFilt);
-            ic=~isnan(ActOnset(:,c));
-            CueR=ActOnset(ic,c)/200; % Activity onset relative to Cue.
-            SPR=(E2(ic)-ActOnset(ic,c))/200; %Time difference between Speech Onset and Activity Onset
+            ic=~isnan(ActOnset(:,c)); activeT = find(ic);
+            CueR=ActOnset(ic,c)/200; % /200 is conversion to seconds (200 Hz sample rate)
+            for jj = 1:length(CueR)
+                ActiveWind(:,jj,c) = ZBB(CueR(jj):(CueR(jj)+10), activeT(jj),c);
+                MaxZ(jj,c) = nanmax(ActiveWind(:,jj,c));
+            end
+            SPR=(E2(ic)-ActOnset(ic,c))/200;
             axes(ah(c));
             image(0:1/200:size(ZBB,1)/200,1:size(ZBB,2),ZBB(:,ia,c)','CDataMapping','scaled')
             hold on
@@ -105,6 +109,7 @@ for s=1:length(subjects)
             Results(h).rxn=rxn(ic);
             Results(h).CR=CueR;
             Results(h).SPR=SPR;
+            Results(h).MaxZ = MaxZ;
             Results(h).rhoCpearson=rhoC;
             Results(h).pvalCpearson=pvalC;
             Results(h).rhoSpearson=rhoS;
@@ -113,7 +118,7 @@ for s=1:length(subjects)
                 [rhoC,pvalC]=corr(CueR,rxn(ic),'type','Spearman');
                 [rhoS,pvalS]=corr(SPR,rxn(ic),'type','Spearman');
             else
-                rhoC =NaN; pvalC = NaN; rhoS = NaN; pvalS=NaN;
+                rhoC =NaN; pvalC = NaN; rhoS = NaN, pvalS=NaN;
             end
             Results(h).rhoCspearman=rhoC;
             Results(h).pvalCspearman=pvalC;
