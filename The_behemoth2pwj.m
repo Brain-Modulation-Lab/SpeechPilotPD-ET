@@ -67,8 +67,8 @@ for s=1:length(subjects)
         end
             
         trIndx=setdiff(1:60,reject);
-        E0=data.trials.BaseFwd(trIndx);
-        E1=data.trials.BaseBack(trIndx); 
+        E0=data.trials.BaseFwd(trIndx); %beginning of the baseline (end of ITI)
+        E1=data.trials.BaseBack(trIndx); %cue time
         E2=data.trials.SpOnset(trIndx);
         E3=data.trials.SpOffset(trIndx);
         E4=data.trials.BaseBack(trIndx)-1; 
