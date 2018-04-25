@@ -11,8 +11,7 @@ function [ActOnset,ZBB]=single_trial_detection(signal,sr,base,trial,trialend,tle
 % filt2u - The filter object that you want to use
 % Return values: 
 % ActOnset - The detected activity onset indices 
-% ZBB - the Z-scored activities, 6x downsampled to 200Hz sample rate from
-% 1.2kHz input
+% ZBB - the Z-scored activities, 6x downsampled to 200Hz sample rate from 1.2kHz input
 
 ch=size(signal,2);
 
@@ -48,8 +47,8 @@ end
 % z-score to baseline amp for all the trials
 for i=1:ch
     baseline=BBbase(:,:,i);
-    ZBB(:,:,i)=bsxfun(@rdivide, bsxfun(@minus, BBtr(:,:,i), mean(baseline(:))),std(baseline(:)));
-    ZBBb(:,:,i)=bsxfun(@rdivide, bsxfun(@minus, BBbase(:,:,i), mean(baseline(:))),std(baseline(:)));
+    ZBB(:,:,i)= bsxfun(@rdivide, bsxfun(@minus, BBtr(:,:,i), mean(baseline(:))),std(baseline(:))); %signal
+    ZBBb(:,:,i)=bsxfun(@rdivide, bsxfun(@minus, BBbase(:,:,i), mean(baseline(:))),std(baseline(:))); %baseline
 end
 
 tl=size(BBtr,1);  % trial length
@@ -103,30 +102,24 @@ if ~isempty(ch2keep)
         for i2=1:length(tmp)
             [detlen]=arrayfun(@(x) sum(dt(tmp{i2}.PixelIdxList{x},i2)),1:length(tmp{i2}.PixelIdxList));
             if isempty(detlen)
-                ActOnset(i2,i)=NaN;
-                
+                ActOnset(i2,i)=NaN;        
             else
                 [~,mi]=max(detlen);
                 ActOnset(i2,i)=tmp{i2}.PixelIdxList{mi}(1);
             end
-            
         end
-        
+   
         tmp=arrayfun(@(x)  bwconncomp(db(:,x)>zthresh(i)),1:tn,'UniformOutput',0);
         for i2=1:length(tmp)
             [detlen]=arrayfun(@(x) sum(db(tmp{i2}.PixelIdxList{x},i2)),1:length(tmp{i2}.PixelIdxList));
             if isempty(detlen)
-                ActOnsetb(i2,i)=NaN;
-                
+                ActOnsetb(i2,i)=NaN;                
             else
                 [~,mi]=max(detlen);
                 ActOnsetb(i2,i)=tmp{i2}.PixelIdxList{mi}(1);
             end
-            
         end
-       
     end
-    
 else
     ActOnset=NaN(tn,1);
 end

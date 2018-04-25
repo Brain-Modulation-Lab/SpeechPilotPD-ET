@@ -167,4 +167,4 @@ for s=1:length(subjects)
 end
 Results;
 disp('Saving population data file');
-save('Band_modulation_referenced_ET_v5','Results','-v7.3');
+save('Band_modulation_referenced_ET_v6','Results','-v7.3');

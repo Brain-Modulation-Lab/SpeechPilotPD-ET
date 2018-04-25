@@ -11,7 +11,7 @@ align = {'Cue', 'Onset'};
 %freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
 freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2', 'alpha'};
 locations = {'Precentral Gyrus', 'Postcentral Gyrus', 'Superior Temporal Gyrus'};
-group='ET';
+group='PD';
 load([savedDataDir filesep group '_populationBehavior.mat']); %load population behavior
 electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 electrodeLocs = readElectrodeLocXLS(electrodeFile, group); 
@@ -81,9 +81,9 @@ for ll = 1:length(locations)
                     eNum = locMatch(jj);
                     signal_ch = signal(:,eNum:nch:end);
                     base_ch = base(:,eNum:nch:end);
-                    %z_amp = (signal_ch - nanmean(base_ch(:))) ./ nanstd(nanmean(base_ch,2));  %normalizes by the trial averaged stats
-                    z_amp = (signal_ch - repmat(nanmean(base_ch,1),size(signal_ch,1),1)) ... %normalizes by the within trial baseline mean/std
-                              ./ repmat(nanstd(base_ch,0,1), size(signal_ch,1), 1);
+                    z_amp = (signal_ch - nanmean(base_ch(:))) ./ nanstd(nanmean(base_ch,2));  %normalizes by the trial averaged stats
+                    z_amp = (signal_ch - repmat(nanmean(base_ch,1),size(signal_ch,1),1)) ...
+                             ./ nanstd(base_ch,0,1));
                     
                     mean_z = nanmean(z_amp,2);
                     respTime = reshape(Results(ii).trials.SpOnset(trialsUsed),[],1) - reshape(Results(ii).trials.CommandStim(trialsUsed), [],1);

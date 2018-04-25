@@ -74,6 +74,7 @@ for s=1:length(subjects)
         for c=1:ch
             [ActOnset(:,c),ZBB(:,:,c)]=single_trial_detection(input(:,chUsed(c)),data.nfs,E1,E1,[E1(2:end); NaN], tlen,HgammaFilt);
             ic=~isnan(ActOnset(:,c)); activeT = find(ic);
+            trialInds = trIndx(activeT);
             CueR=ActOnset(ic,c)/200; % /200 is conversion to seconds (200 Hz sample rate)
             for jj = 1:length(CueR)
                 ActiveWind(:,jj,c) = ZBB(CueR(jj):(CueR(jj)+10), activeT(jj),c);
@@ -110,6 +111,7 @@ for s=1:length(subjects)
             Results(h).CR=CueR;
             Results(h).SPR=SPR;
             Results(h).MaxZ = MaxZ;
+            Results(h).trialInds = trialInds;
             Results(h).rhoCpearson=rhoC;
             Results(h).pvalCpearson=pvalC;
             Results(h).rhoSpearson=rhoS;
