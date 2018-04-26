@@ -7,8 +7,8 @@
 setDirectories; %platform specific locations 
 electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 subjectLists; %load lists of subjects
-subjects = ET_subjects;
-group = 'ET';
+subjects = PD_subjects;
+group = 'PD';
 %subjects = {'DBS4038', 'DBS4040', 'DBS4046', 'DBS4047', 'DBS4049', 'DBS4051', 'DBS4053', 'DBS4054', 'DBS4055', 'DBS4056'};
 %subjects = {'DBS4046'};
 pbSpect = 0;
@@ -167,4 +167,4 @@ for s=1:length(subjects)
 end
 Results;
 disp('Saving population data file');
-save('Band_modulation_referenced_ET_v6','Results','-v7.3');
+save('Band_modulation_referenced_PD_v6','Results','-v7.3');

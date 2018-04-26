@@ -11,7 +11,7 @@ align = {'Cue', 'Onset'};
 %freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
 freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2', 'alpha'};
 locations = {'Precentral Gyrus', 'Postcentral Gyrus', 'Superior Temporal Gyrus'};
-group='ET';
+group='PD';
 load([savedDataDir filesep group '_populationBehavior.mat']); %load population behavior
 electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 electrodeLocs = readElectrodeLocXLS(electrodeFile, group); 
@@ -168,7 +168,7 @@ for ll = 1:length(locations)
 end
 PopResults.bands = freq;
 PopResults.locations = locations;
-save([group '_populationAvgs_Loc2.mat'], 'PopResults', '-v7.3'); 
+save([group '_populationAvgs_Loc3.mat'], 'PopResults', '-v7.3'); 
 %% 
 % Assemble averages that are aligned on the proper timing
 % dt = mean(diff(trTime));
