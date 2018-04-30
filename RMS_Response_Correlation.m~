@@ -45,6 +45,5 @@ end
 locations = {'Precentral Gyrus', 'Postcentral Gyrus', 'Superior Temporal Gyrus'};
 for ii=1:length(locations)
     locmatch = arrayfun(@(x) strcmp(locations{ii}, x.Locations), Results);
-    inc = locmatch & (Csig | Ssig);
-    
+    locmatch && (Csig ||
 end

@@ -81,9 +81,9 @@ for ll = 1:length(locations)
                     eNum = locMatch(jj);
                     signal_ch = signal(:,eNum:nch:end);
                     base_ch = base(:,eNum:nch:end);
-                    %z_amp = (signal_ch - nanmean(base_ch(:))) ./ nanstd(nanmean(base_ch,2));  %normalizes by the trial averaged stats
-                    z_amp = (signal_ch - repmat(nanmean(base_ch,1),size(signal_ch,1),1)) ... %normalizes by the within trial baseline mean/std
-                              ./ repmat(nanstd(base_ch,0,1), size(signal_ch,1), 1);
+                    z_amp = (signal_ch - nanmean(base_ch(:))) ./ nanstd(nanmean(base_ch,2));  %normalizes by the trial averaged mean/std
+                    %z_amp = (signal_ch - repmat(nanmean(base_ch,1),size(signal_ch,1),1)) ... %normalizes by the within trial baseline mean/std
+                    %          ./ repmat(nanstd(base_ch,0,1), size(signal_ch,1), 1);
                     
                     mean_z = nanmean(z_amp,2);
                     respTime = reshape(Results(ii).trials.SpOnset(trialsUsed),[],1) - reshape(Results(ii).trials.CommandStim(trialsUsed), [],1);
@@ -120,7 +120,7 @@ for ll = 1:length(locations)
                     end
                     medEventTimes(zmi,:) = nanmedian(eventTimes, 1);
                     meanEventTimes(zmi,:) = nanmean(eventTimes, 1);
-                    zmi = zmi+1;
+                    zmi = zmi+1; %index for linear array of all contacts in dataset
                 end
                 
                 % Plot the trial-wise responses for session

@@ -129,6 +129,7 @@ for s=1:length(subjects)
             Results(h).Session=tmp(fi).name;
             Results(h).Channel=c;
             Results(h).Locations = locLabels{c};
+            Results(h).trialInds = trialInds;
             %Results(h).
             h = h+1;
             %                         set(gca,'Ydir','normal');colormap  jet;

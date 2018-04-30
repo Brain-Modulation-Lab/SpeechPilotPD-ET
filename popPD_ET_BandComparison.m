@@ -88,3 +88,4 @@ for ll = 1:length(ET.PopResults.loc)
     ET_max(ll)=size(sig,1);
     fprintf('%s: Above numbers sig of %d electrodes responsive\n', PD.PopResults.locations{ll}, size(sig,1));
 end
+ 

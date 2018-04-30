@@ -129,6 +129,7 @@ for s=1:length(subjects)
             Results(h).Session=tmp(fi).name;
             Results(h).Channel=c;
             Results(h).Locations = locLabels{c};
+            Results(h).trialInds = trialInds;
              h = h+1;
         end
      saveas(fh, sprintf('%s%sSingleTrialDetection%s%sSession%d.bmp',figDir,filesep,filesep,data.SubjectID,fi),'bmp');
