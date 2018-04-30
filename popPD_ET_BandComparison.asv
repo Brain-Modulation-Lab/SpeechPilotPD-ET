@@ -25,8 +25,7 @@ for ll = 1:length(ET.PopResults.loc)
             PDsem = nanstd(PD.PopResults.loc(ll).(align{aa}).popZ(:,PDsel,ff),0, 2)./sqrt(nPD);
             et_t = ET.PopResults.loc(ll).(align{aa}).time;  
             pd_t = PD.PopResults.loc(ll).(align{aa}).time;
-            fprintf('%d of %d electrodes in PD patients have significant %s %s activity in %s\n', nPD, length(PDsel), freq{ff}, align{aa}, PD.PopResults.locations{ll});
-            fprintf('%d of %d electrodes in ET patients have significant %s %s activity in %s\n', nET, length(ETsel), freq{ff}, align{aa}, ET.PopResults.locations{ll});
+            sprintf('%d of %d electrodes in PD patients have sig activity in %s', nPD, length(PDsel), ET.PopResults.locations
             plot_err_poly(gca, ET.PopResults.loc(ll).(align{aa}).time, ETmean, ETsem, [0 0 1], [.5 .5 1],1);
             hold on;
             plot_err_poly(gca, PD.PopResults.loc(ll).(align{aa}).time, PDmean, PDsem, [1 0 0], [1 .5 .5],1);
