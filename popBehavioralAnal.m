@@ -84,6 +84,10 @@ PDlabel_sort = PDlabel(sorti);
 names = [{PDformantfreqs.subject} {formantfreqs.subject}];
 
 figure;
+boxplot(ratios_sorted, PDlabel_sort);
+xlabel({'ET', 'PD'});
+
+figure;
 plot(1:length(formantratio), formantratio(sorti), 'o'); hold on;
 plot(find(logical(PDlabel_sort)), ratios_sorted(logical(PDlabel_sort)), 'ro');
 ah = gca;

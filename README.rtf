@@ -1,9 +1,7 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf400
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Monaco;}
-{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red255\green255\blue255;\red255\green255\blue255;
-}
-{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\cssrgb\c100000\c100000\c100000;\cssrgb\c100000\c100000\c100000;
-}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red255\green255\blue255;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\cssrgb\c100000\c100000\c100000;}
 \margl1440\margr1440\vieww22860\viewh17480\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
@@ -49,73 +47,75 @@ Setting up Instructions\
 \b0  Raw data was processed by Witek and Ahmad, ends up on Dyonisis in a file that looks like (paths are gonna be Mac formatted here but obviously may look different to you).\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
 
-\f1 \cf2 \cb4 \CocoaLigature0 /Volumes/Nexus/Electrophysiology_Data/DBS_Intraop_Recordings/DBS2001/Preprocessed\\ Data/DBS2001_Session1_LT.mat \
+\f1 \cf2 \cb3 \CocoaLigature0 /Volumes/Nexus/Electrophysiology_Data/DBS_Intraop_Recordings/DBS2001/Preprocessed\\ Data/DBS2001_Session1_LT.mat \
 
 \f0 There is a single processed data file for each session, and these are the base of what the functions I\'92ve written work on. \
 All data processing pipeline scripts start with these data files and refer to their original locations on the lab server. \
 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
 
-\b 2)
-\b0  The first step: Calculating necessary spectral filtering for each experiment and saving the result. \
+\b \cf2 \cb3 2)
+\b0 \cb3  The first step: Calculating necessary spectral filtering for each experiment and saving the result. \
 
-\b Script
-\b0 : The_behemoth2pwj.m
-\b \
+\b \cb3 Script
+\b0 \cb3 : The_behemoth2pwj.m
+\b \cb3 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
 
-\b0 Goes through each of the subjects in one of the cohorts and compiles the necessary data for further analysis into a Results structure that is a struct array with the length being the number of sessions for that subject group. Basically it does the spectral filtering on the ECoG signal for each subject. This is a fairly computationally intensive step and can take several hours to run on a cohort. These files are saved to ones that look like\
+\b0 \cf2 \cb3 Goes through each of the subjects in one of the cohorts and compiles the necessary data for further analysis into a Results structure that is a struct array with the length being the number of sessions for that subject group. Basically it does the spectral filtering on the ECoG signal for each subject. This is a fairly computationally intensive step and can take several hours to run on a cohort. These files are saved to ones that look like\
 
 \f1 /Volumes/Nexus/Users/pwjones/code/DataFiles/Band_modulation_referenced_PD_v5.mat 
 \f0 (the most recent PD cohort file, 44.3GB)\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
-\cf2 These files are pretty big (at least 10s of GB) and are slow to load into matlab so some further population analysis works on smaller population data subsets. Also, to handle they need one of the servers that have enough memory for them to be loaded into.\
+\cf2 \cb3 These files are pretty big (at least 10s of GB) and are slow to load into matlab so some further population analysis works on smaller population data subsets. Also, to handle they need one of the servers that have enough memory for them to be loaded into.\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
 
 \b \cf2 Output
-\b0 : 	
-\i Results
-\i0  structure array: fields Base, Cue, Onset, Session, trials. One element for each session.  \
+\b0 \cb3 : 	
+\i \cb3 Results
+\i0 \cb3  structure array: fields Base, Cue, Onset, Session, trials. One element for each session.  \
 		Cue/Onset - fields that contain either cue-aligned or speech onset aligned data. Contains fields for each spectral band (eg \'91beta1\'92), with fields 
-\i z_Amp, tr, bs 
-\i0 (time x channel/trial interleaved, all channels for trial 1, all channels for trial 2, and so on). \
+\i \cb3 z_Amp, tr, bs 
+\i0 \cb3 (time x channel/trial interleaved, all channels for trial 1, all channels for trial 2, and so on). \
 		
-\i z_Amp
-\i0  - zscored data, 
-\i tr 
-\i0 - band passed signal, 
-\i bs
-\i0  - baseline period for same trials.\
+\i \cb3 z_Amp
+\i0 \cb3  - zscored data, 
+\i \cb3 tr 
+\i0 \cb3 - band passed signal, 
+\i \cb3 bs
+\i0 \cb3  - baseline period for same trials.\
 \
 
-\b 3)
-\b0  Compile large structure into smaller population data structures that are easier to work with and quicker to load.\
+\b \cb3 3)
+\b0 \cb3  Compile large structure into smaller population data structures that are easier to work with and quicker to load.\
 
-\b  Script:
-\b0  compileGroupPopulationData.m. \
+\b \cb3  Script:
+\b0 \cb3  compileGroupPopulationData.m. \
  
-\b Input:
-\b0  \'91Results\'92 data structure - loaded into the workspace\
+\b \cb3 Input:
+\b0 \cb3  \'91Results\'92 data structure - loaded into the workspace\
  Additional instructions: Specify at top of script whether running on ET or PD dataset. \
  
-\b Output:
-\b0  It will save file such as 
-\b ET_populationAvgs_Loc2.mat . 
-\b0 This file contains the \'91PopResults\'92 structure, which will have trial averaged mean traces, etc, instead of all of the single trial information.  \
+\b \cb3 Output:
+\b0 \cb3  It will save file such as 
+\b \cb3 ET_populationAvgs_Loc2.mat . 
+\b0 \cb3 This file contains the \'91PopResults\'92 structure, which will have trial averaged mean traces, etc, instead of all of the single trial information.  \
 \
 
-\b 4)
-\b0  Those last data files are read and plotted by a number of scripts, each performing a different set of analyses:\
+\b \cb3 4)
+\b0 \cb3  Those last data files are read and plotted by a number of scripts, each performing a different set of analyses:\
 \
 
-\b Analysis
-\b0 : Comparison of Signal strength in specific spectral bands between PD and ET subjects\
+\b \cb3 Analysis
+\b0 \cb3 : Comparison of Signal strength in specific spectral bands between PD and ET subjects\
 
-\b Script: 
-\b0 popPD_ET_BandComparison.m\
+\b \cb3 Script: 
+\b0 \cb3 popPD_ET_BandComparison.m\
 What it does: Compares the PD/ET signals at population level. Does the statistical comparison and generates plots.\
 
-\b Output
-\b0 :  Figures for each spectral band, for each alignment (Cue aligned and Speech onset aligned). \
+\b \cb3 Output
+\b0 \cb3 :  Figures for each spectral band, for each alignment (Cue aligned and Speech onset aligned). \
 
-\b \
+\b \cb3 \
 \
 }
