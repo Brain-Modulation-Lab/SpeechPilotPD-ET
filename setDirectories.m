@@ -2,9 +2,9 @@
 if ispc
     docDir = '\\136.142.16.9\Nexus\Users\pwjones\docs\ET-PD project';
     codeDir = '\\136.142.16.9\Nexus\Users\pwjones\code\SpeechPilotPD-ET';
-    datadir='\\136.142.16.9\Nexus\Electrophysiology_Data\DBS_Intraop_Recordings';
+    datadir='\\136.142.16.9\Nexus\DBS';
     figDir = '\\136.142.16.9\Nexus\Users\pwjones\figureDump';
-    savedDataDir = '\\136.142.16.9\Nexus\Users\pwjones\code\DataFiles';
+    savedDataDir = '\\136.142.16.9\Nexus\Users\pwjones\data';
 else
     codeDir = '~pwjones/Documents/RichardsonLab/matlab/SpeechPilotPD-ET';
     docDir = '~pwjones/Documents/RichardsonLab/ET-PD project';

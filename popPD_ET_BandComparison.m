@@ -1,7 +1,7 @@
 %compareET_PD_byLocation
 
-ET = load('ET_populationAvgs_Loc3.mat');
-PD = load('PD_populationAvgs_Loc3.mat');
+ET = load('ET_populationAvgs_Loc4.mat');
+PD = load('PD_populationAvgs_Loc4.mat');
 gammaThresh = 5;
 align = {'Cue', 'Onset'};
 freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
@@ -74,18 +74,20 @@ for ll = 1:length(ET.PopResults.loc)
     end
 end
 
-save('comparison_stats.mat', 'p_saved', 'h_saved');
+%save('comparison_stats.mat', 'p_saved', 'h_saved');
 
 %% Just check the number of electrodes that are significantly responsive
+for ff = 1:length(freq)
 for ll = 1:length(ET.PopResults.loc)
-    sig = ET.PopResults.loc(ll).Onset.popPvals < 0.05;
-    ET_nsig(ll,:) = sum(sig);
-    ET_max(ll) = size(sig,1);
-    fprintf('%s: Above numbers sig of %d electrodes responsive\n', ET.PopResults.locations{ll}, size(sig,1));
+    sig = ET.PopResults.loc(ll).Onset.popPvals(:,ff) < 0.05;
+    ET_nsig(ll,ff) = sum(sig);
+    ET_max(ll,ff) = size(sig,1);
+    fprintf('ET: %s, %s: %d significant responses of %d electrodes responsive\n', ET.PopResults.locations{ll}, freq{ff}, ET_nsig(ll,ff), size(sig,1));
     
-    sig = PD.PopResults.loc(ll).Onset.popPvals < 0.05;
-    PD_nsig(ll,:) = sum(sig);
-    ET_max(ll)=size(sig,1);
-    fprintf('%s: Above numbers sig of %d electrodes responsive\n', PD.PopResults.locations{ll}, size(sig,1));
+    sig = PD.PopResults.loc(ll).Onset.popPvals(:,ff) < 0.05;
+    PD_nsig(ll,ff) = sum(sig);
+    PD_max(ll,ff) = size(sig,1);
+    fprintf('PD: %s, %s: %d significant responses of %d electrodes responsive\n', PD.PopResults.locations{ll}, freq{ff}, PD_nsig(ll,ff), size(sig,1));
+end
 end
  
