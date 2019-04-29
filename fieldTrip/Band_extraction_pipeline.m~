@@ -12,8 +12,6 @@ load([codeDir filesep 'Filters' filesep 'BroadbandGammaFilt.mat']);
 freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
 
 load([savedDataDir filesep 'population' filesep group '_electrodeInfo.mat']);
-electrodeInfo = rmfield(electrodeInfo, 'badch');
-electrodeInfo = rmfield(electrodeInfo, 'usedChannels');
 eside = {electrodeInfo(:).side};
 subj = {electrodeInfo(:).subjectID};
 
@@ -26,14 +24,6 @@ for ss=1:length(subjects)
     nsession = length(files);
     for ii = 1:nsession
         load([fdir filesep files(ii).name]);
-        % match the electrode file to the data file
-        mi = find(strcmp(subjects{ss}, subj) & strncmp(D.side, eside, 1));
-        if ~isempty(mi) 
-            D.electrodeInfo = electrodeInfo(mi(1)); 
-        else
-            disp('No matching electrode info for patient found');
-        end
-        
         for jj = 1:length(freq)
             % 1st: remove bad trials
             D1 = D;

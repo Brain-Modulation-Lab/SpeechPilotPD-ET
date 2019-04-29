@@ -3,7 +3,7 @@
 setDirectories; %platform specific locations 
 electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 subjectLists; %load lists of subjects
-group = 'PD';
+group = 'ET';
 subjects = eval([group '_subjects']); %variable contains the proper set
 load([savedDataDir filesep 'population' filesep group '_electrodeInfo.mat']);
 

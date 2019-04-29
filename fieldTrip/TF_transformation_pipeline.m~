@@ -10,6 +10,9 @@ nsession = length(files);
 for ii = 1:nsession
     load([fdir filesep files(ii).name]);
     
+    %load([ 'Users/dwang/VIM/datafiles/preprocessed_new/v1/' ...
+    %    'DBS4038/ecog/DBS4038_session1_ecog_trials_step3.mat'])
+    
     % 1st: remove bad trials
     D1 = D;
     D1.trial(:,D1.badtrial_final) = [];
@@ -31,10 +34,10 @@ for ii = 1:nsession
     
     signal_norm = cellfun(@(x, y, z) (x - y)./z, signal, bases_mean, bases_std,'UniformOutput',0);
     
-    %% Plotting the ref + word onset centered
-    %center on word onset, -2 to 2
-    roi_starts = num2cell(round(fs*(D1.epoch.onset_word - D1.epoch.starts)) - 2*fs)';
-    roi_ends = num2cell(round(fs*(D1.epoch.onset_word - D1.epoch.starts)) + 2*fs)';
+    %% ref + word onset centered
+    %center on word onset, -1 to 1
+    roi_starts = num2cell(round(fs*(D1.epoch.onset_word - D1.epoch.starts)) - 1*fs)';
+    roi_ends = num2cell(round(fs*(D1.epoch.onset_word - D1.epoch.starts)) + 1*fs)';
     signal_roi =  cellfun(@(x,y,z) x(y:z,:,:),signal_norm,roi_starts,roi_ends,'UniformOutput',0);
     % average sinal_roi across trial
     avg_signal_roi = cell2mat(reshape(signal_roi,[1,1,1,size(signal_roi,2)]));
