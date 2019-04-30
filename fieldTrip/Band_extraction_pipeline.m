@@ -26,23 +26,25 @@ for ss=1:length(subjects)
     nsession = length(files);
     for ii = 1:nsession
         load([fdir filesep files(ii).name]);
+        disp(['Loading data file ' files(ii).name]);
         % match the electrode file to the data file
         mi = find(strcmp(subjects{ss}, subj) & strncmp(D.side, eside, 1));
         if ~isempty(mi) 
             D.electrodeInfo = electrodeInfo(mi(1)); 
+            disp('Electrode localization found');
         else
             disp('No matching electrode info for patient found');
         end
         
+        % 1st: remove bad trials
+        D1 = D;
+        i_oi = 2; %use Common Average Referenced data
+        D1.trial(:,D1.badtrial_final) = [];
+        D1.trial = D1.trial(i_oi, :);
+        D1.time(D1.badtrial_final) = [];
+        D1.epoch(D1.badtrial_final,:) = [];
+        
         for jj = 1:length(freq)
-            % 1st: remove bad trials
-            D1 = D;
-            i_oi = 2; %use Common Average Referenced data
-            D1.trial(:,D1.badtrial_final) = [];
-            D1.trial = D1.trial(i_oi, :);
-            D1.time(D1.badtrial_final) = [];
-            D1.epoch(D1.badtrial_final,:) = [];
-            
             clearvars signal
             disp(['Filtering at ' freq{jj}]);
             eval(['thesieve=' freq{jj} 'Filt;']);
@@ -51,6 +53,7 @@ for ss=1:length(subjects)
             base_starts = num2cell(round(fs*(D1.epoch.stimulus_starts - D1.epoch.starts)) - 1 * fs)';
             base_ends = num2cell(round(fs*(D1.epoch.stimulus_starts - D1.epoch.starts)))';
             base = cellfun(@(x,y,z) x(:,y:z),signal,base_starts,base_ends,'UniformOutput',0);
+            bm = cell2mat(base);
             baseM = reshape(bm, size(base{1},1), size(base{1},2), []);
             base_mean = cellfun(@(x) mean(x,2), base,'UniformOutput',0);
             
@@ -84,24 +87,25 @@ for ss=1:length(subjects)
             avg_word_off = mean(D1.epoch.offset_word - D1.epoch.onset_word);
             
             % plot
-            
-            t=linspace(-2,2,size(z_oi,1));
-            plot(z_oi)
-            
-            figure;
-            plot(t,z_oi);
-            
-            hold on; plot([0,0],ylim,'--k');
-            hold on; plot([avg_cue,avg_cue],ylim,'--k');
-            hold on; plot([avg_word_off,avg_word_off],ylim,'--k');
-            
-            xlabel('Time (s)'); % x-axis label
-            ylabel('High gamma z-score'); % y-axis label
-            
+            if 0
+                t=linspace(-2,2,size(z_oi,1));
+                plot(z_oi)
+
+                figure;
+                plot(t,z_oi);
+
+                hold on; plot([0,0],ylim,'--k');
+                hold on; plot([avg_cue,avg_cue],ylim,'--k');
+                hold on; plot([avg_word_off,avg_word_off],ylim,'--k');
+
+                xlabel('Time (s)'); % x-axis label
+                ylabel('High gamma z-score'); % y-axis label
+            end
             D_back = D;
-            D = D1;
+            D = D1; %#ok<NASGU>
             save([savedDataDir filesep 'subjects' filesep subjects{ss} ...
                 '_session' num2str(ii) '_ecog_' freq{jj} '.mat'], 'D', '-v7.3');
+            D = D_back;
         end
     end
 end
