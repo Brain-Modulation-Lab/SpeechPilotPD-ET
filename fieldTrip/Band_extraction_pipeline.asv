@@ -6,10 +6,11 @@ electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 subjectLists; %load lists of subjects
 group = 'ET';
 subjects = eval([group '_subjects']); %variable contains the proper set
-load([codeDir filesep 'Filters' filesep 'bandpassfilters.mat']);
-load([codeDir filesep 'Filters' filesep 'highoass_2Hz_fs1200.mat']);
-load([codeDir filesep 'Filters' filesep 'BroadbandGammaFilt.mat']);
-freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
+
+fs = 1000; % data sampling frequency
+load([codeDir filesep 'Filters1000hz' filesep 'bpfilt.mat']);
+load([codeDir filesep 'Filters1000hz' filesep 'BroadbandGammaFilt.mat']);
+freq={'broadbandGamma','gamma','hgamma','beta1','beta2','delta','theta','alpha'};
 
 load([savedDataDir filesep 'population' filesep group '_electrodeInfo.mat']);
 electrodeInfo = rmfield(electrodeInfo, 'badch');
@@ -17,32 +18,31 @@ electrodeInfo = rmfield(electrodeInfo, 'usedChannels');
 eside = {electrodeInfo(:).side};
 subj = {electrodeInfo(:).subjectID};
 
-% data sampling frequency
-fs = 1000;
-
 for ss=1:length(subjects)
     fdir = [datadir filesep subjects{ss} filesep subjProcessedDir];
     files = dir([fdir filesep subjects{ss} '*_ecog_step5.mat']);
     nsession = length(files);
     for ii = 1:nsession
         load([fdir filesep files(ii).name]);
+        disp(['Loading data file ' files(ii).name]);
         % match the electrode file to the data file
         mi = find(strcmp(subjects{ss}, subj) & strncmp(D.side, eside, 1));
         if ~isempty(mi) 
             D.electrodeInfo = electrodeInfo(mi(1)); 
+            disp('Electrode localization found');
         else
             disp('No matching electrode info for patient found');
         end
         
+        % 1st: remove bad trials
+        D1 = D;
+        i_oi = 2; %use Common Average Referenced data
+        D1.trial(:,D1.badtrial_final) = [];
+        D1.trial = D1.trial(i_oi, :);
+        D1.time(D1.badtrial_final) = [];
+        D1.epoch(D1.badtrial_final,:) = [];
+        
         for jj = 1:length(freq)
-            % 1st: remove bad trials
-            D1 = D;
-            i_oi = 2; %use Common Average Referenced data
-            D1.trial(:,D1.badtrial_final) = [];
-            D1.trial = D1.trial(i_oi, :);
-            D1.time(D1.badtrial_final) = [];
-            D1.epoch(D1.badtrial_final,:) = [];
-            
             clearvars signal
             disp(['Filtering at ' freq{jj}]);
             eval(['thesieve=' freq{jj} 'Filt;']);
@@ -100,10 +100,10 @@ for ss=1:length(subjects)
                 ylabel('High gamma z-score'); % y-axis label
             end
             D_back = D;
-            D = D1;
+            D = D1; %#ok<NASGU>
             save([savedDataDir filesep 'subjects' filesep subjects{ss} ...
                 '_session' num2str(ii) '_ecog_' freq{jj} '.mat'], 'D', '-v7.3');
-            D = D
+            D = D_back;
         end
     end
 end

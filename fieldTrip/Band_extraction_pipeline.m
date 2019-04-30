@@ -6,19 +6,17 @@ electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 subjectLists; %load lists of subjects
 group = 'ET';
 subjects = eval([group '_subjects']); %variable contains the proper set
-load([codeDir filesep 'Filters' filesep 'bandpassfilters.mat']);
-load([codeDir filesep 'Filters' filesep 'highoass_2Hz_fs1200.mat']);
-load([codeDir filesep 'Filters' filesep 'BroadbandGammaFilt.mat']);
-freq={'BroadbandGamma','Gamma','Hgamma','beta1','beta2','delta','theta','alpha'};
+
+fs = 1000; % data sampling frequency
+load([codeDir filesep 'Filters1000hz' filesep 'bpfilt.mat']);
+load([codeDir filesep 'Filters1200hz' filesep 'broadbandGammaFilt.mat']);
+freq={'broadbandGamma','gamma','hgamma','beta1','beta2','delta','theta','alpha'};
 
 load([savedDataDir filesep 'population' filesep group '_electrodeInfo.mat']);
 electrodeInfo = rmfield(electrodeInfo, 'badch');
 electrodeInfo = rmfield(electrodeInfo, 'usedChannels');
 eside = {electrodeInfo(:).side};
 subj = {electrodeInfo(:).subjectID};
-
-% data sampling frequency
-fs = 1000;
 
 for ss=1:length(subjects)
     fdir = [datadir filesep subjects{ss} filesep subjProcessedDir];
