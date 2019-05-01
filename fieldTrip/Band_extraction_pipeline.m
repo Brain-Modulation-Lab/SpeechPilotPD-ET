@@ -4,12 +4,12 @@
 setDirectories; %platform specific locations
 electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 subjectLists; %load lists of subjects
-group = 'ET';
+group = 'PD';
 subjects = eval([group '_subjects']); %variable contains the proper set
 
 fs = 1000; % data sampling frequency
 load([codeDir filesep 'Filters1000hz' filesep 'bpfilt.mat']);
-load([codeDir filesep 'Filters1200hz' filesep 'broadbandGammaFilt.mat']);
+load([codeDir filesep 'Filters1000hz' filesep 'broadbandGammaFilt.mat']);
 freq={'broadbandGamma','gamma','hgamma','beta1','beta2','delta','theta','alpha'};
 
 load([savedDataDir filesep 'population' filesep group '_electrodeInfo.mat']);
@@ -73,6 +73,8 @@ for ss=1:length(subjects)
             %center on word onset, -2 to + 2
             roi_starts = num2cell(round(fs*(D1.epoch.onset_word - D1.epoch.starts)) - 2*fs)';
             roi_ends = num2cell(round(fs*(D1.epoch.onset_word - D1.epoch.starts)) + 2*fs)';
+            s_inrange = cellfun(@(x,y) x>=size(y,2), roi_starts, signal_z);
+            e_inrange =  cellfun(@(x,y) x>=size(y,2), roi_ends, signal_z);
             signal_roi =  cellfun(@(x,y,z) x(:,y:z),signal_z,roi_starts,roi_ends,'UniformOutput',0);
              
             %% Average across all trials
