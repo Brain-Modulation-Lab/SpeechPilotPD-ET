@@ -1,5 +1,8 @@
 function [p,h] = checkElectrodeSignificance(base_ch, signal_ch, zeroi, varargin)
-% function results = checkElectrodeSignificance(base_ch, z_amp)
+% function [p,h] = checkElectrodeSignificance(base_ch, signal_ch, zeroi, varargin)
+%
+% Tests the time-averaged signal (in 1 sec window centered at time 0)
+% versus the time-averaged baseline period. Tests via a simple Wilcoxon rank sum test 
 
 if nargin > 3
     hist_ah = varargin{1};
