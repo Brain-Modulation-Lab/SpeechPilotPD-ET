@@ -48,18 +48,17 @@ for gg = 1:length(groups)
             zeroi = find(time > 0,1);
             % Test if each electrode is responsive
             for jj=1:length(usedI)
-                [ep(jj), eh(jj)] = checkElectrodeSignificance(basezM(:,:,jj), trialzM(:,:,jj), zeroi);
+                [ep(jj), eh(jj)] = checkElectrodeSignificance(basezM(:,:,jj), ezM(:,:,jj), zeroi);
             end
+            
             pd.basezM = basezM;
             pd.trialzM = trialzM;
             pd.meanz = squeeze(mean(trialzM, 2));
             pd.time = time;
             pd.sig_p = ep;
             pd.sig_h = eh;
-            pd.electrodeLoc = elocs;
             
-            
-            if (ii==1) popData = pd; else popData(ii) = pd; end   %#ok<SAGROW,SEPEX> Need the if to make this assignment work
+            popData(ii) = pd;
         end
         popDir =[savedDataDir filesep 'population' filesep];
         save([popDir 'Pop_ecog_' groups{gg} '_' freq{ff} '.mat'], 'popData', '-v7.2');
