@@ -1,7 +1,7 @@
 function electrodeLocations = readElectrodeLocXLS(filepath,sheet)
 % function electrodeLocations = readElectrodeLocXLS(filepath)
 %
-% Reads in an excel spreadsheet format that gives anatomical location labels for all of the 
+% Reads in an excel spreadsheet format that gives labels for all of the 
 % ECoG electrode locations based on the localization.
 
 [~,~,raw] = xlsread(filepath,sheet); %returns cell array of 
@@ -43,7 +43,7 @@ for ii=1:length(entryRows)
                 nums(inds) = [raw{er-1+(1:18),2*jj}];
             end
     end
-    loc.locations  = locations;
+    loc.labels  = labels;
     loc.channels = nums;
     electrodeLocations(ii) = loc;
 end

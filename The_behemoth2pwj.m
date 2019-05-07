@@ -49,7 +49,7 @@ for s=1:length(subjects)
         electrodeLocs = readElectrodeLocXLS(electrodeFile, group); %need to read in a match to the anatomically localized
         ematch = find(strcmp(data.SubjectID, {electrodeLocs.subject}) & strcmpi(data.Side, {electrodeLocs.side}));
         for ii = 1:length(ematch) % There can be multiple strips per recording
-            locLabels(cell2mat({electrodeLocs(ematch(ii)).channels})) = electrodeLocs(ematch(ii)).labels;
+            locLabels(cell2mat({electrodeLocs(ematch(ii)).channels})) = electrodeLocs(ematch(ii)).locations;
         end
         
         chUsed = setdiff(1:size(data.Ecog,2), data.badch); %select the good channels

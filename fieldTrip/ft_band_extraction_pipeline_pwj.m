@@ -6,17 +6,19 @@ electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 subjectLists; %load lists of subjects
 group = 'PD';
 subjects = eval([group '_subjects']); %variable contains the proper set
+%subjects = {'DBS4053'};
 
 fs = 1000; % data sampling frequency
 load([codeDir filesep 'Filters1000hz' filesep 'bpfilt.mat']);
 load([codeDir filesep 'Filters1000hz' filesep 'broadbandGammaFilt.mat']);
 freq={'broadbandGamma','gamma','hgamma','beta1','beta2','delta','theta','alpha'};
 
-load([savedDataDir filesep 'population' filesep group '_electrodeInfo.mat']);
-electrodeInfo = rmfield(electrodeInfo, 'badch');
-electrodeInfo = rmfield(electrodeInfo, 'usedChannels');
+%load([savedDataDir filesep 'population' filesep group '_electrodeInfo.mat']);
+electrodeInfo = readElectrodeLocXLS(electrodeFile, group); 
+%electrodeInfo = rmfield(electrodeInfo, 'badch');
+%electrodeInfo = rmfield(electrodeInfo, 'usedChannels');
 eside = {electrodeInfo(:).side};
-subj = {electrodeInfo(:).subjectID};
+subj = {electrodeInfo(:).subject};
 
 for ss=1:length(subjects)
     fdir = [datadir filesep subjects{ss} filesep subjProcessedDir];
@@ -26,7 +28,7 @@ for ss=1:length(subjects)
         load([fdir filesep files(ii).name]);
         disp(['Loading data file ' files(ii).name]);
         % match the electrode file to the data file
-        mi = find(strcmp(subjects{ss}, subj) & strncmp(D.side, eside, 1));
+        mi = find(strcmpi(subjects{ss}, subj) & strncmpi(D.side, eside, 1));
         if ~isempty(mi) 
             D.electrodeInfo = electrodeInfo(mi(1)); 
             disp('Electrode localization found');
@@ -34,6 +36,8 @@ for ss=1:length(subjects)
             disp('No matching electrode info for patient found');
         end
         
+        D.subject = subjects{ss};
+        D.session = str2double(files(ii).name(16));
         % 1st: remove bad trials
         D1 = D;
         i_oi = 2; %use Common Average Referenced data
@@ -73,6 +77,8 @@ for ss=1:length(subjects)
             %center on word onset, -2 to + 2
             roi_starts = num2cell(round(fs*(D1.epoch.onset_word - D1.epoch.starts)) - 2*fs)';
             roi_ends = num2cell(round(fs*(D1.epoch.onset_word - D1.epoch.starts)) + 2*fs)';
+            s_inrange = cellfun(@(x,y) x>=size(y,2), roi_starts, signal_z);
+            e_inrange =  cellfun(@(x,y) x>=size(y,2), roi_ends, signal_z);
             signal_roi =  cellfun(@(x,y,z) x(:,y:z),signal_z,roi_starts,roi_ends,'UniformOutput',0);
              
             %% Average across all trials

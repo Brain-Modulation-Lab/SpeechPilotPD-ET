@@ -6,6 +6,8 @@
 setDirectories; %platform specific locations
 groups = {'PD', 'ET'};
 ids = {'DBS2*', 'DBS4*'};
+groups = {'ET'};
+ids = {'DBS4*'};
 freq={'broadbandGamma','gamma','hgamma','beta1','beta2','delta','theta','alpha'};
 subjectLists; %lists of subject IDs
 fs = 1000; % data sampling frequency
@@ -18,17 +20,17 @@ for gg = 1:length(groups)
         popData = [];
         for ii =1:length(df) % each session file
             load([subjDir filesep df(ii).name]);
-            clear pd;
+            clear pd ep eh;
             
             %set up the population data structures
-            nchan = length(D.electrodeInfo.electrodeLoc);
+            nchan = length(D.electrodeInfo.locations);
             if ~isempty(D.badch) %need to get indices of bad channels rather than strings
                 [used_label, usedI] = setdiff(D.label_br, D.badch);
                 missing = setdiff(1:nchan, usedI);
-                elocs = D.electrodeInfo.electrodeLoc(usedI);
+                elocs = D.electrodeInfo.locations(usedI);
             else
                 usedI = 1:nchan;
-                elocs = D.electrodeInfo.electrodeLoc(usedI);
+                elocs = D.electrodeInfo.locations(usedI);
             end
             
             %% Align trials on speech onset for population analysis 
@@ -40,7 +42,7 @@ for gg = 1:length(groups)
             base_starts = num2cell(round(fs*(D.epoch.stimulus_starts - D.epoch.starts)) - 1 * fs)';
             base_ends = num2cell(round(fs*(D.epoch.stimulus_starts - D.epoch.starts)))';
             base = cellfun(@(x,y,z) x(:,y:z),D.signal_z,base_starts,base_ends,'UniformOutput',0);
-            % create a matrix: Time x trial x channel
+            % create a matrix: Time x trial x channela
             basezM = permute(reshape(cell2mat(base), size(base{1},1), size(base{1},2), []), [2 3 1]); 
             trialzM = permute(reshape(cell2mat(trials), size(trials{1},1), size(trials{1},2), []), [2 3 1]); 
             avgZ = squeeze(mean(trialzM, 2)); 
@@ -50,19 +52,20 @@ for gg = 1:length(groups)
             for jj=1:length(usedI)
                 [ep(jj), eh(jj)] = checkElectrodeSignificance(basezM(:,:,jj), trialzM(:,:,jj), zeroi);
             end
+            pd = D;
+            pd = rmfield(pd, {'trial', 'time', 'filt'});
             pd.basezM = basezM;
             pd.trialzM = trialzM;
-            pd.meanz = squeeze(mean(trialzM, 2));
+            pd.meanz = avgZ;
             pd.time = time;
             pd.sig_p = ep;
             pd.sig_h = eh;
             pd.electrodeLoc = elocs;
-            
-            
+             
             if (ii==1) popData = pd; else popData(ii) = pd; end   %#ok<SAGROW,SEPEX> Need the if to make this assignment work
         end
         popDir =[savedDataDir filesep 'population' filesep];
-        save([popDir 'Pop_ecog_' groups{gg} '_' freq{ff} '.mat'], 'popData', '-v7.2');
+        save([popDir 'Pop_ecog_' groups{gg} '_' freq{ff} '.mat'], 'popData', '-v7.3');
     
     end
 end
