@@ -6,20 +6,22 @@
 setDirectories; %platform specific locations
 groups = {'PD', 'ET'};
 ids = {'DBS2*', 'DBS4*'};
-groups = {'ET'};
-ids = {'DBS4*'};
-freq={'broadbandGamma','gamma','hgamma','beta1','beta2','delta','theta','alpha'};
+%groups = {'ET'};
+%ids = {'DBS4*'};
+%freq={'broadbandGamma','gamma','hgamma','beta1','beta2','delta','theta','alpha'};
+freq={'gamma','hgamma','beta1','beta2','delta','theta','alpha'};
 subjectLists; %lists of subject IDs
 fs = 1000; % data sampling frequency
 
 for gg = 1:length(groups)
     for ff=1:length(freq)
         subjDir = [savedDataDir filesep 'subjects'];
-        df = dir([subjDir filesep ids{gg} freq{ff} '*']);
+        df = dir([subjDir filesep ids{gg} '_' freq{ff} '*']);
         
         popData = [];
         for ii =1:length(df) % each session file
             load([subjDir filesep df(ii).name]);
+            disp(['Loaded ' df(ii).name]);
             clear pd ep eh;
             
             %set up the population data structures

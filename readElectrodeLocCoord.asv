@@ -1,0 +1,25 @@
+%Read all of the ECoG electrode contact coordinates for a set of subjects
+
+clear electD
+subjectLists;
+group = 'PD';
+subjects = eval([group '_subjects']); %variable contains the proper set
+
+electrodePos = table(); 
+for ss = 1:length(subjects)
+    COORD_PATH = fullfile(datadir, subjects{ss}, 'Anatomy','FreeSurfer','postop','Electrode_locations','Final');
+    CortElecLoc = []; CortElectLoc_MNI = [];
+    ind_file = dir([COORD_PATH filesep 'CortElecLoc*_eq.mat']);
+    if ~isempty(ind_file)
+        load([ind_file.name);
+    end
+    
+    MNI_file = dir([COORD_PATH filesep 'CortElecLoc*_MNI.mat']);
+    if ~isempty(MNI_file)
+        load(MNI_file.name);
+    end 
+    electrodePos(ss).subject = subjects{ss};
+    electrodePos(ss).IndCoord = CortElectLoc;
+    electrodePos(ss).MNICoord = CortElectLoc_MNI;
+end
+

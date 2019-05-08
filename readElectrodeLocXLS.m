@@ -1,9 +1,13 @@
-function electrodeLocations = readElectrodeLocXLS(filepath,sheet)
+function electrodeLocations = readElectrodeLocXLS(filepath,sheet, varargin)
 % function electrodeLocations = readElectrodeLocXLS(filepath)
 %
 % Reads in an excel spreadsheet format that gives anatomical location labels for all of the 
 % ECoG electrode locations based on the localization.
-
+if ~isempty(varargin)
+    deleteEmptyLoc = varargin{1};
+else
+   deleteEmptyLoc = 0;
+end
 [~,~,raw] = xlsread(filepath,sheet); %returns cell array of 
 
 entryRows = find(strncmpi('DBS',raw(:,1), 3)); 
@@ -42,6 +46,12 @@ for ii=1:length(entryRows)
                 locations(inds) = raw(er-1+(1:18),(2*jj)+1);
                 nums(inds) = [raw{er-1+(1:18),2*jj}];
             end
+    end
+    if deleteEmptyLoc
+        presenti = find(~strcmp(locations, 'No electrode'));
+        locations = locations(presenti);
+        nums = nums(presenti);
+        loc.nchannel = length(nums);
     end
     loc.locations  = locations;
     loc.channels = nums;

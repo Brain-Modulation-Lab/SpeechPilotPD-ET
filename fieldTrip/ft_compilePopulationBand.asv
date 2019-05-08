@@ -5,9 +5,9 @@
 %This block is setting the overall parameters of the analysis
 setDirectories; %platform specific locations
 groups = {'PD', 'ET'};
-ids = {'DBS2*', 'DBS4*'};
-groups = {'ET'};
-ids = {'DBS4*'};
+ids = {'DBS2[0-9][0-9][0-9]', 'DBS4[0-9][0-9][0-9]'};
+%groups = {'ET'};
+%ids = {'DBS4*'};
 freq={'broadbandGamma','gamma','hgamma','beta1','beta2','delta','theta','alpha'};
 subjectLists; %lists of subject IDs
 fs = 1000; % data sampling frequency
@@ -20,6 +20,7 @@ for gg = 1:length(groups)
         popData = [];
         for ii =1:length(df) % each session file
             load([subjDir filesep df(ii).name]);
+            disp(['Loaded ' df(ii).name]);
             clear pd ep eh;
             
             %set up the population data structures
@@ -52,16 +53,15 @@ for gg = 1:length(groups)
             for jj=1:length(usedI)
                 [ep(jj), eh(jj)] = checkElectrodeSignificance(basezM(:,:,jj), trialzM(:,:,jj), zeroi);
             end
+            pd = D;
+            pd = rmfield(pd, {'trial', 'time', 'filt'});
             pd.basezM = basezM;
             pd.trialzM = trialzM;
-            pd.meanz = squeeze(mean(trialzM, 2));
+            pd.meanz = avgZ;
             pd.time = time;
             pd.sig_p = ep;
             pd.sig_h = eh;
             pd.electrodeLoc = elocs;
-            pd.subject = D.subject;
-            pd.session = D.session;
-            pd.side = D.side
              
             if (ii==1) popData = pd; else popData(ii) = pd; end   %#ok<SAGROW,SEPEX> Need the if to make this assignment work
         end
