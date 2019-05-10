@@ -2,7 +2,8 @@
 % for a given subject set, performing narrower band-pass filtering and
 % integrating the catagorical electrode localization labels.
 setDirectories; %platform specific locations
-electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
+electrodeFile = [savedDataDir filesep 'population' filesep 'ecog_coords_final.xlsx'];
+%electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 subjectLists; %load lists of subjects
 group = 'PD';
 subjects = eval([group '_subjects']); %variable contains the proper set
@@ -13,7 +14,9 @@ load([codeDir filesep 'Filters1000hz' filesep 'broadbandGammaFilt.mat']);
 freq={'broadbandGamma','gamma','hgamma','beta1','beta2','delta','theta','alpha'};
 
 %load([savedDataDir filesep 'population' filesep group '_electrodeInfo.mat']);
-electrodeInfo = readElectrodeLocXLS(electrodeFile, group, 1); 
+%electrodeInfo = readElectrodeLocXLS(electrodeFile, group, 1); 
+electrodeInfo = loadFinalEcogLocations(electrodeFile, group);
+
 %electrodeInfo = rmfield(electrodeInfo, 'badch');
 %electrodeInfo = rmfield(electrodeInfo, 'usedChannels');
 eside = {electrodeInfo(:).side};
