@@ -5,7 +5,7 @@ setDirectories; %platform specific locations
 electrodeFile = [savedDataDir filesep 'population' filesep 'ecog_coords_final.xlsx'];
 %electrodeFile = [docDir filesep 'Ecog_Locations.xlsx'];
 subjectLists; %load lists of subjects
-group = 'PD';
+group = 'ET';
 subjects = eval([group '_subjects']); %variable contains the proper set
 
 fs = 1000; % data sampling frequency
