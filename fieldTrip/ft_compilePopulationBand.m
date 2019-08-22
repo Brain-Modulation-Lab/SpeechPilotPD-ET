@@ -6,10 +6,11 @@
 setDirectories; %platform specific locations
 groups = {'PD', 'ET'};
 ids = {'DBS2*', 'DBS4*'};
-%groups = {'ET'};
-%ids = {'DBS4*'};
-freq={'broadbandGamma','gamma','hgamma','beta1','beta2','delta','theta','alpha'};
-freq={'gamma','hgamma','beta1'};
+groups = {'ET'};
+ids = {'DBS4*'};
+%freq={'broadbandGamma','gamma','hgamma','beta1','beta2','delta','theta','alpha'};
+freq={'gamma','hgamma','beta1', 'beta2','delta','theta','alpha'};
+freq={'broadbandGamma'};
 %freq={'beta2','delta','theta','alpha'};
 subjectLists; %lists of subject IDs
 fs = 1000; % data sampling frequency

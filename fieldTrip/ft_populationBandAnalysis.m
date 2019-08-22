@@ -13,7 +13,7 @@ if plotb %Plot the population results
     
 end
 
-for gg=2:2
+for gg=1:2
     clear freq; %this is the population data structure
     for ff=1:length(freqs)
         disp(['Processing ' freqs{ff}]);

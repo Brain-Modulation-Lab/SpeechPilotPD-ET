@@ -12,6 +12,7 @@ fs = 1000; % data sampling frequency
 load([codeDir filesep 'Filters1000hz' filesep 'bpfilt.mat']);
 load([codeDir filesep 'Filters1000hz' filesep 'broadbandGammaFilt.mat']);
 freq={'broadbandGamma','gamma','hgamma','beta1','beta2','delta','theta','alpha'};
+%freq={'broadbandGamma'};
 
 %load([savedDataDir filesep 'population' filesep group '_electrodeInfo.mat']);
 %electrodeInfo = readElectrodeLocXLS(electrodeFile, group, 1); 

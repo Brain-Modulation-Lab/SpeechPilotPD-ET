@@ -36,7 +36,7 @@ DBS2000_elec_idx.elec2mnicort_indx = elec2mnicort_indx;
 
 DBS2000_elec_idx.patient_id = id;
 
-save('/Volumes/Nexus/Users/dwang/Group_plotting/datafiles/DBS2000_elec_idx1','DBS2000_elec_idx');
+%save('/Volumes/Nexus/Users/dwang/Group_plotting/datafiles/DBS2000_elec_idx1','DBS2000_elec_idx');
 
 
 
