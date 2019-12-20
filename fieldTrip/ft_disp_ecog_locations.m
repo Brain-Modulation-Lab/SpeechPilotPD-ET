@@ -1,0 +1,57 @@
+% Plotting the electrode locations and eventually a mapping of activity
+
+% load('Pop_ecog_ET_hgamma.mat');
+% ETpd = popData;
+% load('Pop_ecog_PD_hgamma.mat');
+% PDpd = popData;
+load([savedDataDir filesep 'population' filesep 'cortex_MNI.mat']);
+load([savedDataDir filesep 'population' filesep 'DispCamPos1.mat']);
+
+Ind_Gy_vert = [];
+ind_region = [];
+% only select gyrus
+for i = 1:length(BS1.Atlas(2).Scouts); 
+    if any(BS1.Atlas(2).Scouts(i).Label == 'G')
+        ind_region = [ind_region,i];
+        Ind_Gy_vert = [Ind_Gy_vert,BS1.Atlas(2).Scouts(i).Vertices];
+    end    
+end
+Ind_Gy_vert = sort(Ind_Gy_vert);
+Gyrus = BS1.Vertices(Ind_Gy_vert,:);
+
+fh = figure(1); hold on;
+Hp = patch('vertices',BS1.Vertices,'faces',BS1.Faces,...
+'facecolor',[.85 .50 .50],'edgecolor','none',...
+'facelighting', 'gouraud', 'specularstrength', .50);
+camlight('headlight','infinite');
+axis off; axis equal
+set(gca,'CameraPosition',DispCamPos1.cp,'CameraTarget',DispCamPos1.ct,...
+        'CameraViewAngle',DispCamPos1.cva, 'CameraUpVector',DispCamPos1.uv);
+alpha 0.7
+hold on;
+    
+%now get the electrode locations
+clear mni_coord;
+group = {'PD', 'ET'};
+for gg = 1:2
+    gn = group{gg};
+    eval(['pd = ' gn 'pd;']); %assigns population data struct to pd
+    %mni_coord.(gn) = [];
+    for ll=1:length(sd.loc_labels)
+        ln = sd.loc_labels{ll};
+        inc = sd.(gn).freq(1).loc(ll).include;
+        coord = [];
+        for ii=1:length(inc)
+            coord = cat(1, coord, pd(ii).electrodeInfo.MNI_coord(inc{ii}, :));
+        end
+        mni_coord.(gn).(ln) = coord;
+        
+        hold on;
+        plot3(coord(:,1), coord(:,2), coord(:,3), 'b.', 'MarkerSize', 15);
+        %[min_val,idx] = min(pdist2(coord,Gyrus),[],2);
+        %elec2mnicort_indx{i}  = [Ind_Gy_vert(idx)',min_val];
+        
+    end    
+end
+
+
