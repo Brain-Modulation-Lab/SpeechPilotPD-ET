@@ -27,7 +27,7 @@ camlight('headlight','infinite');
 axis off; axis equal
 set(gca,'CameraPosition',DispCamPos1.cp,'CameraTarget',DispCamPos1.ct,...
         'CameraViewAngle',DispCamPos1.cva, 'CameraUpVector',DispCamPos1.uv);
-alpha 0.7
+alpha 0.5
 hold on;
     
 %now get the electrode locations
@@ -45,11 +45,13 @@ for gg = 1:2
             coord = cat(1, coord, pd(ii).electrodeInfo.MNI_coord(inc{ii}, :));
         end
         mni_coord.(gn).(ln) = coord;
-        
+        [min_val,idx] = min(pdist2(coord,Gyrus),[],2);
+        elec2mnicort_indx{ll}  = [Ind_Gy_vert(idx)',min_val];
         hold on;
+        pcoord = BS1.Vertices(Ind_Gy_vert(idx),:);
+        plot3(pcoord(:,1), pcoord(:,2), pcoord(:,3), 'r.', 'MarkerSize', 15);
         plot3(coord(:,1), coord(:,2), coord(:,3), 'b.', 'MarkerSize', 15);
-        %[min_val,idx] = min(pdist2(coord,Gyrus),[],2);
-        %elec2mnicort_indx{i}  = [Ind_Gy_vert(idx)',min_val];
+        clear min_val idx;
         
     end    
 end

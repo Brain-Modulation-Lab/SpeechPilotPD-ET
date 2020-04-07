@@ -15,6 +15,7 @@ for ff=1:length(sd.freq_labels)
     pd_sem = nanstd(sd.PD.freq(ff).loc(ll).perSessionZ,0,2) ./ sqrt(npd);
     et_sem = nanstd(sd.ET.freq(ff).loc(ll).perSessionZ,0,2) ./ sqrt(net);
     
+    t = sd.ET.freq(ff).loc(ll).time;
     plot_err_poly(ah(ll), sd.ET.freq(ff).loc(ll).time, et_mean, et_sem, [0 0 1], [.5 .5 1],1);
     hold on;
     plot_err_poly(ah(ll), sd.PD.freq(ff).loc(ll).time, pd_mean, pd_sem, [1 0 0], [1 .5 .5],1);
@@ -22,6 +23,15 @@ for ff=1:length(sd.freq_labels)
     ymin = min(min(et_mean), min(pd_mean));
     line(ah(ll), sd.ET.freq(ff).loc(ll).time, h*(ymax+1), 'Color', 'k', 'LineWidth', 1);
     ylim(ah(ll), [floor(ymin-1) ceil(ymax+1.5)]);
+    
+    %just give some report of the results
+    disp(['Significantly different times for ', sd.freq_labels{ff}, '  ', sd.loc_labels{ll}]);  
+    segs = bwlabel(h);
+    nsegs = max(segs);
+    for ii=1:nsegs
+        t = sd.ET.freq(ff).loc(ll).time(segs==ii);
+        disp([num2str(t(1)) '  ' num2str(t(end))]);
+    end
   end
   set(fh, 'Renderer', 'painters');
   saveas(fh, ['ft_' sd.freq_labels{ff}], 'epsc2');
