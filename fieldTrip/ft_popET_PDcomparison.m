@@ -34,7 +34,7 @@ for ff=1:length(sd.freq_labels)
     end
   end
   set(fh, 'Renderer', 'painters');
-  saveas(fh, ['ft_' sd.freq_labels{ff}], 'epsc2');
+  %saveas(fh, ['ft_' sd.freq_labels{ff}], 'epsc2');
 end
 
   

@@ -3,7 +3,7 @@
 setDirectories; %platform specific locations
 groups = {'PD', 'ET'};
 ids = {'DBS2*', 'DBS4*'};
-freqs={'hgamma','broadbandGamma','gamma','hgamma','beta1','beta2','delta','theta','alpha'};
+%freqs={'hgamma','broadbandGamma','gamma','hgamma','beta1','beta2','delta','theta','alpha'};
 freqs={'hgamma','gamma','beta1','beta2','delta','theta','alpha'};
 locs = {'M1', 'S1', 'STG'};
 dd = [savedDataDir filesep 'population'];
