@@ -1,45 +1,41 @@
+setDirectories; %platform specific locations
+
 % Plotting the electrode locations and eventually a mapping of activity
 
+%can load one of the subject group data files for all sessions
 % load('Pop_ecog_ET_hgamma.mat');
-% ETpd = popData;
+% pd = popData;
 % load('Pop_ecog_PD_hgamma.mat');
-% PDpd = popData;
+% pd = popData;
 
 %BS1 structure
 load([savedDataDir filesep 'population' filesep 'cortex_MNI.mat']);
 %DispCamPos1 structure
 load([savedDataDir filesep 'population' filesep 'DispCamPos1.mat']);
 
-Ind_Gy_vert = [];
-ind_region = [];
-% only select gyrus
-for i = 1:length(BS1.Atlas(2).Scouts); 
-    if any(BS1.Atlas(2).Scouts(i).Label == 'G')
-        ind_region = [ind_region,i];
-        Ind_Gy_vert = [Ind_Gy_vert,BS1.Atlas(2).Scouts(i).Vertices];
-    end    
-end
-Ind_Gy_vert = sort(Ind_Gy_vert);
-Gyrus = BS1.Vertices(Ind_Gy_vert,:);
-
-fh = figure(1); hold on;
-Hp = patch('vertices',BS1.Vertices,'faces',BS1.Faces,...
-'facecolor',[.85 .50 .50],'edgecolor','none',...
-'facelighting', 'gouraud', 'specularstrength', .50);
-camlight('headlight','infinite');
-axis off; axis equal
-set(gca,'CameraPosition',DispCamPos1.cp,'CameraTarget',DispCamPos1.ct,...
-        'CameraViewAngle',DispCamPos1.cva, 'CameraUpVector',DispCamPos1.uv);
-alpha 0.7
-hold on;
+%Want to display all of the individual response maps on the subject's anatomy
+for ii=1:length(pd)
+    sd = pd(ii); %session shortcut
+    %Individual anatomy
+    suffix = ['Anatomy' filesep 'FreeSurfer' filesep 'postop'  filesep 'cortex_indiv.mat'];
+    load([datadir filesep pd.subject filesep suffix]);
     
-%now get the electrode locations
-clear mni_coord;
-group = {'PD', 'ET'};
-for gg = 1:2
-    gn = group{gg};
-    eval(['pd = ' gn 'pd;']); %assigns population data struct to pd
-    %mni_coord.(gn) = [];
+    %% Plot the cortical surface
+    fh = figure; hold on;
+    Hp = patch('vertices',cortex.vert,'faces',cortex.tri,...
+        'facecolor',[.85 .50 .50],'edgecolor','none',...
+        'facelighting', 'gouraud', 'specularstrength', .50);
+    camlight('headlight','infinite');
+    axis off; axis equal
+    set(gca,'CameraPosition',DispCamPos1.cp,'CameraTarget',DispCamPos1.ct,...
+        'CameraViewAngle',DispCamPos1.cva, 'CameraUpVector',DispCamPos1.uv);
+    alpha 1
+    hold on;
+    
+    %%
+    %now get the electrode locations
+    clear mni_coord;
+  
     for ll=1:length(sd.loc_labels)
         ln = sd.loc_labels{ll};
         inc = sd.(gn).freq(1).loc(ll).include;
@@ -56,7 +52,7 @@ for gg = 1:2
         plot3(coord(:,1), coord(:,2), coord(:,3), 'b.', 'MarkerSize', 15);
         clear min_val idx;
         
-    end    
+    end
+    
+    
 end
-
-

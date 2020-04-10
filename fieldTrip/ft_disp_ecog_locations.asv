@@ -4,10 +4,9 @@
 % ETpd = popData;
 % load('Pop_ecog_PD_hgamma.mat');
 % PDpd = popData;
-
-%BS1 structure
+% Has BS1 structure
 load([savedDataDir filesep 'population' filesep 'cortex_MNI.mat']);
-%DispCamPos1 structure
+%
 load([savedDataDir filesep 'population' filesep 'DispCamPos1.mat']);
 
 Ind_Gy_vert = [];
@@ -30,7 +29,7 @@ camlight('headlight','infinite');
 axis off; axis equal
 set(gca,'CameraPosition',DispCamPos1.cp,'CameraTarget',DispCamPos1.ct,...
         'CameraViewAngle',DispCamPos1.cva, 'CameraUpVector',DispCamPos1.uv);
-alpha 0.7
+alpha 0.5
 hold on;
     
 %now get the electrode locations
