@@ -48,39 +48,37 @@ for ii=1:length(pd)
         V_color(jj) = floor(color_pctile * 64);
         plot3(ecoord(jj,1), ecoord(jj,2), ecoord(jj,3), 'Marker', '.', 'Color', clmp(V_color(jj),:), 'MarkerSize', 15);
         
-       
-        vertidx_t_pair_ynan = vertidx_t_pair;
-        vertidx_t_pair(find(isnan(vertidx_t_pair(:,13))),:) = []; %get vertex index-activity paired, remove nan
-        %order:cue, onset; alpha,beta2,beta1,Hgamma,Gamma,BroadbandGamma
-        ra = 3; % radius of full activity, subject to change
-        ddecay = 10; % decay distance, subject to change
-
-        V = [];
-        for all_vert_idx = 1:length(cortex.vert);
-   
-           % for each vertex, find if it's within radius of any contact
-           %within_ra = find(pdist2(BS1.Vertices(all_vert_idx,:),BS1.Vertices(vertidx_t_pair(:,1),:))<=ra);
-           within_ra = find(pdist2(cortex.vert(all_vert_idx,:),ecoord)<=ra);
-           %for each vertex, find if it's within decay of any contact
-           %within_decay = find(pdist2(BS1.Vertices(all_vert_idx,:),BS1.Vertices(vertidx_t_pair(:,1),:))>ra & ...
-           %    pdist2(BS1.Vertices(all_vert_idx,:),BS1.Vertices(vertidx_t_pair(:,1),:)) <= ddecay);
-           within_decay = find(pdist2(cortex.vert(all_vert_idx,:),ecoord)>ra & ...
-               pdist2(cortex.vert(all_vert_idx,:),ecoord) <= ddecay);
-           dist = pdist2(BS1.Vertices(all_vert_idx,:),BS1.Vertices(vertidx_t_pair(within_decay,1),:));
-           % get the distance between current vertex and within-decay contacts
-   
-          if isempty(max([vertidx_t_pair(within_ra,13)', ((1/2)^(1/7)).^(dist-ra) .* vertidx_t_pair(within_decay,13)']));
-              %V(all_vert_idx,1) = 0;
-              V(all_vert_idx,1:12) = 0; % If no within-radius and within-decay contact, then the value is 0
-          elseif isempty(dist);% If there is, here we used the average of all the activity in one vertex, which is subject to change
-              V(all_vert_idx,1:12) = mean(vertidx_t_pair(within_ra,2:13),1);
-          else
-              %V(all_vert_idx,1) = mean([vertidx_t_pair(within_ra,13)', ((1/2)^(1/7)).^(dist-ra) .* vertidx_t_pair(within_decay,13)']);
-              V(all_vert_idx,1:12) = mean([vertidx_t_pair(within_ra,2:13); repmat((((1/2)^(1/7)).^(dist-ra))',1,12) .* vertidx_t_pair(within_decay,2:13)],1);
-          end
-        end
-        colored_V_allband = V(find(any(V,2)),:); % find non-zero rows of V and return the value;
-        %colored_V = V(find(V~=0)); % find non-zero rows of V and return the value;
+%         
+%         vertidx_t_pair_ynan = vertidx_t_pair;
+%         vertidx_t_pair(find(isnan(vertidx_t_pair(:,13))),:) = []; %get vertex index-activity paired, remove nan
+%         %order:cue, onset; alpha,beta2,beta1,Hgamma,Gamma,BroadbandGamma
+%         ra = 3; % radius of full activity, subject to change
+%         ddecay = 10; % decay distance, subject to change
+% 
+%         V = [];
+%         for all_vert_idx = 1:length(BS1.Vertices);
+%             all_vert_idx
+%    
+%            % for each vertex, find if it's within radius of any contact 
+%            within_ra = find(pdist2(BS1.Vertices(all_vert_idx,:),BS1.Vertices(vertidx_t_pair(:,1),:))<=ra);
+%            %for each vertex, find if it's within decay of any contact
+%            within_decay = find(pdist2(BS1.Vertices(all_vert_idx,:),BS1.Vertices(vertidx_t_pair(:,1),:))>ra & ...
+%                pdist2(BS1.Vertices(all_vert_idx,:),BS1.Vertices(vertidx_t_pair(:,1),:)) <= ddecay);
+%            dist = pdist2(BS1.Vertices(all_vert_idx,:),BS1.Vertices(vertidx_t_pair(within_decay,1),:));
+%            % get the distance between current vertex and within-decay contacts
+%    
+%           if isempty(max([vertidx_t_pair(within_ra,13)', ((1/2)^(1/7)).^(dist-ra) .* vertidx_t_pair(within_decay,13)']));
+%               %V(all_vert_idx,1) = 0;
+%               V(all_vert_idx,1:12) = 0; % If no within-radius and within-decay contact, then the value is 0
+%           elseif isempty(dist);% If there is, here we used the average of all the activity in one vertex, which is subject to change
+%               V(all_vert_idx,1:12) = mean(vertidx_t_pair(within_ra,2:13),1);
+%           else
+%               %V(all_vert_idx,1) = mean([vertidx_t_pair(within_ra,13)', ((1/2)^(1/7)).^(dist-ra) .* vertidx_t_pair(within_decay,13)']);
+%               V(all_vert_idx,1:12) = mean([vertidx_t_pair(within_ra,2:13); repmat((((1/2)^(1/7)).^(dist-ra))',1,12) .* vertidx_t_pair(within_decay,2:13)],1);
+%           end
+%         end
+%         colored_V_allband = V(find(any(V,2)),:); % find non-zero rows of V and return the value;
+%         %colored_V = V(find(V~=0)); % find non-zero rows of V and return the value;
 % 
 %         % determine color range
 %         all_val = colored_V_allband(:);
