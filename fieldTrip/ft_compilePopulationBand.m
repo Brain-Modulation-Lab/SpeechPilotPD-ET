@@ -6,11 +6,11 @@
 setDirectories; %platform specific locations
 groups = {'PD', 'ET'};
 ids = {'DBS2*', 'DBS4*'};
-groups = {'ET'};
-ids = {'DBS4*'};
+%groups = {'ET'};
+%ids = {'DBS4*'};
 %freq={'broadbandGamma','gamma','hgamma','beta1','beta2','delta','theta','alpha'};
 freq={'gamma','hgamma','beta1', 'beta2','delta','theta','alpha'};
-freq={'broadbandGamma'};
+%freq={'broadbandGamma'};
 %freq={'beta2','delta','theta','alpha'};
 subjectLists; %lists of subject IDs
 fs = 1000; % data sampling frequency
@@ -70,6 +70,8 @@ for gg = 1:length(groups)
             pd.time = time;
             pd.sig_p = ep;
             pd.sig_h = eh;
+            pd.clusterT_p = p;
+            pd.clusterT_h = h;
             pd.electrodeLoc = elocs;
              
             if (ii==1) popData = pd; else popData(ii) = pd; end   %#ok<SAGROW,SEPEX> Need the if to make this assignment work

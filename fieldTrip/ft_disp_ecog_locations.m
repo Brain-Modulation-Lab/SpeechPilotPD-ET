@@ -30,12 +30,13 @@ camlight('headlight','infinite');
 axis off; axis equal
 set(gca,'CameraPosition',DispCamPos1.cp,'CameraTarget',DispCamPos1.ct,...
         'CameraViewAngle',DispCamPos1.cva, 'CameraUpVector',DispCamPos1.uv);
-alpha 0.7
+alpha 1
 hold on;
     
 %now get the electrode locations
 clear mni_coord;
 group = {'PD', 'ET'};
+c = {[1 0 0], [0 0 1]};
 for gg = 1:2
     gn = group{gg};
     eval(['pd = ' gn 'pd;']); %assigns population data struct to pd
@@ -52,8 +53,8 @@ for gg = 1:2
         elec2mnicort_indx{ll}  = [Ind_Gy_vert(idx)',min_val];
         hold on;
         pcoord = BS1.Vertices(Ind_Gy_vert(idx),:);
-        plot3(pcoord(:,1), pcoord(:,2), pcoord(:,3), 'r.', 'MarkerSize', 15);
-        plot3(coord(:,1), coord(:,2), coord(:,3), 'b.', 'MarkerSize', 15);
+        plot3(pcoord(:,1), pcoord(:,2), pcoord(:,3), '.', 'Color', c{gg},'MarkerSize', 15);
+        %plot3(coord(:,1), coord(:,2), coord(:,3), 'b.', 'MarkerSize', 15);
         clear min_val idx;
         
     end    

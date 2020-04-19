@@ -12,7 +12,7 @@ used_signal = signal_ch((zeroi-offset):(zeroi+(basen-offset)-1),:);
 mean_baseline = mean(base_ch,1);
 
 %[p, h] = ranksum(mean_signal, mean_baseline);
-[h, p] = clusterPermuteTtest(used_signal', base_ch', .075);
+[h, p] = clusterPermuteTtest(used_signal', base_ch', .05);
 min_p = min(p);
 sum_h = sum(h);
 
