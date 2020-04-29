@@ -7,7 +7,7 @@ for ff=1:length(sd.freq_labels)
     title(ah(ll), sd.loc_labels{ll});
     
     [h,p] = clusterPermuteTtest(sd.PD.freq(ff).loc(ll).perSessionZ', ...
-                                sd.ET.freq(ff).loc(ll).perSessionZ');
+                                sd.ET.freq(ff).loc(ll).perSessionZ', 0.075);
     pd_mean = nanmean(sd.PD.freq(ff).loc(ll).perSessionZ,2);
     npd = size(sd.PD.freq(ff).loc(ll).perSessionZ,2);
     et_mean = nanmean(sd.ET.freq(ff).loc(ll).perSessionZ,2);
@@ -23,6 +23,7 @@ for ff=1:length(sd.freq_labels)
     ymin = min(min(et_mean), min(pd_mean));
     line(ah(ll), sd.ET.freq(ff).loc(ll).time, h*(ymax+1), 'Color', 'k', 'LineWidth', 1);
     ylim(ah(ll), [floor(ymin-1) ceil(ymax+1.5)]);
+    xlim(ah(ll), [-1.5 t(end)]);
     
     %just give some report of the results
     disp(['Significantly different times for ', sd.freq_labels{ff}, '  ', sd.loc_labels{ll}]);  
@@ -34,7 +35,7 @@ for ff=1:length(sd.freq_labels)
     end
   end
   set(fh, 'Renderer', 'painters');
-  %saveas(fh, ['ft_' sd.freq_labels{ff}], 'epsc2');
+  saveas(fh, ['ft_' sd.freq_labels{ff}], 'epsc2');
 end
 
   

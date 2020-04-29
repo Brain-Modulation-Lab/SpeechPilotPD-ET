@@ -8,8 +8,9 @@ groups = {'PD', 'ET'};
 ids = {'DBS2*', 'DBS4*'};
 %groups = {'ET'};
 %ids = {'DBS4*'};
-%freq={'broadbandGamma','gamma','hgamma','beta1','beta2','delta','theta','alpha'};
-freq={'gamma','hgamma','beta1', 'beta2','delta','theta','alpha'};
+freq={'gamma','hgamma','beta1', 'beta2','delta','theta','alpha'}; %current full set ('broadbandGamma' no longer doing)
+freq={'delta','theta','alpha'};
+%freq={'gamma','hgamma','beta1', 'beta2'};
 %freq={'broadbandGamma'};
 %freq={'beta2','delta','theta','alpha'};
 subjectLists; %lists of subject IDs
