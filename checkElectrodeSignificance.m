@@ -10,7 +10,7 @@ else
     hist_ah = [];
 end
 
-mean_signal = mean(signal_ch((zeroi-600):(zeroi+600),:), 1);
+mean_signal = mean(signal_ch((zeroi-500):(zeroi+500),:), 1);
 mean_baseline = mean(base_ch,1);
 
 [p, h] = ranksum(mean_signal, mean_baseline);
