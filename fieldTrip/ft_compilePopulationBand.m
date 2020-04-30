@@ -9,7 +9,7 @@ ids = {'DBS2*', 'DBS4*'};
 %groups = {'ET'};
 %ids = {'DBS4*'};
 freq={'gamma','hgamma','beta1', 'beta2','delta','theta','alpha'}; %current full set ('broadbandGamma' no longer doing)
-freq={'delta','theta','alpha'};
+%freq={'delta','theta','alpha'};
 %freq={'gamma','hgamma','beta1', 'beta2'};
 %freq={'broadbandGamma'};
 %freq={'beta2','delta','theta','alpha'};
@@ -50,11 +50,11 @@ for gg = 1:length(groups)
                 t_range = [-2 2];
             else 
                 %Aligns on the Cue to speak: -1sec to 3 sec
-                trial_starts = num2cell(round(fs*(D.epoch.stimulus_starts - D.epoch.starts)) - fs)';
-                trial_ends = num2cell(round(fs*(D.epoch.stimulus_starts - D.epoch.starts) + 3*fs)';
+                t_range = [-1 2.75];
+                trial_starts = num2cell(round(fs*(D.epoch.stimulus_starts - D.epoch.starts)) + t_range(1)*fs)';
+                trial_ends = num2cell(round(fs*(D.epoch.stimulus_starts - D.epoch.starts)) + t_range(2)*fs)';
                 trials =  cellfun(@(x,y,z) x(:,y:z),D.signal_z,trial_starts,trial_ends,'UniformOutput',0);
-                filetag = 'alignCue';
-                t_range = [-1 3];
+                filetag = 'alignCue'; 
             end
             % redefine baseline
             base_starts = num2cell(round(fs*(D.epoch.stimulus_starts - D.epoch.starts)) - 1 * fs)';
