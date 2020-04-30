@@ -15,6 +15,7 @@ freq={'delta','theta','alpha'};
 %freq={'beta2','delta','theta','alpha'};
 subjectLists; %lists of subject IDs
 fs = 1000; % data sampling frequency
+alignOnset = 0;
 %subjects = {'DBS4040'};
 
 for gg = 1:length(groups)
@@ -39,11 +40,22 @@ for gg = 1:length(groups)
                 elocs = D.electrodeInfo.location(usedI);
             end
             
-            %% Align trials on speech onset for population analysis 
-            %center on word onset, -2 to + 2
-            trial_starts = num2cell(round(fs*(D.epoch.onset_word - D.epoch.starts)) - 2*fs)';
-            trial_ends = num2cell(round(fs*(D.epoch.onset_word - D.epoch.starts)) + 2*fs)';
-            trials =  cellfun(@(x,y,z) x(:,y:z),D.signal_z,trial_starts,trial_ends,'UniformOutput',0);
+            if alignOnset
+                %% Align trials on speech onset for population analysis 
+                %center on word onset, -2 to + 2sec
+                trial_starts = num2cell(round(fs*(D.epoch.onset_word - D.epoch.starts)) - 2*fs)';
+                trial_ends = num2cell(round(fs*(D.epoch.onset_word - D.epoch.starts)) + 2*fs)';
+                trials =  cellfun(@(x,y,z) x(:,y:z),D.signal_z,trial_starts,trial_ends,'UniformOutput',0);
+                filetag='alignOnset';
+                t_range = [-2 2];
+            else 
+                %Aligns on the Cue to speak: -1sec to 3 sec
+                trial_starts = num2cell(round(fs*(D.epoch.stimulus_starts - D.epoch.starts)) - fs)';
+                trial_ends = num2cell(round(fs*(D.epoch.stimulus_starts - D.epoch.starts) + 3*fs)';
+                trials =  cellfun(@(x,y,z) x(:,y:z),D.signal_z,trial_starts,trial_ends,'UniformOutput',0);
+                filetag = 'alignCue';
+                t_range = [-1 3];
+            end
             % redefine baseline
             base_starts = num2cell(round(fs*(D.epoch.stimulus_starts - D.epoch.starts)) - 1 * fs)';
             base_ends = num2cell(round(fs*(D.epoch.stimulus_starts - D.epoch.starts)))';
@@ -52,7 +64,7 @@ for gg = 1:length(groups)
             basezM = permute(reshape(cell2mat(base), size(base{1},1), size(base{1},2), []), [2 3 1]); 
             trialzM = permute(reshape(cell2mat(trials), size(trials{1},1), size(trials{1},2), []), [2 3 1]); 
             avgZ = squeeze(mean(trialzM, 2)); 
-            time = linspace(-2,2,size(trialzM,1));
+            time = linspace(t_range(1),t_range(2),size(trialzM,1));
             zeroi = find(time > 0,1);
             ti = (1:size(basezM,1)) - zeroi + size(basezM,1)/2;
             % Test if each electrode is responsive
@@ -74,11 +86,12 @@ for gg = 1:length(groups)
             pd.clusterT_p = p;
             pd.clusterT_h = h;
             pd.electrodeLoc = elocs;
+            pd.alignment = filetag;
              
             if (ii==1) popData = pd; else popData(ii) = pd; end   %#ok<SAGROW,SEPEX> Need the if to make this assignment work
         end
         popDir =[savedDataDir filesep 'population' filesep];
-        save([popDir 'Pop_ecog_' groups{gg} '_' freq{ff} '.mat'], 'popData', '-v7.3');   
+        save([popDir 'Pop_ecog_' groups{gg} '_' freq{ff} '_' filetag '.mat'], 'popData', '-v7.3');   
     end
 end
 
