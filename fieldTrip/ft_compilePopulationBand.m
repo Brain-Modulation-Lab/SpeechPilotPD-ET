@@ -50,7 +50,7 @@ for gg = 1:length(groups)
                 t_range = [-2 2];
             else 
                 %Aligns on the Cue to speak: -1sec to 3 sec
-                t_range = [-1 2.75];
+                t_range = [-1 2.5];
                 trial_starts = num2cell(round(fs*(D.epoch.stimulus_starts - D.epoch.starts)) + t_range(1)*fs)';
                 trial_ends = num2cell(round(fs*(D.epoch.stimulus_starts - D.epoch.starts)) + t_range(2)*fs)';
                 trials =  cellfun(@(x,y,z) x(:,y:z),D.signal_z,trial_starts,trial_ends,'UniformOutput',0);
