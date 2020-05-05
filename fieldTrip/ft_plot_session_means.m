@@ -57,10 +57,17 @@ for ff=1:length(sd.freq_labels)
     disp(['Rank sum p=' num2str(p_tpeak) ' h=' num2str(h_tpeak)]);
     %Gonna plot the min/max responses per electrode
     axes(ah2(ll));
-    plot(pd_resp, 'xr'); hold on;
-    plot(et_resp, 'ob');
+    pdlabel = labelElectrodes(sd.PD.freq(ff).loc(ll).include);
+    plot(1:length(pd_resp), pd_resp, 'xr'); hold on;
+    x = length(pd_resp)+ (1:length(et_resp));
+    plot(x, et_resp, 'ob');
+    etlabel = labelElectrodes(sd.ET.freq(ff).loc(ll).include);
+    xticks(1:sum([length(pd_resp), length(et_resp)]));
+    xticklabels(cat(1, pdlabel, etlabel));
+    xtickangle(90);
   end
   %saveas(fh, ['allsessions_' sd.freq_labels{ff}], 'epsc2');
-  fn = [figDir filesep 'allsessionsTiming_' sd.freq_labels{ff} '.eps'];
-  print(fn, '-depsc2', '-tiff', '-r300', '-painters');
+  
+  %fn = [figDir filesep 'allsessionsTiming_' sd.freq_labels{ff} '.eps'];
+  %print(fn, '-depsc2', '-tiff', '-r300', '-painters');
 end

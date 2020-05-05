@@ -1,4 +1,4 @@
-function vert_val = val2cortex(subject_list, val_mat_list, average_method)
+function vert_val = DW_val2cortex(subject_list, val_mat_list, average_method)
 
 %% inputs:
 % subject_list         = {'DBSXXXX', 'DBSXXXX', ...};
