@@ -11,13 +11,15 @@ dd = [savedDataDir filesep 'population'];
 
 for gg=1:2
     clear freq; %this is the population data structure
+    gammasig = {};
     for ff=1:length(freqs)
         disp(['Processing ' freqs{ff}]);
         load([dd filesep 'Pop_ecog_' groups{gg} '_' freqs{ff} '.mat']);
         for ll=1:length(locs)
-            if strcmp(freqs{ff}, 'hgamma') %excuted a couple more times than necessary,ok
-                gammasig = arrayfun(@(x) x.sig_h', popData,'UniformOutput', 0); %sig by rank sum
+            if strcmp(freqs{ff}, 'hgamma') %Include in analysis based on hgamma response
+                gammasig{ll} = arrayfun(@(x) x.sig_h', popData,'UniformOutput', 0);
             end
+            
             locmatch = arrayfun(@(x) strcmpi(x.electrodeLoc, locs{ll}), popData, 'UniformOutput', 0);
             include =  cellfun(@(x,y) x & y, gammasig, locmatch, 'UniformOutput', 0);
             include_session = cellfun(@(x) sum(x)>0, include); %Are any electrodes from session included

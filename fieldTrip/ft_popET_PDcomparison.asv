@@ -7,24 +7,17 @@ for ff=1:length(sd.freq_labels)
   for ll=1:length(sd.loc_labels) 
     title(ah(ll), sd.loc_labels{ll});
     
-    if perSubj
-        [h,p] = clusterPermuteTtest(sd.PD.freq(ff).loc(ll).meanZ_subj', ...
-            sd.ET.freq(ff).loc(ll).perSessionZ', 0.075);
-        pd_mean = nanmean(sd.PD.freq(ff).loc(ll).meanZ_subj,2);
-        npd = size(sd.PD.freq(ff).loc(ll).meanZ_subj,2);
-        et_mean = nanmean(sd.ET.freq(ff).loc(ll).meanZ_subj,2);
-        net = size(sd.ET.freq(ff).loc(ll).meanZ_subj,2);
-        pd_sem = nanstd(sd.PD.freq(ff).loc(ll).meanZ_subj,0,2) ./ sqrt(npd);
-        et_sem = nanstd(sd.ET.freq(ff).loc(ll).meanZ_subj,0,2) ./ sqrt(net);
+    if perSub
+        
     else
-        [h,p] = clusterPermuteTtest(sd.PD.freq(ff).loc(ll).perSessionZ', ...
-            sd.ET.freq(ff).loc(ll).perSessionZ', 0.075);
-        pd_mean = nanmean(sd.PD.freq(ff).loc(ll).perSessionZ,2);
-        npd = size(sd.PD.freq(ff).loc(ll).perSessionZ,2);
-        et_mean = nanmean(sd.ET.freq(ff).loc(ll).perSessionZ,2);
-        net = size(sd.ET.freq(ff).loc(ll).perSessionZ,2);
-        pd_sem = nanstd(sd.PD.freq(ff).loc(ll).perSessionZ,0,2) ./ sqrt(npd);
-        et_sem = nanstd(sd.ET.freq(ff).loc(ll).perSessionZ,0,2) ./ sqrt(net);
+    [h,p] = clusterPermuteTtest(sd.PD.freq(ff).loc(ll).perSessionZ', ...
+                                sd.ET.freq(ff).loc(ll).perSessionZ', 0.075);
+    pd_mean = nanmean(sd.PD.freq(ff).loc(ll).perSessionZ,2);
+    npd = size(sd.PD.freq(ff).loc(ll).perSessionZ,2);
+    et_mean = nanmean(sd.ET.freq(ff).loc(ll).perSessionZ,2);
+    net = size(sd.ET.freq(ff).loc(ll).perSessionZ,2);
+    pd_sem = nanstd(sd.PD.freq(ff).loc(ll).perSessionZ,0,2) ./ sqrt(npd);
+    et_sem = nanstd(sd.ET.freq(ff).loc(ll).perSessionZ,0,2) ./ sqrt(net);
     end
     
     t = sd.ET.freq(ff).loc(ll).time;

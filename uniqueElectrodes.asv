@@ -1,9 +1,4 @@
-function [electrodesBySession, session_groups] = uniqueElectrodes(popData)
-% function [electrodesBySession, session_groups] = uniqueElectrodes(popData)
-%
-% Output: electrodesBySession = cell array of unique electrode IDs per session
-%         session_groups = cell array of session IDs with the same
-%         electrodes
+function electrodesBySession = uniqueElectrodes(popData)
 
 electrodesBySession = cell(length(popData),1);
 ecount = 0;
@@ -34,17 +29,20 @@ for ii=1:length(subj)
         prevNums = ei;
         prevPos = newPos;
     end
-end
-
-% Make a list of sessions with the same electrodes
-session_groups = {}; gn=0; old_en = [];
-for ii=1:length(popData)
-    if (length(electrodesBySession{ii}) == length(old_en) && sum(electrodesBySession{ii} == old_en)) %electrodes match
-        session_groups{gn} = cat(1, session_groups{gn}, ii);
-    else
-        gn = gn+1;
-        session_groups{gn} = ii;
+    
+    % Make a list of sessions with the same electrodes
+    groups = {}; gn=0; old_en = [];
+    for ii=1:popData
+        if sum(electrodesBySession{ii} == old_en) %electrodes match
+            groups{gn} = cat(1, groups{gn}, ii);
+        else
+            gn = gn+1;
+            groups{gn} = ii;
+        end
+        old_en = electrodesBySession{ii};
     end
-    old_en = electrodesBySession{ii};
+            
+        end
+    end
 end
             
