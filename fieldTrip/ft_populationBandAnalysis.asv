@@ -18,14 +18,14 @@ end
 if ~alignOnset
     alignTag = '_alignCue';
 else
-    alignTag = '_alignOnset';
+    alignTag = '';
 end
 
 for gg=1:2
     clear freq; %this is the population data structure
     for ff=1:length(freqs)
         disp(['Processing ' freqs{ff}]);
-        load([dd filesep 'Pop_ecog_' groups{gg} '_' freqs{ff} alignTag poolTag '.mat']);
+        %load([dd filesep 'Pop_ecog_' groups{gg} '_' freqs{ff} alignTag poolTag '.mat']);
         for ll=1:length(locs)
             if strcmp(freqs{ff}, 'hgamma') %Include in analysis based on hgamma response
                 gammasig = arrayfun(@(x) x.sig_h', popData,'UniformOutput', 0);
@@ -36,7 +36,10 @@ for gg=1:2
             perSessionZ = cell2mat(arrayfun(@(x,y) x.meanz(:,y{1}), popData, include, 'UniformOutput', 0));
             clusterTp = cell2mat(arrayfun(@(x,y) x.clusterT_p(:,y{1}), popData, include, 'UniformOutput', 0));
             clusterTh = cell2mat(arrayfun(@(x,y) x.clusterT_h(:,y{1}), popData, include, 'UniformOutput', 0));
-            
+            for tt = 1:size(clusterTh, 2)
+                fi = find(clusterTh(:,tt),1,'first');
+                sigi(tt)
+            end
             %get the speech timing means
             e_cell = {popData(include_session).epoch};
             bad_trial_cell = {popData(include_session).badtrial_final};

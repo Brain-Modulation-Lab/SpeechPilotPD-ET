@@ -1,13 +1,23 @@
 % Want to compare/plot population ET versus PD groups for all locations 
 % frequency bands
-perSubj = 1;
+poolSessions = 0; 
+alignOnset = 0;
+
+if (poolSessions) poolTag = '_pooledSessions'; else poolTag = ''; end
+if (~alignOnset) alignTag = '_alignCue'; else alignTag = ''; end
+load(fullfile(savedDataDir, 'population', ['summaryData_EcoG_BandAnalysis' alignTag poolTag '.mat']));
+
 sd = summaryData;
 for ff=1:length(sd.freq_labels)
-  [ah, fh] = subplot_pete(length(sd.loc_labels), 1, 'Time from speech onset (sec)', 'Z-score resp', sd.freq_labels{ff});
+  if alignOnset  
+    [ah, fh] = subplot_pete(length(sd.loc_labels), 1, 'Time from speech onset (sec)', 'Z-score resp', sd.freq_labels{ff});
+  else
+    [ah, fh] = subplot_pete(length(sd.loc_labels), 1, 'Time from cue to speak (sec)', 'Z-score resp', sd.freq_labels{ff});
+  end
   for ll=1:length(sd.loc_labels) 
     title(ah(ll), sd.loc_labels{ll});
     
-    if perSubj
+    if poolSessions % Only use this if using the ft_populationsBandAnalysis_pooledSessions.m
         [h,p] = clusterPermuteTtest(sd.PD.freq(ff).loc(ll).meanZ_subj', ...
             sd.ET.freq(ff).loc(ll).perSessionZ', 0.075);
         pd_mean = nanmean(sd.PD.freq(ff).loc(ll).meanZ_subj,2);
@@ -47,7 +57,7 @@ for ff=1:length(sd.freq_labels)
     end
   end
   set(fh, 'Renderer', 'painters');
-  saveas(fh, ['ft_' sd.freq_labels{ff}], 'epsc2');
+  saveas(fh, ['ft_' sd.freq_labels{ff} alignTag poolTag], 'epsc2');
 end
 
   

@@ -72,19 +72,19 @@ for gg = 1:length(groups)
             zeroi = find(time > 0,1);
             ti = (1:size(basezM,1)) - zeroi + size(basezM,1)/2;
             % Test if each electrode is responsive
-            p = NaN*zeros(fs * diff(permute_range)+1, length(usedI));
-            h = NaN*zeros(fs * diff(permute_range)+1, length(usedI));
+            p = NaN*zeros(fs * diff(permute_range), length(usedI));
+            h = NaN*zeros(fs * diff(permute_range), length(usedI));
             for jj=1:length(usedI)
                 [ep(jj), eh(jj)] = checkElectrodeSignificance(basezM(:,:,jj), trialzM(:,:,jj), zeroi);
                 % Get a time-resolved per electrode significance measure
                 nseg = diff(permute_range) / base_dur;
                 %inds = permute_range*fs + zeroi;
                 lasti = permute_range(1)*fs - 2 + zeroi;
-                bn = (base_dur*fs);
+                bn = (base_dur*fs)+1;
                 for kk=1:nseg
-                    inds = lasti + (1:(base_dur*fs));
-                    pind = (kk-1)*bn + (1:(base_dur*fs));
-                    [p(pind,jj), h(pind,jj)] = permuteElectrodeSignificance(basezM(1:end-1,:,jj), trialzM(:,:,jj), inds(1));
+                    inds = (lasti + 1) + (0:(base_dur*fs));
+                    pind = (kk-1)*bn + (0:(base_dur*fs)) + 1;
+                    [p(pind,jj), h(pind,jj)] = permuteElectrodeSignificance(basezM(:,:,jj), trialzM(:,:,jj), inds(1));
                     lasti = inds(end);
                 end
             end
@@ -98,7 +98,6 @@ for gg = 1:length(groups)
             pd.sig_h = eh;
             pd.clusterT_p = p;
             pd.clusterT_h = h;
-            pd.clusterT_t = permute_range;
             pd.electrodeLoc = elocs;
             pd.alignment = filetag;
              

@@ -45,7 +45,7 @@ for ff=1:length(sd.freq_labels)
         if ~isempty(fi) 
             sigi(tt) = fi;
             sigt(tt) = ptime(fi);
-            plot(sigt(tt), tt, '*w');
+            
         else
             sigi(tt) = NaN;
             sigt(tt) = NaN;

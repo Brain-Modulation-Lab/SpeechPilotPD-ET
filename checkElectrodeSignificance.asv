@@ -3,13 +3,10 @@ function [p,h] = checkElectrodeSignificance(base_ch, signal_ch, zeroi, varargin)
 %
 % Tests the time-averaged signal (in 1 sec window centered at time 0)
 % versus the time-averaged baseline period. Tests via a simple Wilcoxon rank sum test 
-% Vargargin: 1 = signal time window to test, 2 = histogram axis handle
-% Output: self explanatory
-
 if nargin > 3
-    signali = varargin{1};
+    hist_ah = varargin{2};
 else
-    signali = (zeroi-500):(zeroi+500);
+    hist_ah = [];
 end
 if nargin > 4
     hist_ah = varargin{2};
@@ -17,7 +14,7 @@ else
     hist_ah = [];
 end
 
-mean_signal = mean(signal_ch(signali,:), 1);
+mean_signal = mean(signal_ch((zeroi-500):(zeroi+500),:), 1);
 mean_baseline = mean(base_ch,1);
 
 [p, h] = ranksum(mean_signal, mean_baseline);
