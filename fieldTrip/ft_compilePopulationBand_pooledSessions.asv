@@ -5,9 +5,13 @@
 setDirectories; %platform specific locations
 groups = {'PD', 'ET'};
 ids = {'DBS2*', 'DBS4*'};
+groups = {'ET'};
+ids = {'DBS4*'};
 freq={'hgamma','beta1', 'beta2','gamma','delta','theta','alpha'}; %current full set ('broadbandGamma' no longer doing)
+freq={'delta','theta','alpha'};
 subjectLists; %lists of subject IDs
 fs = 1000; % data sampling frequency
+base_dur = 1; %baseline duration in sec
 alignOnset = 1; %Flag for time alignment on 0= Cue to speak, 1=Speech onset
 poolSessions = 1;
 alignCue = 1;
@@ -85,12 +89,14 @@ for gg = 1:length(groups)
                     trialzM = tM;
                     % do some collation 
                     badtrial = {D.badtrial_final}; 
-                    epoch = {D.epoch}; 
+                    epoch = {D.epoch};
+                    badch = {D.badch};
                 else
                     basezM = cat(2, basezM, bM);
                     trialzM = cat(2, trialzM, tM);
                     badtrial{ii} = D.badtrial_final;
                     epoch{ii} = D.epoch;
+                    badch{ii} = D.badch;
                 end
                 if ii == ns
                     avgZ = squeeze(mean(trialzM, 2));
@@ -132,6 +138,9 @@ for gg = 1:length(groups)
             pd.clusterT_t = permute_range;
             pd.electrodeLoc = elocs;
             pd.alignment = filetag;
+            pd.badch = badch;
+            pd.epoch = epoch;
+            pd.badtrial_final = badtrial;
             
             if (ss==1) popData = pd; else popData(ss) = pd; end   %#ok<SAGROW,SEPEX> Need the if to make this assignment work
             

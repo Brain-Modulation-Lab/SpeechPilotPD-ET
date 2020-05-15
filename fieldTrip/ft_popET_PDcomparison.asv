@@ -1,10 +1,10 @@
 % Want to compare/plot population ET versus PD groups for all locations 
 % frequency bands
-poolSessions = 0; 
+poolSessions = 1; 
 alignOnset = 0;
 
 if (poolSessions) poolTag = '_pooledSessions'; else poolTag = ''; end
-if (~alignOnset) alignTag = '_alignCue'; else alignTag = ''; end
+if (~alignOnset) alignTag = '_alignCue'; else alignTag = '_alignOnset'; end
 load(fullfile(savedDataDir, 'population', ['summaryData_EcoG_BandAnalysis' alignTag poolTag '.mat']));
 
 sd = summaryData;
@@ -18,14 +18,14 @@ for ff=1:length(sd.freq_labels)
     title(ah(ll), sd.loc_labels{ll});
     
     if poolSessions % Only use this if using the ft_populationsBandAnalysis_pooledSessions.m
-        [h,p] = clusterPermuteTtest(sd.PD.freq(ff).loc(ll).meanZ_subj', ...
-            sd.ET.freq(ff).loc(ll).perSessionZ', 0.075);
-        pd_mean = nanmean(sd.PD.freq(ff).loc(ll).meanZ_subj,2);
-        npd = size(sd.PD.freq(ff).loc(ll).meanZ_subj,2);
-        et_mean = nanmean(sd.ET.freq(ff).loc(ll).meanZ_subj,2);
-        net = size(sd.ET.freq(ff).loc(ll).meanZ_subj,2);
-        pd_sem = nanstd(sd.PD.freq(ff).loc(ll).meanZ_subj,0,2) ./ sqrt(npd);
-        et_sem = nanstd(sd.ET.freq(ff).loc(ll).meanZ_subj,0,2) ./ sqrt(net);
+%         [h,p] = clusterPermuteTtest(sd.PD.freq(ff).loc(ll).meanZ_subj', ...
+%             sd.ET.freq(ff).loc(ll).perSessionZ', 0.075);
+%         pd_mean = nanmean(sd.PD.freq(ff).loc(ll).meanZ_subj,2);
+%         npd = size(sd.PD.freq(ff).loc(ll).meanZ_subj,2);
+%         et_mean = nanmean(sd.ET.freq(ff).loc(ll).meanZ_subj,2);
+%         net = size(sd.ET.freq(ff).loc(ll).meanZ_subj,2);
+%         pd_sem = nanstd(sd.PD.freq(ff).loc(ll).meanZ_subj,0,2) ./ sqrt(npd);
+%         et_sem = nanstd(sd.ET.freq(ff).loc(ll).meanZ_subj,0,2) ./ sqrt(net);
     else
         [h,p] = clusterPermuteTtest(sd.PD.freq(ff).loc(ll).perSessionZ', ...
             sd.ET.freq(ff).loc(ll).perSessionZ', 0.075);

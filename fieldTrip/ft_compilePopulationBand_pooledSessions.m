@@ -5,11 +5,14 @@
 setDirectories; %platform specific locations
 groups = {'PD', 'ET'};
 ids = {'DBS2*', 'DBS4*'};
+groups = {'ET'};
+ids = {'DBS4*'};
 freq={'hgamma','beta1', 'beta2','gamma','delta','theta','alpha'}; %current full set ('broadbandGamma' no longer doing)
+freq={'delta','theta','alpha'};
 subjectLists; %lists of subject IDs
 fs = 1000; % data sampling frequency
 base_dur = 1; %baseline duration in sec
-alignOnset = 0; %Flag for time alignment on 0= Cue to speak, 1=Speech onset
+alignOnset = 1; %Flag for time alignment on 0= Cue to speak, 1=Speech onset
 poolSessions = 1;
 alignCue = 1;
 

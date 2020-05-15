@@ -36,8 +36,9 @@ for ff=1:length(sd.freq_labels)
     ah(ll).YDir='reverse';
     
     %p values
+    testrange = sd.PD.freq(ff).loc(ll).clusterTt(1,:); %assuming the same range for all
     lengthp = size(sd.PD.freq(ff).loc(ll).clusterTh,1);
-    ptime = linspace(0.5, 1.5, lengthp);
+    ptime = linspace(testrange(1), testrange(2), lengthp);
     clusterTh = cat(2, sd.PD.freq(ff).loc(ll).clusterTh, zeros(lengthp,4), sd.ET.freq(ff).loc(ll).clusterTh);
     sigi = []; sigt=[];
     for tt = 1:size(clusterTh, 2)

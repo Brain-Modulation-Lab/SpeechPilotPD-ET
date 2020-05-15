@@ -36,6 +36,8 @@ for ff=1:length(sd.freq_labels)
     ah(ll).YDir='reverse';
     
     %p values
+    fs = mean(diff(sd.PD.freq(ff).loc(ll).time));
+    testrange = sd.PD.freq(ff).loc(ll).clusterTt
     lengthp = size(sd.PD.freq(ff).loc(ll).clusterTh,1);
     ptime = linspace(0.5, 1.5, lengthp);
     clusterTh = cat(2, sd.PD.freq(ff).loc(ll).clusterTh, zeros(lengthp,4), sd.ET.freq(ff).loc(ll).clusterTh);
@@ -45,7 +47,7 @@ for ff=1:length(sd.freq_labels)
         if ~isempty(fi) 
             sigi(tt) = fi;
             sigt(tt) = ptime(fi);
-            
+            plot(sigt(tt), tt, '*w');
         else
             sigi(tt) = NaN;
             sigt(tt) = NaN;

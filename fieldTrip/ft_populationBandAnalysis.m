@@ -5,7 +5,7 @@ groups = {'PD', 'ET'};
 ids = {'DBS2*', 'DBS4*'};
 %freqs={'hgamma','broadbandGamma','gamma','hgamma','beta1','beta2','delta','theta','alpha'};
 freqs={'hgamma','gamma','beta1','beta2','delta','theta','alpha'};
-freqs={'hgamma','beta1'};
+%freqs={'hgamma','beta1', 'beta2'};
 locs = {'M1', 'S1', 'STG'};
 dd = [savedDataDir filesep 'population'];
 poolSessions = 1;
@@ -26,7 +26,9 @@ for gg=1:2
     clear freq; %this is the population data structure
     for ff=1:length(freqs)
         disp(['Processing ' freqs{ff}]);
-        load([dd filesep 'Pop_ecog_' groups{gg} '_' freqs{ff} alignTag poolTag '.mat']);
+        dname = [dd filesep 'Pop_ecog_' groups{gg} '_' freqs{ff} alignTag poolTag '.mat'];
+        load(dname);
+        disp(['Loading ' dname]);
         %get the speech timing means
         if poolSessions
             popData = linearizePopData(popData);
@@ -42,6 +44,9 @@ for gg=1:2
             clusterTp = cell2mat(arrayfun(@(x,y) x.clusterT_p(:,y{1}), popData, include, 'UniformOutput', 0));
             clusterTh = cell2mat(arrayfun(@(x,y) x.clusterT_h(:,y{1}), popData, include, 'UniformOutput', 0));
             clusterTt = reshape([popData(include_session).clusterT_t]',2,[])';
+            if size(clusterTh,1) < 2000
+                disp('This data file is not updated');
+            end
             
             e_cell = {popData(include_session).epoch};
             bad_trial_cell = {popData(include_session).badtrial_final};
@@ -52,6 +57,7 @@ for gg=1:2
             loc(ll).perSessionZ = perSessionZ;
             loc(ll).clusterTp = clusterTp;
             loc(ll).clusterTh = clusterTh;
+            loc(ll).clusterTt = clusterTt;
             loc(ll).time = popData(1).time;
             loc(ll).mean_stimOnset = mean(stim_timing);
             loc(ll).mean_speechOffset = mean(offset_timing);
