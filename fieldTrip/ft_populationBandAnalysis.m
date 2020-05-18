@@ -35,7 +35,8 @@ for gg=1:2
         end
         for ll=1:length(locs)
             if strcmp(freqs{ff}, 'hgamma') %Include in analysis based on hgamma response
-                gammasig = arrayfun(@(x) x.sig_h', popData,'UniformOutput', 0);
+                %gammasig = arrayfun(@(x) x.sig_h', popData,'UniformOutput', 0);
+                gammasig = arrayfun(@(x) max(x.clusterT_h',[],2,'omitnan'), popData,'UniformOutput', 0);
             end
             locmatch = arrayfun(@(x) strcmpi(x.electrodeLoc, locs{ll}), popData, 'UniformOutput', 0);
             include =  cellfun(@(x,y) x & y, gammasig, locmatch, 'UniformOutput', 0);

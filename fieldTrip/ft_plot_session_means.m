@@ -25,8 +25,8 @@ for ff=1:length(sd.freq_labels)
     et_max = max(sd.ET.freq(ff).loc(ll).perSessionZ(t_wind,:), [],1);
     et_min = min(sd.ET.freq(ff).loc(ll).perSessionZ(t_wind,:), [],1);
     
+    %plot all of the responses by electrode/session as colormaps
     hold on;
-    %plot all of the responses by electrode/session
     z = cat(2, sd.PD.freq(ff).loc(ll).perSessionZ(pi,:), NaN*zeros(length(pi),4), sd.ET.freq(ff).loc(ll).perSessionZ(pi,:));
     axes(ah(ll));
     imagesc(sd.ET.freq(ff).loc(ll).time(pi), 1:size(z,2), z');
@@ -40,20 +40,30 @@ for ff=1:length(sd.freq_labels)
     lengthp = size(sd.PD.freq(ff).loc(ll).clusterTh,1);
     ptime = linspace(testrange(1), testrange(2), lengthp);
     clusterTh = cat(2, sd.PD.freq(ff).loc(ll).clusterTh, zeros(lengthp,4), sd.ET.freq(ff).loc(ll).clusterTh);
+    clusterTp = cat(2, sd.PD.freq(ff).loc(ll).clusterTp, NaN*zeros(lengthp,4), sd.ET.freq(ff).loc(ll).clusterTp);
     sigi = []; sigt=[];
     for tt = 1:size(clusterTh, 2)
         fi = find(clusterTh(:,tt),1,'first');
         if ~isempty(fi) 
             sigi(tt) = fi;
             sigt(tt) = ptime(fi);
-            plot(sigt(tt), tt, '*w');
+            plot(sigt(tt), tt, '*w', 'MarkerSize', 4);
         else
             sigi(tt) = NaN;
             sigt(tt) = NaN;
         end
     end
     
-    %     plot(ah(ll), sd.ET.freq(ff).loc(ll).time(pi), sd.ET.freq(ff).loc(ll).perSessionZ(pi,:), 'color', [0.5 0.5 1], 'Linewidth', .5);  
+    %Plot a colormap plot of the p-values
+    axes(ah(ll+nsites));
+    imagesc(sd.ET.freq(ff).loc(ll).time(pi), 1:size(clusterTp,2), clusterTp');
+    ylim(ah(ll+nsites), [1 size(clusterTp,2)]);
+    xlim(ah(ll+nsites), [-1 t(end)]);
+    colorbar;
+    ah(ll+nsites).YDir='reverse';
+    
+    % These will plot as overlying curves with means
+    % plot(ah(ll), sd.ET.freq(ff).loc(ll).time(pi), sd.ET.freq(ff).loc(ll).perSessionZ(pi,:), 'color', [0.5 0.5 1], 'Linewidth', .5);  
 %     plot(ah(ll), sd.PD.freq(ff).loc(ll).time(pi), sd.PD.freq(ff).loc(ll).perSessionZ(pi,:), 'color', [1 0.5 0.5], 'Linewidth', .5);
 %     plot(ah(ll), sd.PD.freq(ff).loc(ll).time(pi), pd_mean(pi), 'color', [1 0 0], 'Linewidth', 2);    
 %     plot(ah(ll), sd.ET.freq(ff).loc(ll).time(pi), et_mean(pi), 'color', [0 0 1], 'Linewidth', 2);
@@ -69,23 +79,24 @@ for ff=1:length(sd.freq_labels)
     else 
        respfunc = @min;
     end
-    axes(ah(ll+nsites)); 
+    
+    axes(ah(ll+nsites));
     [et_resp, et_peaki] = respfunc(sd.ET.freq(ff).loc(ll).perSessionZ(t_wind,:), [],1);
     [pd_resp, pd_peaki] = respfunc(sd.PD.freq(ff).loc(ll).perSessionZ(t_wind,:), [],1);
-    %h1 = histogram(pd_resp); hold on; h2 = histogram(et_resp);
-    h1 = histogram(t(t_wind(pd_peaki))); hold on; h2 = histogram(t(t_wind(et_peaki)));
-    %h1.BinWidth = 1; h2.BinWidth = 1;
-    h1.BinWidth = .2; h2.BinWidth = .2;
-    h1.FaceColor = [1 0 0]; h2.FaceColor = [0 0 1];
-    h1.Normalization = 'probability'; h2.Normalization = 'probability';
-    legend(['PD N=' num2str(pd_n)],['ET N=' num2str(et_n)]);  
-    
-    tpd = median(t(t_wind(pd_peaki))); plot([tpd, tpd], [0 1], 'r');
-    tet = median(t(t_wind(et_peaki))); plot([tet, tet], [0 1], 'b');
-    [p_tpeak, h_tpeak] = ranksum(t(t_wind(pd_peaki)), t(t_wind(et_peaki)));
-    disp([sd.freq_labels{ff} ' ' sd.loc_labels{ll} 'PD median:' num2str(tpd) ' ETmedian:' num2str(tet)]);
-    disp(['Rank sum p=' num2str(p_tpeak) ' h=' num2str(h_tpeak)]);
-    %Gonna plot the min/max responses per electrode
+%     %h1 = histogram(pd_resp); hold on; h2 = histogram(et_resp);
+%     h1 = histogram(t(t_wind(pd_peaki))); hold on; h2 = histogram(t(t_wind(et_peaki)));
+%     %h1.BinWidth = 1; h2.BinWidth = 1;
+%     h1.BinWidth = .2; h2.BinWidth = .2;
+%     h1.FaceColor = [1 0 0]; h2.FaceColor = [0 0 1];
+%     h1.Normalization = 'probability'; h2.Normalization = 'probability';
+%     legend(['PD N=' num2str(pd_n)],['ET N=' num2str(et_n)]);    
+%     tpd = median(t(t_wind(pd_peaki))); plot([tpd, tpd], [0 1], 'r');
+%     tet = median(t(t_wind(et_peaki))); plot([tet, tet], [0 1], 'b');
+%     [p_tpeak, h_tpeak] = ranksum(t(t_wind(pd_peaki)), t(t_wind(et_peaki)));
+%     disp([sd.freq_labels{ff} ' ' sd.loc_labels{ll} 'PD median:' num2str(tpd) ' ETmedian:' num2str(tet)]);
+%     disp(['Rank sum p=' num2str(p_tpeak) ' h=' num2str(h_tpeak)]);
+  
+%Gonna plot the min/max responses per electrode
     axes(ah2(ll));
     pdlabel = labelElectrodes(sd.PD.freq(ff).loc(ll).include);
     plot(1:length(pd_resp), pd_resp, 'xr'); hold on;

@@ -1,7 +1,7 @@
 % Want to compare/plot population ET versus PD groups for all locations
 % frequency bands
 poolSessions = 1;
-alignOnset = 1;
+alignOnset = 0;
 
 if (poolSessions) poolTag = '_pooledSessions'; else poolTag = ''; end
 if (~alignOnset) alignTag = '_alignCue'; else alignTag = '_alignOnset'; end
@@ -57,6 +57,6 @@ for ff=1:length(sd.freq_labels)
         end
     end
     set(fh, 'Renderer', 'painters');
-    %saveas(fh, ['ft_' sd.freq_labels{ff} alignTag poolTag], 'epsc2');
+    saveas(fh, ['ft_' sd.freq_labels{ff} alignTag poolTag], 'epsc2');
 end
 
