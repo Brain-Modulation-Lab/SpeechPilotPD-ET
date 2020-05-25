@@ -1,0 +1,54 @@
+% ft_compilePopulationBehavior.m
+% Just goes through the behavior for a group of subjects. Much of this is embedded
+% in the epoch table (latency, timing). However, the loudness (RMS) needs
+% to loop through each of the subject folders. 
+
+subjectLists;
+setDirectories;
+clear sessionBehavior;
+group = 'ET';
+subjects = ET_subjects;
+poolSessions = 0;
+
+if poolSessions
+    poolTag = '_pooledSessions';
+else
+    poolTag = '';
+end
+fn = fullfile(savedDataDir, 'population', ['Pop_ecog_' group '_hgamma.mat']);
+load(fn);
+
+n = 1;
+for s = 1:length(subjects)
+%     d = [datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'AudioCodingFiles'];
+%     if isdir([d filesep 'CHECKED'])
+%         d = [d filesep 'CHECKED'];
+%     end
+%     files = dir([d filesep 'DBS*']);
+    d = [datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'Sync'];
+    cd(d);
+    sync      = bml_annot_read(['annot/' SUBJECT '_sync.txt']);
+    session   = bml_annot_read(['annot/' SUBJECT '_session.txt']);
+    coding    = bml_annot_read(['annot/' SUBJECT '_coding.txt']);
+    
+    for ii = 1:length(files)
+        fname = [d filesep files(ii).name];
+        load(fname);
+        sessionBehavior(n).session = files(ii).name;
+        disp(['Loading ' files(ii).name]);
+        fprintf('Population data file: %s  Session:%d\n', popData(n).subject, popData(n).session);
+        %[lat, dur, commandTimes] = responseTimingsFromCodingFile(files(ii).name, Audio, Afs, CodingMatrix, EventTimes, SkipEvents);
+        trialID = popData(n).epoch.id;
+        lat = popData(n).epoch.onset_word - popData(n).epoch.stimulus_starts;
+        dur = popData(n).epoch.offset_word - popData(n).epoch.onset_word;
+        commandTimes = popData(n).epoch.stimulus_starts;
+        snrVoice = computeLoudnessRMS(Audio, Afs, lat, dur, commandTimes);
+        sessionBehavior(n).SpLatency = lat;
+        sessionBehavior(n).SpDuration = dur;
+        sessionBehavior(n).snrVoice = snrVoice;
+        sessionBehavior(n).trialID = trialID;
+        n = n+1;
+    end
+end
+
+%save('PD_populationBehavior.mat', 'sessionBehavior', '-v7.3');

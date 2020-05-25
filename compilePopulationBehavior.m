@@ -4,6 +4,8 @@ subjectLists;
 setDirectories;
 clear sessionBehavior;
 subjects = PD_subjects;
+
+
 n = 0;
 for s = 1:length(subjects)
     d = [datadir filesep subjects{s} filesep 'Preprocessed Data' filesep 'AudioCodingFiles'];

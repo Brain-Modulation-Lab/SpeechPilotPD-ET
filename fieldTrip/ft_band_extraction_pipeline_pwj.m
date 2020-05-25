@@ -47,7 +47,7 @@ for ss=1:length(subjects)
         D1.trial(:,D1.badtrial_final) = [];
         D1.trial = D1.trial(i_oi, :);
         D1.time(D1.badtrial_final) = [];
-        D1.epoch(D1.badtrial_final,:) = [];
+        D1.epoch(D1.badtrial_final,:) = []; %deletes rows from table
         
         for jj = 1:length(freq)
             clearvars signal

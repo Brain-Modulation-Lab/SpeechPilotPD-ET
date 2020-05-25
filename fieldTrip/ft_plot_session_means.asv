@@ -1,14 +1,27 @@
 %Plot the mean for each session/electrode for each frequency 
+setDirectories;
+poolSessions = 1;
 alignOnset = 1;
+
+if poolSessions
+    poolTag = '_pooledSessions';
+else
+    poolTag = '';
+end
+if ~alignOnset
+    alignTag = '_alignCue';
+else
+    alignTag = '_alignOnset';
+end
 
 sd = summaryData;
 for ff=1:length(sd.freq_labels)
   % Summary data across sessions
   [ah2, fh2] = subplot_pete(length(sd.loc_labels), 1, 'Electrode Number', 'Max/Min resp', sd.freq_labels{ff});
-  set(fh2, 'Renderer', 'painters');
+  %set(fh2, 'Renderer', 'painters');
   % Timecourse figure w/ histogram 
   [ah, fh] = subplot_pete(length(sd.loc_labels), 2, 'Time from speech onset (sec)', 'Z-score resp', sd.freq_labels{ff});
-  set(fh, 'Renderer', 'painters');
+  %set(fh, 'Renderer', 'painters');
   nsites = length(sd.loc_labels);
   for ll=1:nsites 
     title(ah(ll), sd.loc_labels{ll});
@@ -18,36 +31,41 @@ for ff=1:length(sd.freq_labels)
     pd_n = size(sd.PD.freq(ff).loc(ll).perSessionZ,2);
     et_n = size(sd.ET.freq(ff).loc(ll).perSessionZ,2);
     t = sd.ET.freq(ff).loc(ll).time;
-    pi = find(t>-1); pi = pi(1):10:pi(end);
+    %pi = find(t>-1);
+    pi = 1:length(t); %just subsampling time and signals to make the plotting faster
+    pi = pi(1):10:pi(end);
     tpi = t(pi);
-    t_wind = find(t>-.5 & t<2);
     
-    et_max = max(sd.ET.freq(ff).loc(ll).perSessionZ(t_wind,:), [],1);
-    et_min = min(sd.ET.freq(ff).loc(ll).perSessionZ(t_wind,:), [],1);
+    et_max = max(sd.ET.freq(ff).loc(ll).perSessionZ, [],1);
+    et_min = min(sd.ET.freq(ff).loc(ll).perSessionZ, [],1);
     
     %plot all of the responses by electrode/session as colormaps
+    if strcmp(sd.freq_labels{ff}, 'hgamma') || strcmp(sd.freq_labels{ff}, 'gamma'), clim = [0 10];
+    else; clim = [-10 0]; end
     hold on;
     z = cat(2, sd.PD.freq(ff).loc(ll).perSessionZ(pi,:), NaN*zeros(length(pi),4), sd.ET.freq(ff).loc(ll).perSessionZ(pi,:));
     axes(ah(ll));
-    imagesc(sd.ET.freq(ff).loc(ll).time(pi), 1:size(z,2), z');
+    imagesc(sd.ET.freq(ff).loc(ll).time(pi), 1:size(z,2), z', clim);
     ylim(ah(ll), [1 size(z,2)]);
     xlim(ah(ll), [-1 t(end)]);
+    
     colorbar;
     ah(ll).YDir='reverse';
+    ah(ll).TickDir = 'out';
     
     %p values
     testrange = sd.PD.freq(ff).loc(ll).clusterTt(1,:); %assuming the same range for all
     lengthp = size(sd.PD.freq(ff).loc(ll).clusterTh,1);
     ptime = linspace(testrange(1), testrange(2), lengthp);
-    clusterTh = cat(2, sd.PD.freq(ff).loc(ll).clusterTh, zeros(lengthp,4), sd.ET.freq(ff).loc(ll).clusterTh);
-    clusterTp = cat(2, sd.PD.freq(ff).loc(ll).clusterTp, zeros(lengthp,4), sd.ET.freq(ff).loc(ll).clusterTp);
+    clusterTh = cat(2, sd.PD.freq(ff).loc(ll).clusterTh, zeros(lengthp,4)-1, sd.ET.freq(ff).loc(ll).clusterTh);
+    clusterTp = cat(2, sd.PD.freq(ff).loc(ll).clusterTp, NaN*zeros(lengthp,4), sd.ET.freq(ff).loc(ll).clusterTp);
     sigi = []; sigt=[];
     for tt = 1:size(clusterTh, 2)
-        fi = find(clusterTh(:,tt),1,'first');
+        fi = find(clusterTh(:,tt)>0,1,'first');
         if ~isempty(fi) 
             sigi(tt) = fi;
             sigt(tt) = ptime(fi);
-            plot(sigt(tt), tt, '*w', 'MarkerSize', 4);
+            plot(sigt(tt), tt, '*w', 'MarkerSize', 2);
         else
             sigi(tt) = NaN;
             sigt(tt) = NaN;
@@ -56,11 +74,14 @@ for ff=1:length(sd.freq_labels)
     
     %Plot a colormap plot of the p-values
     axes(ah(ll+nsites));
-    imagesc(sd.ET.freq(ff).loc(ll).time(pi), 1:size(z,2), z');
-    ylim(ah(ll), [1 size(z,2)]);
-    xlim(ah(ll), [-1 t(end)]);
+    cmap = [0 0 0; 0 0 .5; 1 1 1];
+    imagesc(ptime, 1:size(clusterTh,2), clusterTh', [-1 1]);
+    colormap(ah(ll+nsites), cmap);
+    ylim(ah(ll+nsites), [1 size(clusterTh,2)]);
+    xlim(ah(ll+nsites), [ptime(1) ptime(end)]);
     colorbar;
-    ah(ll).YDir='reverse';
+    ah(ll+nsites).YDir='reverse';
+    ah(ll+nsites).TickDir = 'out';
     
     % These will plot as overlying curves with means
     % plot(ah(ll), sd.ET.freq(ff).loc(ll).time(pi), sd.ET.freq(ff).loc(ll).perSessionZ(pi,:), 'color', [0.5 0.5 1], 'Linewidth', .5);  
@@ -81,8 +102,12 @@ for ff=1:length(sd.freq_labels)
     end
     
     axes(ah(ll+nsites));
-    [et_resp, et_peaki] = respfunc(sd.ET.freq(ff).loc(ll).perSessionZ(t_wind,:), [],1);
-    [pd_resp, pd_peaki] = respfunc(sd.PD.freq(ff).loc(ll).perSessionZ(t_wind,:), [],1);
+    [et_resp, et_peaki] = respfunc(sd.ET.freq(ff).loc(ll).perSessionZ, [],1);
+    et_peakt = t(et_peaki);
+    plot(ah(ll), et_peakt, (1:et_n)+pd_n+4, '*r', 'MarkerSize', 2);
+    [pd_resp, pd_peaki] = respfunc(sd.PD.freq(ff).loc(ll).perSessionZ, [],1);
+    pd_peakt = t(pd_peaki);
+    plot(ah(ll),pd_peakt, 1:pd_n, '*r', 'MarkerSize', 2);
 %     %h1 = histogram(pd_resp); hold on; h2 = histogram(et_resp);
 %     h1 = histogram(t(t_wind(pd_peaki))); hold on; h2 = histogram(t(t_wind(et_peaki)));
 %     %h1.BinWidth = 1; h2.BinWidth = 1;
@@ -106,9 +131,31 @@ for ff=1:length(sd.freq_labels)
     xticks(1:sum([length(pd_resp), length(et_resp)]));
     xticklabels(cat(1, pdlabel, etlabel));
     xtickangle(90);
+    ah2(ll).TickDir = 'out';
+    
+    sd.PD.freq(ff).loc(ll).peakval = pd_resp;
+    sd.PD.freq(ff).loc(ll).peakt = pd_peakt;
+    sd.PD.freq(ff).loc(ll).firstSigT = sigt(1:pd_n);
+    sd.PD.freq(ff).loc(ll).electrodeLabel = pdlabel;
+    sd.ET.freq(ff).loc(ll).peakval = et_resp;
+    sd.ET.freq(ff).loc(ll).peakt = et_peakt;
+    sd.ET.freq(ff).loc(ll).firstSigT = sigt((end-et_n+1):end);
+    sd.ET.freq(ff).loc(ll).electrodeLabel = etlabel;
+    
+    [peakt_p, peakt_h] = ranksum(pd_peakt, et_peakt);
+    [onsett_p, onsett_h] = ranksum(pd_peakt, et_peakt);
+    % Some text output report of the location
+    fprintf('%s %s, %i PD electrodes, %i ET electrodes\n', ....
+        sd.freq_labels{ff}, sd.loc_labels{ll}, pd_n, et_n);
+    fprintf('PD - mean peak Z:%f   mean peak time:%f  mean_onset_time: %f\n', ...
+        mean(pd_resp), mean(pd_peakt), mean(sigt(1:pd_n)));
+    fprintf('ET - mean peak Z:%f   mean peak time:%f  mean_onset_time: %f\n', ...
+        mean(et_resp), mean(et_peakt), mean(sigt((end-et_n+1):end)));
+    
   end
   %saveas(fh, ['allsessions_' sd.freq_labels{ff}], 'epsc2');
   
-  %fn = [figDir filesep 'allsessionsTiming_' sd.freq_labels{ff} '.eps'];
+  fn = [figDir filesep 'subjectTiming_' sd.freq_labels{ff} alignTag poolTag '.eps'];
   %print(fn, '-depsc2', '-tiff', '-r300', '-painters');
+  print(fh, fn, '-depsc2', '-tiff', '-r300');
 end

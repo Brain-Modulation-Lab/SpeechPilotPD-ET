@@ -2,10 +2,11 @@
 % frequency bands
 poolSessions = 1;
 alignOnset = 0;
+setDirectories;
 
 if (poolSessions) poolTag = '_pooledSessions'; else poolTag = ''; end
 if (~alignOnset) alignTag = '_alignCue'; else alignTag = '_alignOnset'; end
-load(fullfile(savedDataDir, 'population', ['summaryData_EcoG_BandAnalysis' alignTag poolTag '.mat']));
+%load(fullfile(savedDataDir, 'population', ['summaryData_EcoG_BandAnalysis' alignTag poolTag '.mat']));
 
 sd = summaryData;
 for ff=1:length(sd.freq_labels)
@@ -27,6 +28,10 @@ for ff=1:length(sd.freq_labels)
         %         pd_sem = nanstd(sd.PD.freq(ff).loc(ll).meanZ_subj,0,2) ./ sqrt(npd);
         %         et_sem = nanstd(sd.ET.freq(ff).loc(ll).meanZ_subj,0,2) ./ sqrt(net);
         %     else
+        %Test the period of the population signal difference from the
+        %baseline
+        sd.PD.freq(ff).loc(ll).perSessionZ'
+        % Test the difference between PD and ET subjects
         [h,p] = clusterPermuteTtest(sd.PD.freq(ff).loc(ll).perSessionZ', ...
             sd.ET.freq(ff).loc(ll).perSessionZ', 0.075);
         pd_mean = nanmean(sd.PD.freq(ff).loc(ll).perSessionZ,2);
@@ -48,7 +53,7 @@ for ff=1:length(sd.freq_labels)
         xlim(ah(ll), [-1.5 t(end)]);
         
         %just give some report of the results
-        disp(['Significantly different times for ', sd.freq_labels{ff}, '  ', sd.loc_labels{ll}]);
+        disp(['Significantly different time periods for ', sd.freq_labels{ff}, '  ', sd.loc_labels{ll}]);
         segs = bwlabel(h);
         nsegs = max(segs);
         for ii=1:nsegs
@@ -57,6 +62,6 @@ for ff=1:length(sd.freq_labels)
         end
     end
     set(fh, 'Renderer', 'painters');
-    saveas(fh, ['ft_' sd.freq_labels{ff} alignTag poolTag], 'epsc2');
+    saveas(fh, [figDir filesep 'ft_' sd.freq_labels{ff} alignTag poolTag], 'epsc2');
 end
 

@@ -1,7 +1,7 @@
 function [latency, duration, commandT] = responseTimingsFromCodingFile(fname, Audio, Afs, CodingMatrix, EventTimes, SkipEvents)
 
 pb = 1;
-maxTrial = 60;
+maxTrial = 120;
 % Row 5 is marked Speech Onset, Row 6 is Speech Offset
 % Just get the first 60 trials - consistent with the rest of the analysis
 % for pilot data
