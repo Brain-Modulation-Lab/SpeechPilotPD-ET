@@ -12,9 +12,11 @@ for ff=1:length(sd.freq_labels)
             resp(ii).Frequency = sd.freq_labels{ff};
             resp(ii).Location = sd.loc_labels{ll};
             resp(ii).ElectrodeLabel = sd.PD.freq(ff).loc(ll).electrodeLabel{ee};
-            resp(ii).PeakZ = sd.PD.freq(ff).loc(ll).peakval(ee);
+            resp(ii).PeakZ = sd.PD.freq(ff).loc(ll).peakZ(ee);
             resp(ii).PeakTime = sd.PD.freq(ff).loc(ll).peakt(ee);
-            resp(ii).FirstSigResponseTime = sd.PD.freq(ff).loc(ll).firstSigT(ee);
+            resp(ii).FirstSigResponseTime = sd.PD.freq(ff).loc(ll).firstSigRespT(ee); 
+            resp(ii).LastSigResponseTime = sd.PD.freq(ff).loc(ll).lastSigRespT(ee); 
+            
             ii = ii+1;
         end
         for ee=1:size(sd.ET.freq(ff).loc(ll).perSessionZ,2)
@@ -22,9 +24,10 @@ for ff=1:length(sd.freq_labels)
             resp(ii).Frequency = sd.freq_labels{ff};
             resp(ii).Location = sd.loc_labels{ll};
             resp(ii).ElectrodeLabel = sd.ET.freq(ff).loc(ll).electrodeLabel{ee};
-            resp(ii).PeakZ = sd.ET.freq(ff).loc(ll).peakval(ee);
+            resp(ii).PeakZ = sd.ET.freq(ff).loc(ll).peakZ(ee);
             resp(ii).PeakTime = sd.ET.freq(ff).loc(ll).peakt(ee);
-            resp(ii).FirstSigResponseTime = sd.ET.freq(ff).loc(ll).firstSigT(ee);
+            resp(ii).FirstSigResponseTime = sd.ET.freq(ff).loc(ll).firstSigRespT(ee); 
+            resp(ii).LastSigResponseTime = sd.ET.freq(ff).loc(ll).lastSigRespT(ee); 
             ii = ii+1;
         end
   end

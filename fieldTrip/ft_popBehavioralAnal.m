@@ -13,7 +13,9 @@ allLatsM = NaN*zeros(120, nSessions);
 allDurM = NaN*zeros(120, nSessions);
 %allSNRM = NaN*zeros(60, nSessions);
 for ii=1:nSessions
-    subj = strtok(sessionBehavior(ii).session, '_. ');
+    subj = sessionBehavior(ii).subject;
+    d = [datadir filesep subj filesep 'Preprocessed Data' filesep 'FieldTrip'];
+    produced_utterance = bml_annot_read([d filesep 'annot' filesep subj '_produced_utterance.txt']);
     %load([datadir filesep subj filesep 'Preprocessed Data' filesep sessionInfo(ii).name], 'trials');
     % now look at RTs
     ntrials = length(sessionBehavior(ii).SpLatency);
@@ -30,7 +32,8 @@ edges = [0:0.1:5 Inf];
 h2 = histogram(PDlat,edges); hold on;
 h1 = histogram(ETlat, edges); 
 h1.Normalization = 'probability'; h2.Normalization = 'probability';
-h1.FaceColor = peteColorOrder{1}; h2.FaceColor = peteColorOrder{2}; 
+h1.FaceColor = peteColorOrder{1}; h2.FaceColor = peteColorOrder{2};
+h1.AxesTickDir= 'out'; h2.AxesTickDir= 'out';
 legend({'PD', 'ET'});
 PDmedian = nanmedian(PDlat);
 ETmedian = nanmedian(ETlat);

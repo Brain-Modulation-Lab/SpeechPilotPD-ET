@@ -34,7 +34,6 @@ for gg=1:2
         if poolSessions
             popData = linearizePopData(popData);
         end
-        clear loc;
         for ll=1:length(locs)
             if strcmp(freqs{ff}, 'hgamma') %Include in analysis based on hgamma response
                 %gammasig = arrayfun(@(x) x.sig_h', popData,'UniformOutput', 0);
