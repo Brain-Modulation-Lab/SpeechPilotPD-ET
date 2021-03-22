@@ -4,7 +4,7 @@ if ispc
     codeDir = '\\172.17.146.130\Nexus\Users\pwjones\code\SpeechPilotPD-ET';
     datadir='\\172.17.146.130\Nexus\DBS';
     subjProcessedDir = 'Preprocessed Data\FieldTrip\further_processed';
-    figDir = '\\172.17.146.130\Nexus\Users\pwjones\figureDump';
+    figDir = '\\172.17.146.130\Nexus\Users\pwjones\figureDump2';
     savedDataDir = '\\172.17.146.130\Nexus\Users\pwjones\data';
 else
     codeDir = '~pwjones/Documents/RichardsonLab/matlab/SpeechPilotPD-ET';
@@ -12,7 +12,7 @@ else
     %datadir = '/Volumes/ToughGuy/RichardsonLabData/ET'; %sample data
     datadir = '/Volumes/Nexus/DBS';
     subjProcessedDir = 'Preprocessed Data/FieldTrip/further_processed';
-    figDir = '~pwjones/Documents/RichardsonLab/SRP/figureDump';
+    figDir = '~pwjones/Documents/RichardsonLab/SRP/figureDump2';
     %savedDataDir = '/Volumes/ToughGuy/RichardsonLabData/ET';
     %savedDataDir = '~pwjones/Documents/RichardsonLabData/';
     savedDataDir = '/Volumes/Nexus/Users/pwjones/data';

@@ -11,7 +11,6 @@ dd = [savedDataDir filesep 'population'];
 poolSessions = 1;
 alignOnset = 1;
 
-
 if poolSessions
     poolTag = '_pooledSessions';
 else
@@ -100,4 +99,4 @@ for gg=1:2
     summaryData.loc_labels = locs;
 end
 
-save(fullfile(savedDataDir, 'population', ['summaryData_EcoG_BandAnalysis' alignTag poolTag '.mat']), 'summaryData', '-v7.3');
+save(fullfile(savedDataDir, 'population', ['summaryData_EcoG_BandAnalysis2' alignTag poolTag '.mat']), 'summaryData', '-v7.3');

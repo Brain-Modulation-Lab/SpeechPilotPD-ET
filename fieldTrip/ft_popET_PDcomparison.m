@@ -1,12 +1,12 @@
 % Want to compare/plot population ET versus PD groups for all locations
 % frequency bands
 poolSessions = 1;
-alignOnset = 0;
+alignOnset = 1;
 setDirectories;
 
 if (poolSessions) poolTag = '_pooledSessions'; else poolTag = ''; end
 if (~alignOnset) alignTag = '_alignCue'; else alignTag = '_alignOnset'; end
-%load(fullfile(savedDataDir, 'population', ['summaryData_EcoG_BandAnalysis' alignTag poolTag '.mat']));
+load(fullfile(savedDataDir, 'population', ['summaryData_EcoG_BandAnalysis2' alignTag poolTag '.mat']));
 
 sd = summaryData;
 for ff=1:length(sd.freq_labels)
